@@ -11,7 +11,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -20,9 +19,10 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
+@SuppressWarnings("unused")
 public abstract class HttpUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
+    private static final Logger logger = LoggerUtils.getLogger(HttpUtils.class);
 
     public static String get(String uri, Map<String, Object> map) {
         CloseableHttpClient httpclient = HttpClients.createDefault();

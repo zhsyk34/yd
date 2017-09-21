@@ -40,7 +40,7 @@ public class TagService {
     public void init() {
         logger.info("正在初始化库存商品...");
 
-        this.scan();
+        SERVICE.execute(this::scan);
 
         while (!scan) {
             logger.info("正在初始化库存商品...");
@@ -54,53 +54,50 @@ public class TagService {
     }
 
     private void scan() {
-        SERVICE.execute(() -> {
-            lock.lock();
+        lock.lock();
 
-            try {
-                tagProcessor.scan();
+        try {
+            tagProcessor.scan();
 
-                scan = true;
+            scan = true;
 
-                finished.signal();
-            } finally {
-                lock.unlock();
-            }
-        });
+            finished.signal();
+        } finally {
+            lock.unlock();
+        }
     }
 
     private void submit() {
-        SERVICE.execute(() -> {
-            if (!tagProcessor.isInitialized()) {
-                return;
-            }
+        if (!tagProcessor.isInitialized()) {
+            return;
+        }
 
-            lock.lock();
+        lock.lock();
 
-            try {
-                while (!scan) {
-                    logger.info("正在等待商品扫描...");
-                    try {
-                        finished.await();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        try {
+            while (!scan) {
+                logger.info("正在等待商品扫描...");
+                try {
+                    finished.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-
-                scan = false;
-
-                logger.debug("准备创建订单");
-
-                Map<String, Object> map = Order.toMap(tagProcessor.delta());
-                System.err.println(HttpUtils.postForm(STORE_SERVER, map));
-            } finally {
-                lock.unlock();
             }
-        });
+
+            scan = false;
+
+            logger.info("准备创建订单");
+
+            Map<String, Object> map = Order.toMap(tagProcessor.delta());
+            String result = HttpUtils.postForm(STORE_SERVER, map);
+            logger.info("已向服务器提交订单,反馈结果:{}", result);
+        } finally {
+            lock.unlock();
+        }
     }
 
     public void process() {
-        this.scan();
-        this.submit();
+        SERVICE.execute(this::scan);
+        SERVICE.execute(this::submit);
     }
 }

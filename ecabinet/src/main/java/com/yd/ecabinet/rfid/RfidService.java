@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.yd.ecabinet.config.Config.RFID_SYNC;
 import static com.yd.ecabinet.config.Config.TRY_INTERVAL;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Service
 public class RfidService extends AbstractDaemonService {
@@ -28,22 +30,21 @@ public class RfidService extends AbstractDaemonService {
     @Override
     public void run() {
         rfidOperator.connect(callback);
-
-        //SERVICE.scheduleAtFixedRate(this::watch, 0, RFID_SYNC, TimeUnit.MILLISECONDS);
-
         super.setStartup(true);
     }
 
-    private void watch() {
-        if (rfidOperator.isConnect()) {
-            logger.info("RFID当前在线");
-        } else {
-            logger.error("RFID连接已断开,正在尝试重连...");
+    public void watch() {
+        SERVICE.scheduleAtFixedRate(() -> {
+            if (rfidOperator.isConnect()) {
+                logger.info("RFID当前在线");
+            } else {
+                logger.error("RFID连接已断开,正在尝试重连...");
 
-            rfidOperator.disconnect();
-            ThreadUtils.await(TRY_INTERVAL);
-            rfidOperator.connect(callback);
-        }
+                rfidOperator.disconnect();
+                ThreadUtils.await(TRY_INTERVAL);
+                rfidOperator.connect(callback);
+            }
+        }, RFID_SYNC, RFID_SYNC, MILLISECONDS);
     }
 
 }

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.yd.ecabinet.config.Config;
-import com.yd.ecabinet.util.HttpUtils;
 import com.yd.ecabinet.util.JsonUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -37,13 +38,6 @@ public class Order {
     public static Map<String, Object> toMap(Set<String> tids) {
         tids = Optional.ofNullable(tids).map(t -> t.stream().map(s -> "\"" + s + "\"").collect(toSet())).orElse(null);
         return JsonUtils.toMap(from(tids));
-    }
-
-    //TODO
-    public static void main(String[] args) {
-        Set<String> set = new HashSet<>(Arrays.asList("a", "b"));
-        Map<String, Object> map = toMap(set);
-        System.err.println(HttpUtils.postForm(Config.STORE_SERVER, map));
     }
 
 }
