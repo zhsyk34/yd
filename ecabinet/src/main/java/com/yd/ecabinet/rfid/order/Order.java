@@ -14,12 +14,13 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
 
+@SuppressWarnings("WeakerAccess")
 @Data
 @Accessors(chain = true)
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class Order {
+class Order {
 
     private final String deviceType = "cabinet";
 
@@ -30,14 +31,12 @@ public class Order {
      */
     private Set<String> tids;
 
-    @SuppressWarnings("WeakerAccess")
     public static Order from(Set<String> tids) {
         return new Order().setTids(tids);
     }
 
     public static Map<String, Object> toMap(Set<String> tids) {
-        tids = Optional.ofNullable(tids).map(t -> t.stream().map(s -> "\"" + s + "\"").collect(toSet())).orElse(null);
-        return JsonUtils.toMap(from(tids));
+        return JsonUtils.toMap(from(Optional.ofNullable(tids).map(t -> t.stream().map(s -> "\"" + s + "\"").collect(toSet())).orElse(null)));
     }
 
 }

@@ -21,10 +21,8 @@ public class DefaultRfidOperator implements RfidOperator {
 
     private final Logger logger = LoggerUtils.getLogger(this.getClass());
 
-    private Boolean reading = false;
-
     @Override
-    public synchronized void connect(IAsynchronousMessage callback) {
+    public void connect(IAsynchronousMessage callback) {
         boolean connected = CLReader.CreateTcpConn(RFID_SN, callback);
 
         while (!connected) {
@@ -41,30 +39,31 @@ public class DefaultRfidOperator implements RfidOperator {
     }
 
     @Override
-    public synchronized boolean isConnect() {
+    public boolean isConnect() {
         try {
             String status = CLReader._Config.GetReaderInformation(RFID_SN);
+
             logger.debug("连接信息:{}", status);
 
             return StringUtils.hasText(status) && status.startsWith("V");
         } catch (InterruptedException e) {
-            logger.debug("读取连接信息失败", e);
+            logger.error("读取连接信息失败", e);
             return false;
         }
     }
 
     @Override
-    public synchronized void disconnect() {
+    public void disconnect() {
         CLReader.CloseConn(RFID_SN);
     }
 
     @Override
-    public synchronized void disconnectAll() {
+    public void disconnectAll() {
         CLReader.CloseAllConnect();
     }
 
     @Override
-    public synchronized void startRead() {
+    public void startRead() {
         this.stopRead();
 
         int read = Tag6C.GetEPC_TID(RFID_SN, RFID_ANT, Inventory);
@@ -80,16 +79,10 @@ public class DefaultRfidOperator implements RfidOperator {
         }
 
         logger.info("开启读标签成功");
-
-        reading = true;
     }
 
     @Override
-    public synchronized void stopRead() {
-        if (!reading) {
-            return;
-        }
-
+    public void stopRead() {
         logger.info("停止读标签...");
 
         try {
@@ -101,25 +94,24 @@ public class DefaultRfidOperator implements RfidOperator {
 
             logger.error("停止读标签成功");
 
-            reading = false;
         } catch (InterruptedException e) {
             logger.error("停止读标签失败", e);
         }
     }
 
     @Override
-    public synchronized boolean isOpen() {
+    public boolean isOpen() {
         try {
             String state = CLReader._Config.GetReaderGPIState(RFID_SN);
             return StringUtils.hasText(state) && state.contains("High");
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("读取门(GPI)状态失败", e);
         }
         return false;
     }
 
     @Override
-    public synchronized void openDoor() {
+    public void openDoor() {
         logger.info("正在开门...");
 
         try {
@@ -134,7 +126,7 @@ public class DefaultRfidOperator implements RfidOperator {
     }
 
     @Override
-    public synchronized void closeDoor() {
+    public void closeDoor() {
         logger.info("正在重置电平以监测关门信号...");
 
         try {
@@ -144,7 +136,7 @@ public class DefaultRfidOperator implements RfidOperator {
         }
     }
 
-    private synchronized void operateDoor(eGPOState state, int maxTimes) throws Exception {
+    private void operateDoor(eGPOState state, int maxTimes) throws Exception {
         HashMap<eGPO, eGPOState> map = new HashMap<>();
         map.put(eGPO._1, state);
 

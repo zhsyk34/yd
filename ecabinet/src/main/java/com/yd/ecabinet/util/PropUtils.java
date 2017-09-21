@@ -16,7 +16,7 @@ public abstract class PropUtils {
     private static final Logger logger = LoggerUtils.getLogger(PropUtils.class);
 
     private static final String LINUX_DIR = "/home/yd/Workspace/eCabinet/";
-    private static final String PROFILE = "xyj.properties";
+    private static final String PROFILE = "ecabinet.properties";
 
     private static final Map<String, String> map = new HashMap<>();
 

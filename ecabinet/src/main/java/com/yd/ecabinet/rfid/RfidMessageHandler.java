@@ -25,8 +25,6 @@ public class RfidMessageHandler extends RfidMessageAdapter {
         String tid = tag._TID;
 
         if (StringUtils.hasText(tid)) {
-            //logger.debug("--------扫描到标签:{}", tid);
-
             tagService.statistics(tid);
         }
     }
@@ -43,7 +41,7 @@ public class RfidMessageHandler extends RfidMessageAdapter {
             logger.debug("检测到开门事件");
         } else {
             logger.debug("检测到关门事件,开始汇总剩余商品以统计订单...");
-            //TODO
+
             tagService.process();
         }
     }

@@ -70,11 +70,11 @@ public class SimpleTagProcessor implements TagProcessor {
         return Collections.unmodifiableSet(current);
     }
 
+    //TODO:目前只比较减少量
     @Override
     public Set<String> delta() {
-        logger.debug("原有库存:\n{},共{}件商品", String.join(",", original),original.size());
-
-        logger.debug("现存商品:\n{}", String.join(",", current));
+        logger.debug("原有库存共 [{}] 件", original.size());
+        logger.debug("剩余商品共 [{}] 件", current.size());
 
         original.removeAll(current);
 
@@ -83,7 +83,7 @@ public class SimpleTagProcessor implements TagProcessor {
         original = current;
         current = new HashSet<>();
 
-        logger.debug("订单商品:\n{},共{}件", String.join(",", clone), clone.size());
+        logger.debug("本次订单商品共 [{}] 件", clone.size());
 
         return clone;
     }

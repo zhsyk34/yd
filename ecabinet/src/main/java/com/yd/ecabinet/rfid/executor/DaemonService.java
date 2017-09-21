@@ -1,6 +1,6 @@
 package com.yd.ecabinet.rfid.executor;
 
-public interface DaemonService extends Runnable {
+public interface DaemonService {
 
     boolean isStartup();
 

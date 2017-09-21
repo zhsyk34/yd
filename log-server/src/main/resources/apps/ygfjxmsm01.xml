@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <property name="ygfjxmsm01" value="ygfjxmsm01"/>
+
+    <appender name="ygfjxmsm01-common" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${dir}/${ygfjxmsm01}/${common}/current.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${dir}/${ygfjxmsm01}/${common}/%d{yyyy-MM-dd HH}.log</fileNamePattern>
+            <maxHistory>1440</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{100} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ygfjxmsm01-status" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${dir}/${ygfjxmsm01}/${status}/current.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${dir}/${ygfjxmsm01}/${status}/%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss} %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="ygfjxmsm01.com.yd.ecabinet.monitor" level="info" additivity="false">
+        <appender-ref ref="ygfjxmsm01-status"/>
+    </logger>
+
+    <logger name="ygfjxmsm01.com.yd.ecabinet" level="debug">
+        <appender-ref ref="ygfjxmsm01-common"/>
+    </logger>
+</included>

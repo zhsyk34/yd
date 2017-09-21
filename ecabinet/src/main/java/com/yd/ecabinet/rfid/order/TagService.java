@@ -14,19 +14,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static com.yd.ecabinet.config.Config.STORE_SERVER;
 import static com.yd.ecabinet.config.Config.TRY_INTERVAL;
-import static com.yd.ecabinet.rfid.executor.AbstractDaemonService.SERVICE;
+import static com.yd.ecabinet.config.ExecutorFactory.DAEMON_SERVICE;
 
+//TODO
 @Service
 public class TagService {
 
-    private final Logger logger = LoggerUtils.getLogger(this.getClass());
-
     private static final Lock lock = new ReentrantLock();
-
     private static final Condition finished = lock.newCondition();
-
     private static volatile boolean scan = false;
-
+    private final Logger logger = LoggerUtils.getLogger(this.getClass());
     private final TagProcessor tagProcessor;
 
     public TagService(@Autowired TagProcessor tagProcessor) {
@@ -40,7 +37,7 @@ public class TagService {
     public void init() {
         logger.info("正在初始化库存商品...");
 
-        SERVICE.execute(this::scan);
+        DAEMON_SERVICE.execute(this::scan);
 
         while (!scan) {
             logger.info("正在初始化库存商品...");
@@ -97,7 +94,7 @@ public class TagService {
     }
 
     public void process() {
-        SERVICE.execute(this::scan);
-        SERVICE.execute(this::submit);
+        DAEMON_SERVICE.execute(this::scan);
+        DAEMON_SERVICE.execute(this::submit);
     }
 }

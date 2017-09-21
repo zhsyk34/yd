@@ -6,7 +6,7 @@ public abstract class ThreadUtils {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
-//            e.printStackTrace();
+            //ignore
         }
     }
 }

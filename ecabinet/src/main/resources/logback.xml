@@ -30,6 +30,7 @@
     </appender>
 
     <logger name="org.apache.http" level="info" additivity="false"/>
+
     <logger name="org.springframework" level="info" additivity="false"/>
 
     <root level="debug">
