@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!--日志目录-->
+    <property name="dir" value="/home/yd/JavaLog/eStore"/>
+    <!--分类目录-->
+    <property name="common" value="common"/>
+    <property name="status" value="status"/>
+
+    <!--项目/设备分区目录配置-->
+    <include file="apps/fjxmsm01.xml"/>
+    <include file="apps/jswxbh01.xml"/>
+    <include file="apps/test.xml"/>
+</configuration>

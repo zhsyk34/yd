@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+    <property name="fjxmsm01" value="fjxmsm01"/>
+
+    <appender name="fjxmsm01-common" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${dir}/${fjxmsm01}/${common}/current.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${dir}/${fjxmsm01}/${common}/%d{yyyy-MM-dd HH}.log</fileNamePattern>
+            <maxHistory>1440</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{100} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="fjxmsm01-status" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${dir}/${fjxmsm01}/${status}/current.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${dir}/${fjxmsm01}/${status}/%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss} %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="fjxmsm01.RfidListener" level="info" additivity="false">
+        <appender-ref ref="fjxmsm01-status"/>
+    </logger>
+
+    <logger name="fjxmsm01.com.xyj.supermarket" level="debug">
+        <appender-ref ref="fjxmsm01-common"/>
+    </logger>
+</included>
