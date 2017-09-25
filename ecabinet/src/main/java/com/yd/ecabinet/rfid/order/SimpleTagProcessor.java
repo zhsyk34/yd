@@ -18,8 +18,8 @@ import static com.yd.ecabinet.config.RfidConfig.RFID_SCAN;
 @Component
 public class SimpleTagProcessor implements TagProcessor {
 
-    private static Set<String> original = new HashSet<>();
-    private static Set<String> current = new HashSet<>();
+    private Set<String> original = new HashSet<>();
+    private Set<String> current = new HashSet<>();
 
     private final Logger logger = LoggerUtils.getLogger(this.getClass());
 

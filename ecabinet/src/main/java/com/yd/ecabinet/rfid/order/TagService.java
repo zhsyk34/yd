@@ -22,7 +22,7 @@ public class TagService {
 
     private static final Lock lock = new ReentrantLock();
     private static final Condition finished = lock.newCondition();
-    private static volatile boolean scan = false;
+    private volatile boolean scan = false;
     private final Logger logger = LoggerUtils.getLogger(this.getClass());
     private final TagProcessor tagProcessor;
 
