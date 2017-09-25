@@ -1,8 +1,8 @@
 package com.yd.ecabinet.rfid.order;
 
-import com.yd.ecabinet.rfid.RfidOperator;
 import com.yd.ecabinet.util.LoggerUtils;
-import com.yd.ecabinet.util.ThreadUtils;
+import com.yd.rfid.RfidOperator;
+import com.yd.rfid.util.ThreadUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.yd.ecabinet.config.Config.RFID_SCAN;
+import static com.yd.ecabinet.config.RfidConfig.RFID_SCAN;
 
 @Component
 public class SimpleTagProcessor implements TagProcessor {
@@ -70,7 +70,6 @@ public class SimpleTagProcessor implements TagProcessor {
         return Collections.unmodifiableSet(current);
     }
 
-    //TODO:目前只比较减少量
     @Override
     public Set<String> delta() {
         logger.debug("原有库存共 [{}] 件", original.size());
@@ -83,7 +82,7 @@ public class SimpleTagProcessor implements TagProcessor {
         original = current;
         current = new HashSet<>();
 
-        logger.debug("本次订单商品共 [{}] 件", clone.size());
+        logger.debug("本次订单商品共 [{}] 件:{}", clone.size(), String.join(",", clone));
 
         return clone;
     }

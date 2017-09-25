@@ -3,6 +3,7 @@ package com.yd.ecabinet.rfid;
 import com.clou.uhf.G3Lib.Protocol.Tag_Model;
 import com.yd.ecabinet.rfid.order.TagService;
 import com.yd.ecabinet.util.LoggerUtils;
+import com.yd.rfid.RfidMessageAdapter;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,10 +23,8 @@ public class RfidMessageHandler extends RfidMessageAdapter {
 
     @Override
     public void OutPutTags(Tag_Model tag) {
-        String tid = tag._TID;
-
-        if (StringUtils.hasText(tid)) {
-            tagService.statistics(tid);
+        if (StringUtils.hasText(tag._TID)) {
+            tagService.statistics(tag._TID);
         }
     }
 

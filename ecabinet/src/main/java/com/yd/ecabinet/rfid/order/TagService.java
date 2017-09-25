@@ -2,7 +2,7 @@ package com.yd.ecabinet.rfid.order;
 
 import com.yd.ecabinet.util.HttpUtils;
 import com.yd.ecabinet.util.LoggerUtils;
-import com.yd.ecabinet.util.ThreadUtils;
+import com.yd.rfid.util.ThreadUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +12,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.yd.ecabinet.config.Config.STORE_SERVER;
-import static com.yd.ecabinet.config.Config.TRY_INTERVAL;
-import static com.yd.ecabinet.config.ExecutorFactory.DAEMON_SERVICE;
+import static com.yd.ecabinet.config.StoreConfig.STORE_INTERVAL;
+import static com.yd.ecabinet.config.StoreConfig.STORE_SERVER;
+import static com.yd.rfid.executor.DaemonService.EXECUTOR;
 
 //TODO
 @Service
@@ -37,11 +37,11 @@ public class TagService {
     public void init() {
         logger.info("正在初始化库存商品...");
 
-        DAEMON_SERVICE.execute(this::scan);
+        EXECUTOR.execute(this::scan);
 
         while (!scan) {
             logger.info("正在初始化库存商品...");
-            ThreadUtils.await(TRY_INTERVAL);
+            ThreadUtils.await(STORE_INTERVAL);
         }
 
         scan = false;
@@ -87,14 +87,14 @@ public class TagService {
 
             Map<String, Object> map = Order.toMap(tagProcessor.delta());
             String result = HttpUtils.postForm(STORE_SERVER, map);
-            logger.info("已向服务器提交订单,反馈结果:{}", result);
+            logger.info("已向服务器提交订单:{},反馈结果:{}", map.toString(), result);
         } finally {
             lock.unlock();
         }
     }
 
     public void process() {
-        DAEMON_SERVICE.execute(this::scan);
-        DAEMON_SERVICE.execute(this::submit);
+        EXECUTOR.execute(this::scan);
+        EXECUTOR.execute(this::submit);
     }
 }

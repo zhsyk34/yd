@@ -25,7 +25,7 @@ public class Entry {
         MonitorService monitorService = BeanFactory.getBean(MonitorService.class);
         //monitor rfid status
         monitorService.watch();
-        //report host message
+        //report host status
         monitorService.report();
 
         BeanFactory.destroy();

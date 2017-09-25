@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>yd</artifactId>
+        <groupId>com</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>rfid</artifactId>
+    <description>rfid</description>
+
+    <dependencies>
+        <!--local-->
+        <dependency>
+            <groupId>org.local</groupId>
+            <artifactId>cra.jar</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.local</groupId>
+            <artifactId>crr.jar</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.local</groupId>
+            <artifactId>jdemo.jar</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+</project>

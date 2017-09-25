@@ -10,9 +10,13 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>rfid</module>
+
+        <module>ecabinet</module>
+        <module>estore</module>
+
         <module>log-server</module>
         <module>version-subscribe</module>
-        <module>ecabinet</module>
     </modules>
 
     <properties>
@@ -86,18 +90,18 @@
                 <version>${spring.version}</version>
             </dependency>
             <!--解决spring logger依赖?-->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>jcl-over-slf4j</artifactId>
-                <version>${slf4j.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
-                <scope>runtime</scope>
-            </dependency>
+            <!--<dependency>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>jcl-over-slf4j</artifactId>-->
+            <!--<version>${slf4j.version}</version>-->
+            <!--<exclusions>-->
+            <!--<exclusion>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>slf4j-api</artifactId>-->
+            <!--</exclusion>-->
+            <!--</exclusions>-->
+            <!--<scope>runtime</scope>-->
+            <!--</dependency>-->
 
             <dependency>
                 <groupId>io.netty</groupId>

@@ -2,7 +2,6 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <property name="host" value="47.94.252.28"/>
     <property name="port" value="1873"/>
-
     <property name="dir" value="/home/yd/Workspace/eCabinet/logs"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">

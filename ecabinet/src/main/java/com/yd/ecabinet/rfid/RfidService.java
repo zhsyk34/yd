@@ -1,7 +1,9 @@
 package com.yd.ecabinet.rfid;
 
 import com.clou.uhf.G3Lib.ClouInterface.IAsynchronousMessage;
-import com.yd.ecabinet.rfid.executor.AbstractDaemonService;
+import com.yd.ecabinet.config.StoreConfig;
+import com.yd.rfid.RfidOperator;
+import com.yd.rfid.executor.AbstractDaemonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ public class RfidService extends AbstractDaemonService {
 
     @Autowired
     public RfidService(IAsynchronousMessage callback, RfidOperator rfidOperator) {
+        super(StoreConfig.STORE_INTERVAL);
         this.callback = callback;
         this.rfidOperator = rfidOperator;
     }
