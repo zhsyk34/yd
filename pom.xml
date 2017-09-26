@@ -22,6 +22,8 @@
     <properties>
         <maven.compiler.version>3.5.1</maven.compiler.version>
         <maven.war.version>2.6</maven.war.version>
+        <maven.shade.version>3.0.0</maven.shade.version>
+
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
@@ -33,9 +35,11 @@
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
 
-        <maven.shade.version>3.0.0</maven.shade.version>
-
         <lombok.version>1.16.18</lombok.version>
+
+        <jackson.version>2.9.1</jackson.version>
+
+        <httpclient.version>4.5.3</httpclient.version>
 
         <spring.version>4.3.11.RELEASE</spring.version>
 
@@ -43,11 +47,6 @@
 
         <jedis.version>2.9.0</jedis.version>
         <spring.redis.version>1.8.7.RELEASE</spring.redis.version>
-
-        <fastjson.version>1.2.21</fastjson.version>
-        <jackson.version>2.9.1</jackson.version>
-
-        <httpclient.version>4.5.3</httpclient.version>
     </properties>
 
     <dependencyManagement>
@@ -85,23 +84,22 @@
             </dependency>
 
             <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            <!--解决spring logger依赖?-->
-            <!--<dependency>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>jcl-over-slf4j</artifactId>-->
-            <!--<version>${slf4j.version}</version>-->
-            <!--<exclusions>-->
-            <!--<exclusion>-->
-            <!--<groupId>org.slf4j</groupId>-->
-            <!--<artifactId>slf4j-api</artifactId>-->
-            <!--</exclusion>-->
-            <!--</exclusions>-->
-            <!--<scope>runtime</scope>-->
-            <!--</dependency>-->
 
             <dependency>
                 <groupId>io.netty</groupId>
@@ -121,21 +119,11 @@
                 <version>${spring.redis.version}</version>
             </dependency>
 
+            <!--plugin-->
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
-                <version>${fastjson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${httpclient.version}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven.shade.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -160,14 +148,65 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
-
-        <!--<dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>-->
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}</finalName>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.version}</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven.shade.version}</version>
+
+                    <executions>
+                        <execution>
+                            <id>make-assembly</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+
+                    <configuration>
+                        <createDependencyReducedPom>false</createDependencyReducedPom>
+
+                        <!--将该工程依赖的部分 Jar 包 include/exclude 掉-->
+                        <artifactSet>
+                            <includes/>
+                            <excludes/>
+                        </artifactSet>
+
+                        <!--将依赖的某个 Jar 包内部的类或者资源 include/exclude 掉-->
+                        <filters>
+                            <filter>
+                                <artifact>*:*</artifact>
+                                <excludes>
+                                    <exclude>META-INF/*.*</exclude>
+                                    <exclude>*.txt</exclude>
+                                    <exclude>*.css</exclude>
+                                    <exclude>*.project</exclude>
+                                    <exclude>*.classpath</exclude>
+                                    <exclude>*.fatjar</exclude>
+                                </excludes>
+                            </filter>
+                        </filters>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

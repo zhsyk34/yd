@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.yd.ecabinet.config.RfidConfig.RFID_WAIT;
-import static com.yd.ecabinet.config.StoreConfig.STORE_NUMBER;
+import static com.yd.ecabinet.config.RfidConfig.WAIT;
+import static com.yd.ecabinet.config.StoreConfig.NUMBER;
 import static com.yd.ecabinet.redis.RedisChannel.STORE;
 
 @Component
@@ -35,12 +35,12 @@ public final class StoreMessageListenerElement extends AbstractRedisMessageListe
         String message = new String(content, StandardCharsets.UTF_8);
         logger.info("接收到{}上的信息{}", redisChannel.channel(), message);
 
-        if (STORE_NUMBER.equals(message)) {
+        if (NUMBER.equals(message)) {
             logger.info("服务端请求开门");
 
             rfidOperator.openDoor();
 
-            ThreadUtils.await(RFID_WAIT);
+            ThreadUtils.await(WAIT);
 
             rfidOperator.closeDoor();
         }

@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
-import static com.yd.ecabinet.config.RedisConfig.REDIS_HOST;
-import static com.yd.ecabinet.config.RedisConfig.REDIS_PORT;
+import static com.yd.ecabinet.config.RedisConfig.HOST;
+import static com.yd.ecabinet.config.RedisConfig.PORT;
 import static com.yd.ecabinet.config.RfidConfig.*;
-import static com.yd.ecabinet.config.StoreConfig.STORE_INTERVAL;
+import static com.yd.ecabinet.config.StoreConfig.INTERVAL;
 import static com.yd.ecabinet.util.LoggerUtils.getLogger;
 
 @Configuration
@@ -24,20 +24,20 @@ public class SpringConfig {
 
     @Bean
     public RfidOperator rfidOperator() {
-        return DefaultRfidOperator.instance(getLogger(RfidOperator.class), RFID_ID, RFID_ANT, STORE_INTERVAL, RFID_RETRY);
+        return DefaultRfidOperator.instance(getLogger(RfidOperator.class), ID, ANT, INTERVAL, RETRY);
     }
 
     @Bean
     @Autowired
     public RfidMonitor rfidMonitor(IAsynchronousMessage callback, RfidOperator rfidOperator) {
-        return RfidMonitor.instance(getLogger(RfidMonitor.class), callback, rfidOperator, STORE_INTERVAL);
+        return RfidMonitor.instance(getLogger(RfidMonitor.class), callback, rfidOperator, INTERVAL);
     }
 
     @Bean
     public JedisConnectionFactory factory() {
         JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName(REDIS_HOST);
-        factory.setPort(REDIS_PORT);
+        factory.setHostName(HOST);
+        factory.setPort(PORT);
         factory.setUsePool(true);
 
         return factory;

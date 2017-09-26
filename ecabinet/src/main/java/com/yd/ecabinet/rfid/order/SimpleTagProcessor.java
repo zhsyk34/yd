@@ -13,18 +13,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.yd.ecabinet.config.RfidConfig.RFID_SCAN;
+import static com.yd.ecabinet.config.RfidConfig.SCAN;
 
 @Component
 public class SimpleTagProcessor implements TagProcessor {
 
+    private final Logger logger = LoggerUtils.getLogger(this.getClass());
+    private final RfidOperator rfidOperator;
     private Set<String> original = new HashSet<>();
     private Set<String> current = new HashSet<>();
-
-    private final Logger logger = LoggerUtils.getLogger(this.getClass());
-
-    private final RfidOperator rfidOperator;
-
     @Getter
     @Setter
     private volatile boolean initialized = false;
@@ -48,7 +45,7 @@ public class SimpleTagProcessor implements TagProcessor {
 
     @Override
     public void scan() {
-        this.scan(RFID_SCAN);
+        this.scan(SCAN);
     }
 
     @Override

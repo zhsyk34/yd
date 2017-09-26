@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.yd.ecabinet.config.StoreConfig.STORE_NUMBER;
+import static com.yd.ecabinet.config.StoreConfig.NUMBER;
 import static java.util.stream.Collectors.toSet;
 
 @SuppressWarnings("WeakerAccess")
@@ -24,7 +24,7 @@ final class Order {
 
     private final String deviceType = "cabinet";
 
-    private final String shopCode = STORE_NUMBER;
+    private final String shopCode = NUMBER;
 
     /**
      * 如果为空则忽略此参数

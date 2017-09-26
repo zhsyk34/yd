@@ -10,24 +10,30 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>rfid</artifactId>
-    <description>rfid</description>
+    <version>1.0</version>
 
     <dependencies>
-        <!--local-->
+        <!--<dependency>-->
+        <!--<groupId>sample</groupId>-->
+        <!--<artifactId>com.sample</artifactId>-->
+        <!--<version>1.0</version>-->
+        <!--<scope>system</scope>-->
+        <!--<optional>true</optional>-->
+        <!--<systemPath>C:/Users/Archimedes/Desktop/lib/ClouReaderAPI.jar</systemPath>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>org.local</groupId>
-            <artifactId>cra.jar</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.local</groupId>
-            <artifactId>crr.jar</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.local</groupId>
-            <artifactId>jdemo.jar</artifactId>
+            <groupId>com.yd</groupId>
+            <artifactId>rfid</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

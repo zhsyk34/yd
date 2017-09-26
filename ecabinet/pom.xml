@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com</groupId>
             <artifactId>rfid</artifactId>
-            <version>${project.version}</version>
+            <version>1.0</version>
         </dependency>
 
         <dependency>
@@ -52,9 +52,9 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <!--<excludes>-->
-                <!--<exclude>*.*</exclude>-->
-                <!--</excludes>-->
+                <excludes>
+                    <exclude>*.properties</exclude>
+                </excludes>
             </resource>
         </resources>
 
@@ -62,42 +62,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>${maven.shade.version}</version>
-
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
 
                 <configuration>
                     <!--todo-->
                     <!--<minimizeJar>true</minimizeJar>-->
-                    <!--不生成额外pom-->
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-
-                    <!--将该工程依赖的部分 Jar 包 include/exclude 掉-->
-                    <artifactSet>
-                        <includes/>
-                        <excludes/>
-                    </artifactSet>
-
-                    <!--将依赖的某个 Jar 包内部的类或者资源 include/exclude 掉-->
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>META-INF/*.SF</exclude>
-                                <exclude>META-INF/*.DSA</exclude>
-                                <exclude>META-INF/*.RSA</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-
                     <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>com.yd.ecabinet.Entry</mainClass>

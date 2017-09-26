@@ -6,13 +6,17 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.yd.ecabinet.config.ExecutorFactory.SCHEDULER;
-import static com.yd.ecabinet.config.RfidConfig.RFID_SYNC;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import static com.yd.ecabinet.config.RfidConfig.SYNC;
 import static com.yd.ecabinet.util.NetworkUtils.getHost;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Service
 public class MonitorService {
+
+    private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(2);
 
     private final Logger logger = LoggerUtils.getLogger(this.getClass());
 
@@ -23,10 +27,10 @@ public class MonitorService {
     }
 
     public void watch() {
-        SCHEDULER.scheduleWithFixedDelay(rfidMonitor::watch, RFID_SYNC, RFID_SYNC, MILLISECONDS);
+        SCHEDULER.scheduleWithFixedDelay(rfidMonitor::watch, SYNC, SYNC, SECONDS);
     }
 
     public void report() {
-        SCHEDULER.scheduleAtFixedRate(() -> logger.info("当前服务器地址:{}", getHost()), RFID_SYNC, RFID_SYNC, MILLISECONDS);
+        SCHEDULER.scheduleAtFixedRate(() -> logger.info("当前服务器地址:{}", getHost()), SYNC, SYNC, SECONDS);
     }
 }

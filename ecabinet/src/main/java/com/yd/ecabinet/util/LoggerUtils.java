@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 public abstract class LoggerUtils {
 
     public static Logger getLogger(String name) {
-        return LoggerFactory.getLogger(StoreConfig.STORE_NAME + "." + name);
+        return LoggerFactory.getLogger(StoreConfig.NAME + "." + name);
     }
 
     public static Logger getLogger(Class<?> clazz) {

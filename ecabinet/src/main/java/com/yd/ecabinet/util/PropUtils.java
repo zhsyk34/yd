@@ -1,7 +1,6 @@
 package com.yd.ecabinet.util;
 
 import org.slf4j.Logger;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -15,13 +14,12 @@ public abstract class PropUtils {
 
     private static final Logger logger = LoggerUtils.getLogger(PropUtils.class);
 
-    private static final String LINUX_DIR = "/home/yd/Workspace/eCabinet/";
     private static final String PROFILE = "ecabinet.properties";
 
     private static final Map<String, String> map = new HashMap<>();
 
     static {
-        Resource resource = System.getProperty("os.name").toLowerCase().startsWith("window") ? new ClassPathResource(PROFILE) : new FileSystemResource(LINUX_DIR + PROFILE);
+        Resource resource = new FileSystemResource("./" + PROFILE);
 
         if (resource.exists()) {
             try {
@@ -29,7 +27,7 @@ public abstract class PropUtils {
 
                 properties.stringPropertyNames().forEach(key -> map.put(key, properties.getProperty(key)));
 
-                logger.info("配置文件加载完毕");
+                logger.info("配置文件{}加载完毕", PROFILE);
             } catch (IOException e) {
                 logger.error("加载配置文件{}出错...", PROFILE, e);
             }

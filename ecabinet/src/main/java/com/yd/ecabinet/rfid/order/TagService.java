@@ -12,8 +12,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.yd.ecabinet.config.StoreConfig.STORE_INTERVAL;
-import static com.yd.ecabinet.config.StoreConfig.STORE_SERVER;
+import static com.yd.ecabinet.config.StoreConfig.INTERVAL;
+import static com.yd.ecabinet.config.StoreConfig.SERVER;
 import static com.yd.rfid.executor.DaemonService.EXECUTOR;
 
 //TODO
@@ -22,9 +22,9 @@ public class TagService {
 
     private static final Lock lock = new ReentrantLock();
     private static final Condition finished = lock.newCondition();
-    private volatile boolean scan = false;
     private final Logger logger = LoggerUtils.getLogger(this.getClass());
     private final TagProcessor tagProcessor;
+    private volatile boolean scan = false;
 
     public TagService(@Autowired TagProcessor tagProcessor) {
         this.tagProcessor = tagProcessor;
@@ -41,7 +41,7 @@ public class TagService {
 
         while (!scan) {
             logger.info("正在初始化库存商品...");
-            ThreadUtils.await(STORE_INTERVAL);
+            ThreadUtils.await(INTERVAL);
         }
 
         scan = false;
@@ -86,7 +86,7 @@ public class TagService {
             logger.info("准备创建订单");
 
             Map<String, Object> map = Order.toMap(tagProcessor.delta());
-            String result = HttpUtils.postForm(STORE_SERVER, map);
+            String result = HttpUtils.postForm(SERVER, map);
             logger.info("已向服务器提交订单:{},反馈结果:{}", map.toString(), result);
         } finally {
             lock.unlock();

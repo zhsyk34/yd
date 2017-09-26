@@ -16,8 +16,7 @@ public class RfidMessageHandler extends RfidMessageAdapter {
 
     private final TagService tagService;
 
-    @Autowired
-    public RfidMessageHandler(TagService tagService) {
+    public RfidMessageHandler(@Autowired TagService tagService) {
         this.tagService = tagService;
     }
 

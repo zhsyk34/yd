@@ -16,7 +16,7 @@ public class RfidService extends AbstractDaemonService {
 
     @Autowired
     public RfidService(IAsynchronousMessage callback, RfidOperator rfidOperator) {
-        super(StoreConfig.STORE_INTERVAL);
+        super(StoreConfig.INTERVAL);
         this.callback = callback;
         this.rfidOperator = rfidOperator;
     }

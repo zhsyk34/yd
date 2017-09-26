@@ -3,11 +3,11 @@ package com.yd.ecabinet.config;
 import com.yd.ecabinet.util.PropUtils;
 
 abstract class RedisConfig {
-    static String REDIS_HOST;
-    static int REDIS_PORT;
+    static final String HOST;
+    static final int PORT;
 
     static {
-        REDIS_HOST = PropUtils.getString("redis.host");
-        REDIS_PORT = PropUtils.getInt("redis.port");
+        HOST = PropUtils.getString("redis.host");
+        PORT = PropUtils.getInt("redis.port");
     }
 }
