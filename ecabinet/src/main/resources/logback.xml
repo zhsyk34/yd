@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <property name="host" value="47.94.252.28"/>
     <property name="port" value="1873"/>
-    <property name="dir" value="/home/yd/Workspace/eCabinet/logs"/>
+    <property name="dir" value="./logs"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -30,11 +30,13 @@
 
     <logger name="org.apache.http" level="info" additivity="false"/>
 
-    <logger name="org.springframework" level="info" additivity="false"/>
+    <logger name="org.springframework" level="info" additivity="false">
+        <appender-ref ref="file1"/>
+    </logger>
 
     <root level="debug">
         <appender-ref ref="console"/>
         <appender-ref ref="local"/>
-        <appender-ref ref="remote"/>
+        <!--<appender-ref ref="remote"/>-->
     </root>
 </configuration>
