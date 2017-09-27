@@ -13,14 +13,6 @@
     <version>1.0</version>
 
     <dependencies>
-        <!--<dependency>
-            <groupId>sample</groupId>
-            <artifactId>com.sample</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/Archimedes/Desktop/lib/ClouReaderAPI.jar</systemPath>
-        </dependency>-->
-
         <dependency>
             <groupId>com.rfid</groupId>
             <artifactId>api</artifactId>
