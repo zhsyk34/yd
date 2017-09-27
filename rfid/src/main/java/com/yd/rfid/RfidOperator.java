@@ -21,4 +21,6 @@ public interface RfidOperator {
     boolean isOpen();
 
     void closeDoor();
+
+    String getMAC();
 }

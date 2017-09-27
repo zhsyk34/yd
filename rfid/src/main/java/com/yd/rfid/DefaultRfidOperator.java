@@ -141,6 +141,16 @@ public class DefaultRfidOperator implements RfidOperator {
         }
     }
 
+    @Override
+    public String getMAC() {
+        try {
+            return CLReader._Config.GetReaderMacParam(id);
+        } catch (InterruptedException e) {
+            logger.error("获取MAC地址出错", e);
+            return null;
+        }
+    }
+
     private void operateDoor(eGPOState state, int maxTimes) throws Exception {
         HashMap<eGPO, eGPOState> map = new HashMap<>();
         map.put(eGPO._1, state);
