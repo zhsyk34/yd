@@ -79,7 +79,7 @@ public class SimpleTagProcessor implements TagProcessor {
         original = current;
         current = new HashSet<>();
 
-        logger.debug("本次订单商品共 [{}] 件:{}", clone.size(), String.join(",", clone));
+        logger.debug("本次订单商品共 [{}] 件", clone.size());
 
         return clone;
     }

@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com</groupId>
             <artifactId>rfid</artifactId>
-            <version>1.0</version>
+            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>
@@ -47,14 +47,12 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}</finalName>
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>*.properties</exclude>
-                </excludes>
+                <!--<excludes>-->
+                <!--<exclude>*.properties</exclude>-->
+                <!--</excludes>-->
             </resource>
         </resources>
 

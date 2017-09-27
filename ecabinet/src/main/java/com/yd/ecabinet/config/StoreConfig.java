@@ -9,6 +9,8 @@ public abstract class StoreConfig {
     public static final int INTERVAL;
     public static final String SERVER;
 
+    public static final String DEVICE_TYPE = "cabinet";
+
     static {
         NAME = PropUtils.getString("store.name");
         NUMBER = PropUtils.getString("store.number");
