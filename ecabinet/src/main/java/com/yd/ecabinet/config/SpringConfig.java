@@ -9,11 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
-import static com.yd.ecabinet.config.RedisConfig.HOST;
-import static com.yd.ecabinet.config.RedisConfig.PORT;
 import static com.yd.ecabinet.config.RfidConfig.*;
 import static com.yd.ecabinet.config.StoreConfig.INTERVAL;
 import static com.yd.ecabinet.util.LoggerUtils.getLogger;
@@ -33,21 +29,4 @@ public class SpringConfig {
         return RfidMonitor.instance(getLogger(RfidMonitor.class), callback, rfidOperator, INTERVAL);
     }
 
-    @Bean
-    public JedisConnectionFactory factory() {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName(HOST);
-        factory.setPort(PORT);
-        factory.setUsePool(true);
-
-        return factory;
-    }
-
-    @Bean
-    public RedisMessageListenerContainer container(@Autowired JedisConnectionFactory factory) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(factory);
-
-        return container;
-    }
 }
