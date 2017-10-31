@@ -38,7 +38,6 @@ abstract class LoggerBuilder {
         configurator.setContext(context);
         try {
             configurator.doConfigure(new File(Config.CONFIG_FILE));
-//            configurator.doConfigure(new File("D:\\workspace\\yd\\log-server\\src\\main\\resources\\logback.xml"));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -20,7 +20,6 @@ public abstract class PropUtils {
 
     static {
         File file = new File("./" + PROFILE);
-//        File file = new File("D:\\workspace\\yd\\log-server\\src\\main\\resources\\config.properties");
 
         if (file.exists()) {
             try {
