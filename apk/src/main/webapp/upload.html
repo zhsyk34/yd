@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>upload</title>
+</head>
+<body>
+<form action="upload/file" method="post" enctype="multipart/form-data">
+    <label>file:<input type="file" name="file"></label>
+    <button type="submit">sure</button>
+</form>
+
+<form action="upload/file2" method="post" enctype="multipart/form-data">
+    <label>file:<input type="file" name="file"></label>
+    <input name="name" type="hidden" value="test">
+    <button type="submit">sure</button>
+</form>
+
+<form action="upload/file3" method="post" enctype="multipart/form-data">
+    <label>file:<input type="file" name="file"></label>
+    <input name="name" type="hidden" value="test3">
+    <button type="submit">sure</button>
+</form>
+
+<form action="upload/store/1.0" method="post" enctype="multipart/form-data">
+    <label>file:<input type="file" name="file"></label>
+    <label>name:<input name="name"></label>
+    <label>version:<input name="version"></label>
+    <button type="submit">sure</button>
+</form>
+
+
+</body>
+</html>
