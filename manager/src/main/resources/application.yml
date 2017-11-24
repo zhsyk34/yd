@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  address: 127.0.0.1
+  connectionTimeout: 30
+  contextPath: /
+
+spring:
+  aop:
+    proxy-target-class: true
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yd_estore?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  http:
+    encoding:
+      charset: UTF-8
+
+
+
+

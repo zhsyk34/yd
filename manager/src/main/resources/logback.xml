@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <property name="dir" value="e:/logs"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--<pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} -%msg%n</pattern>-->
+            <pattern>%-4relative [%thread] %-5level %logger{100} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="local" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${dir}/current.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${dir}/%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>365</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--<logger name="com.mxzx.sanmao" level="debug" additivity="false">-->
+    <!--<appender-ref ref="console"/>-->
+    <!--</logger>-->
+
+    <logger name="org.hibernate.SQL" level="debug"/>
+
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>
+
+    <root level="info">
+        <appender-ref ref="console"/>
+        <!--<appender-ref ref="local"/>-->
+    </root>
+</configuration>
