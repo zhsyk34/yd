@@ -19,9 +19,8 @@ public class User {
     @Column(name = "mobile")
     private String phone;
 
-    //TODO
-    @Transient
-    private String address;//地区
+    @Column(name = "user_address")
+    private String address;
 
     @ManyToOne
     @JoinColumn(name = "shop_code")

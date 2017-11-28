@@ -34,7 +34,6 @@ public class Manager {
     private BigDecimal balance;//余额
 
     @Column(name = "create_time")
-
     @Convert(converter = PhpTimeConvert.class)
     private LocalDateTime createTime;
 }

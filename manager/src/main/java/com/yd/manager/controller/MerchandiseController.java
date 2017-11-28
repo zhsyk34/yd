@@ -10,14 +10,13 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("merchandise")
+@RequestMapping("merchandises")
 @Slf4j
 public class MerchandiseController extends CommonController {
 
     @GetMapping
     public Result<Page<MerchandiseDTO>> retrieve(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String code, @PageableDefault(size = 15, sort = "id", direction = Direction.DESC) Pageable pageable) {
         logger.info("retrieve merchandise by name:{} and code:{} with page:{}", name, code, pageable);
-        return null;
-//        return Result.success(merchandiseRepository.findDTO(name, code, pageable));
+        return Result.success(merchandiseRepository.pageMerchandiseDTO(name, code, null, pageable));
     }
 }
