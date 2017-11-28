@@ -10,7 +10,7 @@ public interface OrdersDTORepository {
 
     List<UserOrdersDTO> findUserOrderDTO(Long userId, LocalDateTime begin, LocalDateTime end, List<Long> stores, Pageable pageable);
 
-    List<OrdersCollectDTO> findOrdersCollectDTO(LocalDateTime begin, LocalDateTime end, List<Long> stores, Pageable pageable);
+    List<OrdersDTO> findOrdersCollectDTO(LocalDateTime begin, LocalDateTime end, List<Long> stores, Pageable pageable);
 
-    OrdersCollect2DTO findOrdersCollectDTO2(LocalDateTime begin, LocalDateTime end, List<Long> stores);
+    Orders2DTO findOrdersCollectDTO2(LocalDateTime begin, LocalDateTime end, List<Long> stores);
 }

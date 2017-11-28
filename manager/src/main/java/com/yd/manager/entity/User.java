@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "estore_user")
@@ -32,4 +33,7 @@ public class User {
     @Column(name = "create_time")
     @Convert(converter = PhpTimeConvert.class)
     private LocalDateTime createTime;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Orders> orders;
 }

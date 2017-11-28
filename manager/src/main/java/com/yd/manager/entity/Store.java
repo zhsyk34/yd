@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * 商店
@@ -21,4 +22,7 @@ public class Store implements Serializable {
     private String code;
     @Column(name = "addr")
     private String address;
+
+    @OneToMany(mappedBy = "store")
+    private Set<Orders> orders;
 }

@@ -1,7 +1,7 @@
 package com.yd.manager.repository.custom.impl;
 
+import com.yd.manager.dto.Merchandise2DTO;
 import com.yd.manager.dto.MerchandiseDTO;
-import com.yd.manager.dto.MerchandiseDTO2;
 import com.yd.manager.entity.*;
 import com.yd.manager.repository.custom.MerchandiseDTORepository;
 import org.springframework.data.domain.*;
@@ -88,9 +88,9 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
     }
 
     @Override
-    public List<MerchandiseDTO2> findMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable) {
+    public List<Merchandise2DTO> findMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-        CriteriaQuery<MerchandiseDTO2> criteria = builder.createQuery(MerchandiseDTO2.class);
+        CriteriaQuery<Merchandise2DTO> criteria = builder.createQuery(Merchandise2DTO.class);
 
         Root<MerchandiseSpecification> specificationRoot = criteria.from(MerchandiseSpecification.class);
         Join<MerchandiseSpecification, MerchandiseStore> merchandiseStoreJoin = specificationRoot.join(MerchandiseSpecification_.MerchandiseStore);
@@ -135,7 +135,7 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
             criteria.orderBy(from(builder, merchandiseJoin, pageable.getSort()));
         }
 
-        TypedQuery<MerchandiseDTO2> query = manager.createQuery(criteria);
+        TypedQuery<Merchandise2DTO> query = manager.createQuery(criteria);
 
         if (pageable != null) {
             query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
@@ -145,7 +145,7 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
     }
 
     @Override
-    public Page<MerchandiseDTO2> pageMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable) {
+    public Page<Merchandise2DTO> pageMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable) {
         return new PageImpl<>(this.findMerchandiseDTO2(name, code, stores, pageable), pageable, this.countMerchandiseDTO(name, code, stores));
     }
 

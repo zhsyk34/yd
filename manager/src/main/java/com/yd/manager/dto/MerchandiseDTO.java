@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * 商品信息
+ */
 @Data
 @AllArgsConstructor
 public class MerchandiseDTO {

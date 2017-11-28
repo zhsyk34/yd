@@ -59,46 +59,130 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
     }
 
     @Override
-    public List<OrdersCollectDTO> findOrdersCollectDTO(LocalDateTime begin, LocalDateTime end, List<Long> stores, Pageable pageable) {
+    public List<OrdersDTO> findOrdersCollectDTO(LocalDateTime begin, LocalDateTime end, List<Long> stores, Pageable pageable) {
+        //method-1
+
+//        CriteriaBuilder builder = manager.getCriteriaBuilder();
+//        CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
+//
+//        Root<Orders> ordersRoot = criteria.from(Orders.class);
+//        Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
+//
+//        Expression<BigDecimal> sum = builder.sum(ordersRoot.get(Orders_.actual));
+//        criteria.multiselect(
+//                storeJoin.get(Store_.id),
+//                storeJoin.get(Store_.name),
+//                builder.count(ordersRoot),
+//                sum,
+//                builder.avg(ordersRoot.get(Orders_.actual))
+//        );
+//
+//        criteria.groupBy(storeJoin.get(Store_.id), storeJoin.get(Store_.name));
+//
+//        List<Predicate> predicates = predicates(builder, ordersRoot, storeJoin, begin, end, stores);
+//
+//        if (!CollectionUtils.isEmpty(predicates)) {
+//            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
+//        }
+//
+//        //order by sum desc
+//        criteria.orderBy(builder.desc(sum));
+//
+//        TypedQuery<OrdersDTO> query = manager.createQuery(criteria);
+//
+//        if (pageable != null) {
+//            query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
+//        }
+//
+//        return query.getResultList();
+
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-        CriteriaQuery<OrdersCollectDTO> criteria = builder.createQuery(OrdersCollectDTO.class);
+        CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
 
-        Root<Orders> ordersRoot = criteria.from(Orders.class);
-        Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
+        Root<Store> storeRoot = criteria.from(Store.class);
+        SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        Expression<BigDecimal> sum = builder.sum(ordersRoot.get(Orders_.actual));
+        List<Predicate> predicates = this.predicates(builder, ordersJoin, null, begin, end, null);
+        if (!CollectionUtils.isEmpty(predicates)) {
+            ordersJoin.on(predicates.toArray(new Predicate[predicates.size()]));
+        }
+
+        if (!CollectionUtils.isEmpty(stores)) {
+            criteria.where(storeRoot.get(Store_.id).in(stores));
+        }
+
+        Expression<BigDecimal> sum = builder.sum(ordersJoin.get(Orders_.actual));
         criteria.multiselect(
-                storeJoin.get(Store_.id),
-                storeJoin.get(Store_.name),
-                builder.count(ordersRoot),
+                storeRoot.get(Store_.id),
+                storeRoot.get(Store_.name),
+                builder.count(ordersJoin),
                 sum,
-                builder.avg(ordersRoot.get(Orders_.actual))
+                builder.avg(ordersJoin.get(Orders_.actual))
         );
 
-        criteria.groupBy(storeJoin.get(Store_.id), storeJoin.get(Store_.name));
-
-        List<Predicate> predicates = predicates(builder, ordersRoot, storeJoin, begin, end, stores);
-
-        if (!CollectionUtils.isEmpty(predicates)) {
-            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        }
+        criteria.groupBy(storeRoot);
 
         //order by sum desc
         criteria.orderBy(builder.desc(sum));
 
-        TypedQuery<OrdersCollectDTO> query = manager.createQuery(criteria);
+        TypedQuery<OrdersDTO> query = manager.createQuery(criteria);
 
         if (pageable != null) {
             query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
         }
 
         return query.getResultList();
+
+        //method-3:
+//        CriteriaBuilder builder = manager.getCriteriaBuilder();
+//        CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
+//
+//        Root<Store> storeRoot = criteria.from(Store.class);
+//
+//        Subquery<Long> countQuery = criteria.subquery(Long.class);
+//        Root<Orders> countRoot = countQuery.from(Orders.class);
+//        countQuery.select(builder.count(countRoot));
+//        countQuery.where(builder.equal(countRoot.get(Orders_.store), storeRoot));
+//
+//        Subquery<BigDecimal> sumQuery = criteria.subquery(BigDecimal.class);
+//        Root<Orders> sumRoot = sumQuery.from(Orders.class);
+//        Expression<BigDecimal> sum = builder.sum(sumRoot.get(Orders_.actual));
+//        sumQuery.select(sum);
+//        sumQuery.where(builder.equal(sumRoot.get(Orders_.store), storeRoot));
+//
+//        Subquery<Double> avgQuery = criteria.subquery(Double.class);
+//        Root<Orders> avgRoot = avgQuery.from(Orders.class);
+//        avgQuery.select(builder.avg(avgRoot.get(Orders_.actual)));
+//        avgQuery.where(builder.equal(avgRoot.get(Orders_.store), storeRoot));
+//
+//        criteria.multiselect(
+//                storeRoot.get(Store_.id),
+//                storeRoot.get(Store_.name),
+//                countQuery.getSelection(),
+//                sumQuery.getSelection(),
+//                avgQuery.getSelection()
+//        );
+//
+//        if (!CollectionUtils.isEmpty(stores)) {
+//            criteria.where(storeRoot.get(Store_.id).in(stores));
+//        }
+//
+//        //TODO:order by sum desc
+//        criteria.orderBy(builder.desc(sumQuery.getSelection()));
+//
+//        TypedQuery<OrdersDTO> query = manager.createQuery(criteria);
+//
+//        if (pageable != null) {
+//            query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
+//        }
+//
+//        return query.getResultList();
     }
 
     @Override
-    public OrdersCollect2DTO findOrdersCollectDTO2(LocalDateTime begin, LocalDateTime end, List<Long> stores) {
+    public Orders2DTO findOrdersCollectDTO2(LocalDateTime begin, LocalDateTime end, List<Long> stores) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-        CriteriaQuery<OrdersCollect2DTO> criteria = builder.createQuery(OrdersCollect2DTO.class);
+        CriteriaQuery<Orders2DTO> criteria = builder.createQuery(Orders2DTO.class);
 
         Root<Orders> ordersRoot = criteria.from(Orders.class);
         Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);

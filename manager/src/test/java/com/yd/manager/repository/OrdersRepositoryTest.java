@@ -1,6 +1,6 @@
 package com.yd.manager.repository;
 
-import com.yd.manager.dto.OrdersCollectDTO;
+import com.yd.manager.dto.OrdersDTO;
 import com.yd.manager.dto.UserOrdersDTO;
 import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OrdersRepositoryTest extends SpringTestInit {
-    private LocalDate today = LocalDate.of(2017, 11, 14);
+    private LocalDate today = LocalDate.of(2017, 11, 15);
     private LocalDateTime begin = LocalDateTime.of(today.minusDays(7), LocalTime.MIN);
     private LocalDateTime end = LocalDateTime.of(today, LocalTime.MAX);
 
@@ -25,8 +25,8 @@ public class OrdersRepositoryTest extends SpringTestInit {
     @Test
     public void findOrdersCollectDTO() throws Exception {
         Pageable pageable = new PageRequest(0, 10, Direction.DESC, "count");
-        List<Long> stores = Arrays.asList(13L, 14L, 10L);
-        List<OrdersCollectDTO> list = ordersRepository.findOrdersCollectDTO(begin, end, stores, pageable);
+        List<Long> stores = Arrays.asList(13L, 14L, 10L, 9L, 11L, 4L);
+        List<OrdersDTO> list = ordersRepository.findOrdersCollectDTO(begin, end, null, pageable);
         list.forEach(System.err::println);
     }
 

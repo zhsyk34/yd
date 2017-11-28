@@ -1,7 +1,7 @@
 package com.yd.manager.repository;
 
+import com.yd.manager.dto.Merchandise2DTO;
 import com.yd.manager.dto.MerchandiseDTO;
-import com.yd.manager.dto.MerchandiseDTO2;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
@@ -41,7 +41,7 @@ public class MerchandiseRepositoryTest extends SpringTestInit {
     @Test
     public void findMerchandiseDTO2() throws Exception {
         PageRequest pageRequest = new PageRequest(0, 25, Direction.DESC, "id");
-        List<MerchandiseDTO2> list = merchandiseRepository.findMerchandiseDTO2("雪碧", null, null, pageRequest);
+        List<Merchandise2DTO> list = merchandiseRepository.findMerchandiseDTO2("雪碧", null, null, pageRequest);
         list.forEach(System.err::println);
     }
 

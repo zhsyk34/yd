@@ -1,7 +1,7 @@
 package com.yd.manager.repository.custom;
 
+import com.yd.manager.dto.Merchandise2DTO;
 import com.yd.manager.dto.MerchandiseDTO;
-import com.yd.manager.dto.MerchandiseDTO2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +15,7 @@ public interface MerchandiseDTORepository {
 
     Page<MerchandiseDTO> pageMerchandiseDTO(String name, String code, List<Long> stores, Pageable pageable);
 
-    List<MerchandiseDTO2> findMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable);
+    List<Merchandise2DTO> findMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable);
 
-    Page<MerchandiseDTO2> pageMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable);
+    Page<Merchandise2DTO> pageMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable);
 }

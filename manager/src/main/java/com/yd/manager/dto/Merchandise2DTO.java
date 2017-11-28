@@ -4,10 +4,13 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * 商品信息及销量
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MerchandiseDTO2 {
+public class Merchandise2DTO {
     //商品
     private long id;
     private String name;

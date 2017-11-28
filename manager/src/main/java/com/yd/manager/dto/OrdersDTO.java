@@ -5,10 +5,12 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * 管理员所有店铺订单汇总
+ * 店铺订单汇总信息
  */
 @Data
-public class OrdersCollect2DTO {
+public class OrdersDTO {
+    private final long storeId;
+    private final String storeName;
     private final long ordersCount;
     private final BigDecimal ordersMoney;
     private final Double ordersAverage;

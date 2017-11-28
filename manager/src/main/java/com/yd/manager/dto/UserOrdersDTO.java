@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * 用户订单明细
+ */
 @Data
 @AllArgsConstructor
 public class UserOrdersDTO {

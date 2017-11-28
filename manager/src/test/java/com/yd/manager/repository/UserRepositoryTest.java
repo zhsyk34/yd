@@ -1,6 +1,6 @@
 package com.yd.manager.repository;
 
-import com.yd.manager.dto.UserDTO;
+import com.yd.manager.dto.UserOrder2DTO;
 import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +25,9 @@ public class UserRepositoryTest extends SpringTestInit {
     }
 
     @Test
-    public void findUserDTO() throws Exception {
+    public void findUserOrder2DTO() throws Exception {
         Pageable pageable = new PageRequest(0, 10);
-        List<UserDTO> list = userRepository.findUserDTO(null, null, null, pageable);
+        List<UserOrder2DTO> list = userRepository.findUserOrder2DTO(null, null, null, pageable);
         list.forEach(System.err::println);
     }
 }
