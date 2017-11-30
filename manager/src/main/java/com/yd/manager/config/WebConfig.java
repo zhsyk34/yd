@@ -3,8 +3,7 @@ package com.yd.manager.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.data.web.PageableArgumentResolver;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -19,7 +18,7 @@ import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 @RequiredArgsConstructor(onConstructor = @__({@Autowired}))
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private final PageableHandlerMethodArgumentResolver pageableArgumentResolver;
+    private final PageableArgumentResolver pageableArgumentResolver;
 
     private final MappingJackson2HttpMessageConverter jackson2HttpMessageConverter;
 
@@ -32,7 +31,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(pageableArgumentResolver);
-        pageableArgumentResolver.setFallbackPageable(new PageRequest(0, 10));
         super.addArgumentResolvers(argumentResolvers);
     }
 

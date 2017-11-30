@@ -25,7 +25,7 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "shop_code")
-    private Store store;//商店标识
+    private Store store;
 
     @Column(name = "user_money")
     private BigDecimal balance;//余额

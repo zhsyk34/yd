@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * 用户信息及订单汇总
  */
 @Data
-public class UserOrder2DTO {
+public class UserOrderCollectDTO {
     private final long id;
     private final String name;
     private final String phone;
@@ -21,5 +21,4 @@ public class UserOrder2DTO {
     private final long ordersCount;
     private final BigDecimal ordersMoney;
     private final Double ordersAverage;
-
 }

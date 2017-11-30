@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yd.manager.utils.JpaUtils.from;
+import static com.yd.manager.utils.jpa.JpaUtils.getOrderFromSort;
 
 @Repository
 public class OrdersRepositoryImpl implements OrdersDTORepository {
@@ -46,7 +46,7 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
         }
 
         if (pageable != null) {
-            criteria.orderBy(from(builder, ordersRoot, pageable.getSort()));
+            criteria.orderBy(getOrderFromSort(builder, ordersRoot, pageable.getSort()));
         }
 
         TypedQuery<UserOrdersDTO> query = manager.createQuery(criteria);
@@ -65,7 +65,7 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
 //        CriteriaBuilder builder = manager.getCriteriaBuilder();
 //        CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
 //
-//        Root<Orders> ordersRoot = criteria.from(Orders.class);
+//        Root<Orders> ordersRoot = criteria.getOrder(Orders.class);
 //        Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
 //
 //        Expression<BigDecimal> sum = builder.sum(ordersRoot.get(Orders_.actual));
@@ -137,21 +137,21 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
 //        CriteriaBuilder builder = manager.getCriteriaBuilder();
 //        CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
 //
-//        Root<Store> storeRoot = criteria.from(Store.class);
+//        Root<Store> storeRoot = criteria.getOrder(Store.class);
 //
 //        Subquery<Long> countQuery = criteria.subquery(Long.class);
-//        Root<Orders> countRoot = countQuery.from(Orders.class);
+//        Root<Orders> countRoot = countQuery.getOrder(Orders.class);
 //        countQuery.select(builder.count(countRoot));
 //        countQuery.where(builder.equal(countRoot.get(Orders_.store), storeRoot));
 //
 //        Subquery<BigDecimal> sumQuery = criteria.subquery(BigDecimal.class);
-//        Root<Orders> sumRoot = sumQuery.from(Orders.class);
+//        Root<Orders> sumRoot = sumQuery.getOrder(Orders.class);
 //        Expression<BigDecimal> sum = builder.sum(sumRoot.get(Orders_.actual));
 //        sumQuery.select(sum);
 //        sumQuery.where(builder.equal(sumRoot.get(Orders_.store), storeRoot));
 //
 //        Subquery<Double> avgQuery = criteria.subquery(Double.class);
-//        Root<Orders> avgRoot = avgQuery.from(Orders.class);
+//        Root<Orders> avgRoot = avgQuery.getOrder(Orders.class);
 //        avgQuery.select(builder.avg(avgRoot.get(Orders_.actual)));
 //        avgQuery.where(builder.equal(avgRoot.get(Orders_.store), storeRoot));
 //

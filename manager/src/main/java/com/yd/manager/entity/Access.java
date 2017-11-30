@@ -3,6 +3,7 @@ package com.yd.manager.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 //TODO
 @Entity
@@ -16,12 +17,8 @@ public class Access {
     @ManyToOne
     private User user;
 
-    private int count;
+    @ManyToOne
+    private Store store;
 
-    //TODO
-    @Transient
-    private String shopCode;
-
-//    @Column(name = "last_visit_time")
-//    private LocalDateTime last;//最后访问时间
+    private LocalDateTime visitTime;
 }

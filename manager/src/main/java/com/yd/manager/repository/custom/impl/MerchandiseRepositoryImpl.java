@@ -14,8 +14,8 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.yd.manager.utils.JpaUtils.from;
-import static com.yd.manager.utils.JpaUtils.matchString;
+import static com.yd.manager.utils.jpa.JpaUtils.getOrderFromSort;
+import static com.yd.manager.utils.jpa.JpaUtils.matchString;
 
 @Repository
 public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
@@ -50,7 +50,7 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
         }
 
         if (pageable != null) {
-            criteria.orderBy(from(builder, merchandiseJoin, pageable.getSort()));
+            criteria.orderBy(getOrderFromSort(builder, merchandiseJoin, pageable.getSort()));
         }
 
         TypedQuery<MerchandiseDTO> query = manager.createQuery(criteria);
@@ -132,7 +132,7 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
         }
 
         if (pageable != null) {
-            criteria.orderBy(from(builder, merchandiseJoin, pageable.getSort()));
+            criteria.orderBy(getOrderFromSort(builder, merchandiseJoin, pageable.getSort()));
         }
 
         TypedQuery<Merchandise2DTO> query = manager.createQuery(criteria);

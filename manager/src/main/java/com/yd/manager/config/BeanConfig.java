@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.yd.manager.listener.AuthInitializationListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableArgumentResolver;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import javax.servlet.ServletContextListener;
 
@@ -44,6 +46,12 @@ public class BeanConfig {
     @Bean
     public ServletListenerRegistrationBean<ServletContextListener> authListener(AuthInitializationListener authInitializationListener) {
         return new ServletListenerRegistrationBean<>(authInitializationListener);
+    }
+
+    //TODO:
+    @Autowired
+    public void setWebBindingInitializer(RequestMappingHandlerAdapter requestMappingHandlerAdapter, DateBindingInitializer dateBindingInitializer) {
+        requestMappingHandlerAdapter.setWebBindingInitializer(dateBindingInitializer);
     }
 
 }

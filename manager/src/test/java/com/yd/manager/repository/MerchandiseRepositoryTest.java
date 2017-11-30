@@ -16,8 +16,8 @@ public class MerchandiseRepositoryTest extends SpringTestInit {
 
     @Test
     public void findMerchandiseDTO() throws Exception {
-        PageRequest pageRequest = new PageRequest(0, 15, Direction.DESC, "id");
-        List<MerchandiseDTO> list = merchandiseRepository.findMerchandiseDTO("雪碧", null, Arrays.asList(11L, 13L), pageRequest);
+        PageRequest pageRequest = new PageRequest(1, 5, Direction.DESC, "id");
+        List<MerchandiseDTO> list = merchandiseRepository.findMerchandiseDTO("雪碧", "", Arrays.asList(11L, 13L), pageRequest);
         list.forEach(System.err::println);
     }
 

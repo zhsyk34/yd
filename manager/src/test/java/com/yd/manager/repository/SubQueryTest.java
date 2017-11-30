@@ -15,11 +15,11 @@
 //        CriteriaBuilder builder = manager.getCriteriaBuilder();
 //        CriteriaQuery<Object> criteria = builder.createQuery();
 //
-//        Root<Merchandise> merchandiseRoot = criteria.from(Merchandise.class);
+//        Root<Merchandise> merchandiseRoot = criteria.ordersFrom(Merchandise.class);
 //
-//        //select count(*) from OrdersMerchandise o inner join OrdersMerchandise.merchandise m on m.id = m.id
+//        //select count(*) ordersFrom OrdersMerchandise o inner join OrdersMerchandise.merchandise m on m.id = m.id
 //        Subquery<Long> subQuery = criteria.subquery(Long.class);
-//        Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.from(OrdersMerchandise.class);
+//        Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.ordersFrom(OrdersMerchandise.class);
 //        ordersMerchandiseRoot.join(OrdersMerchandise_.merchandise);
 //
 //        subQuery.select(builder.count(ordersMerchandiseRoot.get(OrdersMerchandise_.count)));
@@ -37,12 +37,12 @@
 //        CriteriaBuilder builder = manager.getCriteriaBuilder();
 //        CriteriaQuery<Object> criteria = builder.createQuery();
 //
-//        Root<Merchandise> merchandiseRoot = criteria.from(Merchandise.class);
+//        Root<Merchandise> merchandiseRoot = criteria.ordersFrom(Merchandise.class);
 //
-//        //select count(*) from OrdersMerchandise o inner join OrdersMerchandise.merchandise m on m.id = m.id
+//        //select count(*) ordersFrom OrdersMerchandise o inner join OrdersMerchandise.merchandise m on m.id = m.id
 //        //where m.id = merchandiseRoot(m).id
 //        Subquery<Long> subQuery = criteria.subquery(Long.class);
-//        Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.from(OrdersMerchandise.class);
+//        Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.ordersFrom(OrdersMerchandise.class);
 //        Join<OrdersMerchandise, Merchandise> join = ordersMerchandiseRoot.join(OrdersMerchandise_.merchandise);
 //
 //        Predicate predicate = builder.equal(join.get(Merchandise_.id), merchandiseRoot.get(Merchandise_.id));
@@ -61,10 +61,10 @@
 //        CriteriaBuilder builder = manager.getCriteriaBuilder();
 //        CriteriaQuery<Object> criteria = builder.createQuery();
 //
-//        Root<Merchandise> merchandiseRoot = criteria.from(Merchandise.class);
+//        Root<Merchandise> merchandiseRoot = criteria.ordersFrom(Merchandise.class);
 //
 //        Subquery<Long> subQuery = criteria.subquery(Long.class);
-//        Root<OrdersMerchandise> subRoot = subQuery.from(OrdersMerchandise.class);
+//        Root<OrdersMerchandise> subRoot = subQuery.ordersFrom(OrdersMerchandise.class);
 //
 //        Expression<Long> e1 = builder.sum(subRoot.get(OrdersMerchandise_.count));
 //
@@ -84,11 +84,11 @@
 //        CriteriaBuilder builder = manager.getCriteriaBuilder();
 //        CriteriaQuery<Object> criteria = builder.createQuery();
 //
-//        Root<Merchandise> root = criteria.from(Merchandise.class);
+//        Root<Merchandise> root = criteria.ordersFrom(Merchandise.class);
 //
 //        Subquery<Long> subQuery = criteria.subquery(Long.class);
-//        //sub from
-//        Root<OrdersMerchandise> subRoot = subQuery.from(OrdersMerchandise.class);
+//        //sub ordersFrom
+//        Root<OrdersMerchandise> subRoot = subQuery.ordersFrom(OrdersMerchandise.class);
 //        //sub select
 //        subQuery.select(builder.count(subRoot.get(OrdersMerchandise_.count)));
 //
@@ -125,7 +125,7 @@
 ////        manager.getTransaction().begin();
 ////
 ////        CriteriaQuery<Customer> criteria = builder.createQuery(Customer.class);
-////        Root<Customer> customer = criteria.from(Customer.class);
+////        Root<Customer> customer = criteria.ordersFrom(Customer.class);
 ////        Join<Customer, Order> o = customer.join(Customer_.orders);
 ////
 ////        Subquery<Order> sq = criteria.subquery(Order.class);
@@ -148,12 +148,12 @@
 ////        manager.getTransaction().begin();
 ////
 ////        CriteriaQuery<Customer> criteria = builder.createQuery(Customer.class);
-////        Root<Customer> customerRoot = criteria.from(Customer.class);
+////        Root<Customer> customerRoot = criteria.ordersFrom(Customer.class);
 ////        Join<Customer, Order> orderJoin = customerRoot.join(Customer_.orders);
 ////        criteria.select(customerRoot);
 ////
 ////        Subquery<Double> subCriteria = criteria.subquery(Double.class);
-////        Root<Order> subqueryOrderRoot = subCriteria.from(Order.class);
+////        Root<Order> subqueryOrderRoot = subCriteria.ordersFrom(Order.class);
 ////        subCriteria.select(builder.min(subqueryOrderRoot.get(Order_.totalPrice)));
 ////        criteria.where(builder.equal(orderJoin.get("totalPrice"), builder.all(subCriteria)));
 ////        manager.createQuery(criteria).getResultList();
