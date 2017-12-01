@@ -1,6 +1,5 @@
 package com.yd.manager.config;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.context.request.WebRequest;
@@ -9,7 +8,7 @@ import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Component
+//@Component
 public class DateBindingInitializer implements WebBindingInitializer {
     @Override
     public void initBinder(WebDataBinder binder, WebRequest request) {

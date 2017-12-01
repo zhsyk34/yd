@@ -1,4 +1,4 @@
-package com.yd.manager.config;
+package com.yd.manager.config.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

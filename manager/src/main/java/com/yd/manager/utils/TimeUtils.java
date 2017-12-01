@@ -8,6 +8,7 @@ import java.time.temporal.ChronoField;
 public abstract class TimeUtils {
 
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static String format(LocalDateTime time, DateTimeFormatter formatter) {
         return time.format(formatter);
@@ -15,6 +16,14 @@ public abstract class TimeUtils {
 
     public static String format(LocalDateTime time) {
         return format(time, DEFAULT_FORMATTER);
+    }
+
+    public static String format(LocalDate time, DateTimeFormatter formatter) {
+        return time.format(formatter);
+    }
+
+    public static String format(LocalDate time) {
+        return format(time, SIMPLE_FORMATTER);
     }
 
     public static LocalDateTime parseString(String time, DateTimeFormatter formatter) {
