@@ -1,7 +1,11 @@
 package com.yd.manager.temp;
 
+import com.yd.manager.entity.User;
 import com.yd.manager.repository.SpringTestInit;
 import org.junit.Test;
+
+import javax.persistence.criteria.*;
+import java.time.LocalDate;
 
 public class TempTest extends SpringTestInit {
 
@@ -37,5 +41,26 @@ public class TempTest extends SpringTestInit {
 //            final Double average = tuple.get(credits);
 //            System.err.println("Avg credit " + tuple.get(credits) + " " + tuple.get("gender") + " found " + tuple.get("nbr") + " times");
 //        }
+    }
+
+    @Test
+    public void test2() throws Exception {
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
+
+        CriteriaQuery<LocalDate> criteria = builder.createQuery(LocalDate.class);
+
+        Root<User> userPath = criteria.from(User.class);
+
+        Expression<LocalDate> literal = builder.literal(LocalDate.now());
+        criteria.select(
+//                userPath.get(User_.id),
+                literal
+        );
+
+        System.out.println(literal);
+        Selection<LocalDate> day = literal.alias("day");
+        System.out.println(day);
+        System.out.println(manager.createQuery(criteria).getSingleResult());
+
     }
 }

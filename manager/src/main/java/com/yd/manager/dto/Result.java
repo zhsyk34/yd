@@ -16,12 +16,12 @@ public class Result<T> {
         return Result.of(code, message, null);
     }
 
-    public static <T> Result<T> from(HttpStatus status, T t) {
-        return Result.of(status.value(), status.getReasonPhrase(), t);
-    }
-
     public static <T> Result<T> success() {
         return Result.from(HttpStatus.OK, null);
+    }
+
+    public static <T> Result<T> from(HttpStatus status, T t) {
+        return Result.of(status.value(), status.getReasonPhrase(), t);
     }
 
     public static <T> Result<T> success(T t) {

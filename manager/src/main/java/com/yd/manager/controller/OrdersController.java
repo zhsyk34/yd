@@ -1,43 +1,41 @@
 package com.yd.manager.controller;
 
-import com.yd.manager.dto.*;
+import com.yd.manager.dto.OrdersCollectDTO;
+import com.yd.manager.dto.OrdersDTO;
+import com.yd.manager.dto.Result;
+import com.yd.manager.dto.util.DateRange;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.*;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
+
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 
 @RestController
 @RequestMapping("orders")
+@Slf4j
 public class OrdersController extends CommonController {
 
-    @GetMapping("detail")
-    public Result<List<OrdersDTO>> listDetail() {
-        LocalDate day = LocalDate.of(2017, 11, 13);
-        LocalDateTime begin = LocalDateTime.of(day, LocalTime.MIN);
-        LocalDateTime end = LocalDateTime.of(day, LocalTime.MAX);
-        Pageable pageable = new PageRequest(0, 5);
-        return Result.success(ordersRepository.findOrdersCollectDTO(begin, end, null, pageable));
-    }
-
     @GetMapping
-    public Result<Orders2DTO> listCollect() {
-        return Result.success(ordersRepository.findOrdersCollectDTO2(null, null, null));
+    public Result<OrdersCollectDTO> listCollect(
+            @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin,
+            @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end
+    ) {
+        return Result.success(ordersRepository.getOrdersCollectDTO(DateRange.of(begin, end).toTimeRange(), null));
     }
 
-    @GetMapping("week")
-    public Result<List<Orders2DTO>> listCollectForWeek() {
-        List<Orders2DTO> result = new ArrayList<>();
-        LocalDate today = LocalDate.of(2017, 11, 18);//TODO
-        for (int i = 6; i >= 0; i--) {
-            LocalDate day = today.minusDays(i);
-            LocalDateTime begin = LocalDateTime.of(day, LocalTime.MIN);
-            LocalDateTime end = LocalDateTime.of(day, LocalTime.MAX);
-
-            result.add(ordersRepository.findOrdersCollectDTO2(begin, end, null));
-        }
-        return Result.success(result);
+    @GetMapping("top5")
+    public Result<List<OrdersDTO>> listTop5(
+            @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin,
+            @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end
+    ) {
+        return Result.success(ordersRepository.listOrdersDTO(DateRange.of(begin, end).toTimeRange(), null, new PageRequest(0, 5)));
     }
+
 }

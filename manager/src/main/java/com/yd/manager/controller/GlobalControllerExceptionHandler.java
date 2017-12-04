@@ -3,7 +3,9 @@ package com.yd.manager.controller;
 import com.yd.manager.dto.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @ControllerAdvice
 @Slf4j

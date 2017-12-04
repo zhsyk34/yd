@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.yd.manager.listener.AuthInitializationListener;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableArgumentResolver;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -38,10 +40,7 @@ public class BeanConfig {
     @Primary
     public MappingJackson2HttpMessageConverter objectMapper(Jackson2ObjectMapperBuilder builder, SimpleModule module) {
         ObjectMapper mapper = builder.build();
-
         mapper.registerModule(module);
-//        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
         return new MappingJackson2HttpMessageConverter(mapper);
     }
 

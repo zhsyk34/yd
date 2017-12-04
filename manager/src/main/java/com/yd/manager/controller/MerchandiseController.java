@@ -5,9 +5,10 @@ import com.yd.manager.dto.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("merchandises")
@@ -15,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class MerchandiseController extends CommonController {
 
     @GetMapping
-    public Result<Page<MerchandiseDTO>> retrieve(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String code, @PageableDefault(size = 15, sort = "id", direction = Direction.DESC) Pageable pageable) {
-        logger.info("retrieve merchandise by name:{} and code:{} with page:{}", name, code, pageable);
-        return Result.success(merchandiseRepository.pageMerchandiseDTO(name, code, null, pageable));
+    public Result<Page<MerchandiseDTO>> retrieve(@RequestParam(defaultValue = "") String nameOrCode, Pageable pageable) {
+        logger.debug("nameOrCode:{}, pageable:{}", nameOrCode, pageable);
+        return Result.success(merchandiseRepository.pageMerchandiseDTO(nameOrCode, null, pageable));
     }
 }

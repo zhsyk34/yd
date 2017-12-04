@@ -7,7 +7,9 @@ import org.springframework.data.web.PageableArgumentResolver;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
 
@@ -25,19 +27,16 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_URL_PREFIX + "/static/");
-        super.addResourceHandlers(registry);
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(pageableArgumentResolver);
-        super.addArgumentResolvers(argumentResolvers);
     }
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(jackson2HttpMessageConverter);
-        super.configureMessageConverters(converters);
     }
 
 }

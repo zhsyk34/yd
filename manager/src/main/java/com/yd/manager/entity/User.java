@@ -24,7 +24,7 @@ public class User {
     private String address;
 
     @ManyToOne
-    @JoinColumn(name = "shop_code")
+    @JoinColumn(name = "shop_code", referencedColumnName = "shopcode")
     private Store store;
 
     @Column(name = "user_money")

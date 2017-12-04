@@ -19,7 +19,7 @@ public class PageSerializer extends StdSerializer<Page> {
     public void serialize(Page value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
 
-        gen.writeNumberField("number", value.getNumber());
+        gen.writeNumberField("page", value.getNumber());
         gen.writeNumberField("size", value.getSize());
         gen.writeNumberField("total", value.getTotalPages());
         gen.writeObjectField("data", value.getContent());

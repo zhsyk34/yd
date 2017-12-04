@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.Predicate;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Objects;
+import java.util.Optional;
 
 @RequiredArgsConstructor(staticName = "instance")
 public class PredicateFactory {

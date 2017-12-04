@@ -8,7 +8,10 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import static java.util.Collections.emptyList;
@@ -19,20 +22,25 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 @SuppressWarnings("WeakerAccess")
 public abstract class JpaUtils {
 
+    public static List<Order> getOrderFromSort(CriteriaBuilder builder, Path<?> path, Sort sort) {
+        return Optional.ofNullable(sort).map(s -> StreamSupport.stream(s.spliterator(), false).map(o -> getOrder(builder, path, o)).filter(Objects::nonNull).collect(toList())).orElse(emptyList());
+    }
+
     public static Order getOrder(CriteriaBuilder builder, Path<?> path, Sort.Order order) {
         return Optional.ofNullable(order).map(o -> path.get(o.getProperty())).map(field -> order.getDirection() == ASC ? builder.asc(field) : builder.desc(field)).orElse(null);
     }
 
-    public static List<Order> getOrderFromSort(CriteriaBuilder builder, Path<?> path, Sort sort) {
-        return Optional.ofNullable(sort).map(s -> StreamSupport.stream(s.spliterator(), false).map(o -> getOrder(builder, path, o)).filter(Objects::nonNull).collect(toList())).orElse(emptyList());
+    public static String matchString(String s) {
+        return matchString(s, ANYWHERE);
     }
 
     public static String matchString(String s, MatchMode mode) {
         return mode.toMatchString(s);
     }
 
-    public static String matchString(String s) {
-        return matchString(s, ANYWHERE);
+    public static void setOrderByPageable(CriteriaQuery<?> criteria, Pageable pageable, OrderBuilder orderBuilder) {
+        List<Order> orders = Optional.ofNullable(pageable).map(Pageable::getSort).map(sort -> orderBuilder.getOrders()).orElse(null);
+        setOrder(criteria, orders);
     }
 
     public static void setOrder(CriteriaQuery<?> criteria, List<Order> orders) {
@@ -41,9 +49,8 @@ public abstract class JpaUtils {
         }
     }
 
-    public static void setOrderByPageable(CriteriaQuery<?> criteria, Pageable pageable, OrderBuilder orderBuilder) {
-        List<Order> orders = Optional.ofNullable(pageable).map(Pageable::getSort).map(sort -> orderBuilder.getOrders()).orElse(null);
-        setOrder(criteria, orders);
+    public static void setPredicateByPredicateBuilder(CriteriaQuery<?> criteria, PredicateBuilder predicateBuilder) {
+        setPredicate(criteria, predicateBuilder.getPredicates());
     }
 
     public static void setPredicate(CriteriaQuery<?> criteria, Collection<Predicate> predicates) {
@@ -52,16 +59,12 @@ public abstract class JpaUtils {
         }
     }
 
-    public static void setSinglePredicate(CriteriaQuery<?> criteria, Predicate predicate) {
-        Optional.ofNullable(predicate).ifPresent(criteria::where);
-    }
-
-    public static void setPredicateByPredicateBuilder(CriteriaQuery<?> criteria, PredicateBuilder predicateBuilder) {
-        setPredicate(criteria, predicateBuilder.getPredicates());
-    }
-
     public static void setPredicateBySinglePredicateBuilder(CriteriaQuery<?> criteria, SinglePredicateBuilder predicateBuilder) {
         setSinglePredicate(criteria, predicateBuilder.getPredicate());
+    }
+
+    public static void setSinglePredicate(CriteriaQuery<?> criteria, Predicate predicate) {
+        Optional.ofNullable(predicate).ifPresent(criteria::where);
     }
 
     /**

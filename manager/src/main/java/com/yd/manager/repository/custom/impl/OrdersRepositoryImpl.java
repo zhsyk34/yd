@@ -1,20 +1,27 @@
 package com.yd.manager.repository.custom.impl;
 
-import com.yd.manager.dto.*;
-import com.yd.manager.entity.*;
+import com.yd.manager.dto.OrdersCollectDTO;
+import com.yd.manager.dto.OrdersDTO;
+import com.yd.manager.dto.util.TimeRange;
+import com.yd.manager.entity.Orders;
+import com.yd.manager.entity.Orders_;
+import com.yd.manager.entity.Store;
+import com.yd.manager.entity.Store_;
 import com.yd.manager.repository.custom.OrdersDTORepository;
+import com.yd.manager.utils.jpa.JpaUtils;
+import com.yd.manager.utils.jpa.PredicateFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
-
-import static com.yd.manager.utils.jpa.JpaUtils.getOrderFromSort;
+import java.util.Optional;
 
 @Repository
 public class OrdersRepositoryImpl implements OrdersDTORepository {
@@ -22,116 +29,38 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
     private EntityManager manager;
 
     @Override
-    public List<UserOrdersDTO> findUserOrderDTO(Long userId, LocalDateTime begin, LocalDateTime end, List<Long> stores, Pageable pageable) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
-        CriteriaQuery<UserOrdersDTO> criteria = builder.createQuery(UserOrdersDTO.class);
-
-        Root<Orders> ordersRoot = criteria.from(Orders.class);
-        Join<Orders, User> userJoin = ordersRoot.join(Orders_.user);
-        Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
-
-        criteria.multiselect(
-                userJoin.get(User_.id),
-                userJoin.get(User_.name),
-                storeJoin.get(Store_.id),
-                storeJoin.get(Store_.name),
-                ordersRoot.get(Orders_.id),
-                ordersRoot.get(Orders_.actual)
-        );
-
-        List<Predicate> predicates = this.predicates(builder, ordersRoot, userJoin, storeJoin, userId, begin, end, stores);
-
-        if (!CollectionUtils.isEmpty(predicates)) {
-            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        }
-
-        if (pageable != null) {
-            criteria.orderBy(getOrderFromSort(builder, ordersRoot, pageable.getSort()));
-        }
-
-        TypedQuery<UserOrdersDTO> query = manager.createQuery(criteria);
-
-        if (pageable != null) {
-            query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
-        }
-
-        return query.getResultList();
-    }
-
-    @Override
-    public List<OrdersDTO> findOrdersCollectDTO(LocalDateTime begin, LocalDateTime end, List<Long> stores, Pageable pageable) {
-        //method-1
-
-//        CriteriaBuilder builder = manager.getCriteriaBuilder();
-//        CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
-//
-//        Root<Orders> ordersRoot = criteria.getOrder(Orders.class);
-//        Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
-//
-//        Expression<BigDecimal> sum = builder.sum(ordersRoot.get(Orders_.actual));
-//        criteria.multiselect(
-//                storeJoin.get(Store_.id),
-//                storeJoin.get(Store_.name),
-//                builder.count(ordersRoot),
-//                sum,
-//                builder.avg(ordersRoot.get(Orders_.actual))
-//        );
-//
-//        criteria.groupBy(storeJoin.get(Store_.id), storeJoin.get(Store_.name));
-//
-//        List<Predicate> predicates = predicates(builder, ordersRoot, storeJoin, begin, end, stores);
-//
-//        if (!CollectionUtils.isEmpty(predicates)) {
-//            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-//        }
-//
-//        //order by sum desc
-//        criteria.orderBy(builder.desc(sum));
-//
-//        TypedQuery<OrdersDTO> query = manager.createQuery(criteria);
-//
-//        if (pageable != null) {
-//            query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
-//        }
-//
-//        return query.getResultList();
-
+    public List<OrdersDTO> listOrdersDTO(TimeRange timeRange, List<Long> stores, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
 
+        //from
         Root<Store> storeRoot = criteria.from(Store.class);
         SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        List<Predicate> predicates = this.predicates(builder, ordersJoin, null, begin, end, null);
-        if (!CollectionUtils.isEmpty(predicates)) {
-            ordersJoin.on(predicates.toArray(new Predicate[predicates.size()]));
-        }
+        //where
+        Collection<Predicate> predicates = PredicateFactory.instance()
+                .append(this.restrictForOrders(builder, ordersJoin, timeRange))
+                .append(this.restrictForStore(storeRoot, stores))
+                .get();
+        JpaUtils.setPredicate(criteria, predicates);
 
-        if (!CollectionUtils.isEmpty(stores)) {
-            criteria.where(storeRoot.get(Store_.id).in(stores));
-        }
+        //group by
+        criteria.groupBy(storeRoot);
 
+        //order by
         Expression<BigDecimal> sum = builder.sum(ordersJoin.get(Orders_.actual));
+        criteria.orderBy(builder.desc(sum));
+
         criteria.multiselect(
                 storeRoot.get(Store_.id),
                 storeRoot.get(Store_.name),
+                storeRoot.get(Store_.address),
                 builder.count(ordersJoin),
                 sum,
                 builder.avg(ordersJoin.get(Orders_.actual))
         );
 
-        criteria.groupBy(storeRoot);
-
-        //order by sum desc
-        criteria.orderBy(builder.desc(sum));
-
-        TypedQuery<OrdersDTO> query = manager.createQuery(criteria);
-
-        if (pageable != null) {
-            query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
-        }
-
-        return query.getResultList();
+        return JpaUtils.getResultListByPageable(manager, criteria, pageable);
 
         //method-3:
 //        CriteriaBuilder builder = manager.getCriteriaBuilder();
@@ -180,65 +109,42 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
     }
 
     @Override
-    public Orders2DTO findOrdersCollectDTO2(LocalDateTime begin, LocalDateTime end, List<Long> stores) {
+    public OrdersCollectDTO getOrdersCollectDTO(TimeRange timeRange, List<Long> stores) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-        CriteriaQuery<Orders2DTO> criteria = builder.createQuery(Orders2DTO.class);
+        CriteriaQuery<OrdersCollectDTO> criteria = builder.createQuery(OrdersCollectDTO.class);
 
         Root<Orders> ordersRoot = criteria.from(Orders.class);
         Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
 
-        Expression<BigDecimal> sum = builder.sum(ordersRoot.get(Orders_.actual));
+        Collection<Predicate> predicates = PredicateFactory.instance()
+                .append(this.restrictForOrders(builder, ordersRoot, timeRange))
+                .append(this.restrictForStore(storeJoin, stores))
+                .get();
+        JpaUtils.setPredicate(criteria, predicates);
+
         criteria.multiselect(
                 builder.count(ordersRoot),
-                sum,
+                builder.sum(ordersRoot.get(Orders_.actual)),
                 builder.avg(ordersRoot.get(Orders_.actual))
         );
-
-        List<Predicate> predicates = this.predicates(builder, ordersRoot, storeJoin, begin, end, stores);
-
-        if (!CollectionUtils.isEmpty(predicates)) {
-            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        }
 
         return manager.createQuery(criteria).getSingleResult();
     }
 
-    private List<Predicate> predicates(CriteriaBuilder builder, Path<Orders> ordersRoot, From<?, Store> storeJoin, LocalDateTime begin, LocalDateTime end, List<Long> stores) {
-        List<Predicate> predicates = new ArrayList<>();
+    private Predicate restrictForStore(Path<Store> path, List<Long> stores) {
+        return CollectionUtils.isEmpty(stores) ? null : path.get(Store_.id).in(stores);
+    }
 
-        Path<LocalDateTime> createTime = ordersRoot.get(Orders_.createTime);
-        if (begin != null) {
-            predicates.add(builder.greaterThanOrEqualTo(createTime, begin));
-        }
-        if (end != null) {
-            predicates.add(builder.lessThanOrEqualTo(createTime, end));
-        }
-
-        if (!CollectionUtils.isEmpty(stores)) {
-            predicates.add(storeJoin.get(Store_.id).in(stores));
+    @SuppressWarnings("Duplicates")
+    private Collection<Predicate> restrictForOrders(CriteriaBuilder builder, Path<Orders> path, TimeRange timeRange) {
+        if (timeRange == null) {
+            return null;
         }
 
+        Collection<Predicate> predicates = new LinkedList<>();
+        Optional.ofNullable(timeRange.getBegin()).map(begin -> builder.greaterThanOrEqualTo(path.get(Orders_.createTime), begin)).ifPresent(predicates::add);
+        Optional.ofNullable(timeRange.getEnd()).map(end -> builder.lessThanOrEqualTo(path.get(Orders_.createTime), end)).ifPresent(predicates::add);
         return predicates;
     }
 
-    private List<Predicate> predicates(CriteriaBuilder builder, Path<Orders> ordersRoot, From<?, User> userJoin, Join<?, Store> storeJoin, Long userId, LocalDateTime begin, LocalDateTime end, List<Long> stores) {
-        List<Predicate> predicates = new ArrayList<>();
-        if (userId != null) {
-            predicates.add(builder.equal(userJoin.get(User_.id), userId));
-        }
-
-        Path<LocalDateTime> createTime = ordersRoot.get(Orders_.createTime);
-        if (begin != null) {
-            predicates.add(builder.greaterThanOrEqualTo(createTime, begin));
-        }
-        if (end != null) {
-            predicates.add(builder.lessThanOrEqualTo(createTime, end));
-        }
-
-        if (!CollectionUtils.isEmpty(stores)) {
-            predicates.add(storeJoin.get(Store_.id).in(stores));
-        }
-
-        return predicates;
-    }
 }

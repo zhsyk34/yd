@@ -11,7 +11,9 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 权限初始化
@@ -24,6 +26,11 @@ public class AuthInitializationListener implements ServletContextListener {
     private static final Map<Manager, List<Long>> map = new HashMap<>(1 << 8);
 
     private final ManagerRepository managerRepository;
+
+    //TODO
+    public static List<Long> getStores(String name) {
+        return null;
+    }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

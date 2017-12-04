@@ -1,21 +1,23 @@
 package com.yd.manager.repository.custom.impl;
 
-import com.yd.manager.dto.Merchandise2DTO;
 import com.yd.manager.dto.MerchandiseDTO;
+import com.yd.manager.dto.MerchandiseOrdersDTO;
 import com.yd.manager.entity.*;
 import com.yd.manager.repository.custom.MerchandiseDTORepository;
-import org.springframework.data.domain.*;
+import com.yd.manager.utils.jpa.JpaUtils;
+import com.yd.manager.utils.jpa.PredicateFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
-import static com.yd.manager.utils.jpa.JpaUtils.getOrderFromSort;
-import static com.yd.manager.utils.jpa.JpaUtils.matchString;
 
 @Repository
 public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
@@ -23,15 +25,20 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
     private EntityManager manager;
 
     @Override
-    public List<MerchandiseDTO> findMerchandiseDTO(String name, String code, List<Long> stores, Pageable pageable) {
+    public List<MerchandiseDTO> listMerchandiseDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<MerchandiseDTO> criteria = builder.createQuery(MerchandiseDTO.class);
 
+        //from
         Root<MerchandiseSpecification> specificationRoot = criteria.from(MerchandiseSpecification.class);
         Join<MerchandiseSpecification, MerchandiseStore> merchandiseStoreJoin = specificationRoot.join(MerchandiseSpecification_.MerchandiseStore);
         Join<MerchandiseStore, Merchandise> merchandiseJoin = merchandiseStoreJoin.join(MerchandiseStore_.merchandise);
         Join<MerchandiseStore, Store> storeJoin = merchandiseStoreJoin.join(MerchandiseStore_.store);
 
+        //where
+        JpaUtils.setPredicate(criteria, this.restrict(builder, merchandiseJoin, nameOrCode, storeJoin, stores));
+
+        //select
         criteria.multiselect(
                 merchandiseJoin.get(Merchandise_.id),
                 merchandiseJoin.get(Merchandise_.name),
@@ -44,26 +51,14 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
                 specificationRoot.get(MerchandiseSpecification_.price)
         );
 
-        List<Predicate> predicates = predicates(builder, merchandiseJoin, storeJoin, name, code, stores);
-        if (!CollectionUtils.isEmpty(predicates)) {
-            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        }
+        //order by
+        criteria.orderBy(builder.desc(merchandiseJoin.get(Merchandise_.id)));
 
-        if (pageable != null) {
-            criteria.orderBy(getOrderFromSort(builder, merchandiseJoin, pageable.getSort()));
-        }
-
-        TypedQuery<MerchandiseDTO> query = manager.createQuery(criteria);
-
-        if (pageable != null) {
-            query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
-        }
-
-        return query.getResultList();
+        return JpaUtils.getResultListByPageable(manager, criteria, pageable);
     }
 
     @Override
-    public long countMerchandiseDTO(String name, String code, List<Long> stores) {
+    public long countMerchandiseDTO(String nameOrCode, List<Long> stores) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
 
@@ -72,10 +67,7 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
         Join<MerchandiseStore, Merchandise> merchandiseJoin = merchandiseStoreJoin.join(MerchandiseStore_.merchandise);
         Join<MerchandiseStore, Store> storeJoin = merchandiseStoreJoin.join(MerchandiseStore_.store);
 
-        List<Predicate> predicates = predicates(builder, merchandiseJoin, storeJoin, name, code, stores);
-        if (!CollectionUtils.isEmpty(predicates)) {
-            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        }
+        JpaUtils.setPredicate(criteria, this.restrict(builder, merchandiseJoin, nameOrCode, storeJoin, stores));
 
         criteria.select(builder.count(specificationRoot));
 
@@ -83,14 +75,14 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
     }
 
     @Override
-    public Page<MerchandiseDTO> pageMerchandiseDTO(String name, String code, List<Long> stores, Pageable pageable) {
-        return new PageImpl<>(this.findMerchandiseDTO(name, code, stores, pageable), pageable, this.countMerchandiseDTO(name, code, stores));
+    public Page<MerchandiseDTO> pageMerchandiseDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
+        return new PageImpl<>(this.listMerchandiseDTO(nameOrCode, stores, pageable), pageable, this.countMerchandiseDTO(nameOrCode, stores));
     }
 
     @Override
-    public List<Merchandise2DTO> findMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable) {
+    public List<MerchandiseOrdersDTO> listMerchandiseOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-        CriteriaQuery<Merchandise2DTO> criteria = builder.createQuery(Merchandise2DTO.class);
+        CriteriaQuery<MerchandiseOrdersDTO> criteria = builder.createQuery(MerchandiseOrdersDTO.class);
 
         Root<MerchandiseSpecification> specificationRoot = criteria.from(MerchandiseSpecification.class);
         Join<MerchandiseSpecification, MerchandiseStore> merchandiseStoreJoin = specificationRoot.join(MerchandiseSpecification_.MerchandiseStore);
@@ -126,40 +118,39 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
                 subQuery.getSelection()
         );
 
-        List<Predicate> predicates = predicates(builder, merchandiseJoin, storeJoin, name, code, stores);
-        if (!CollectionUtils.isEmpty(predicates)) {
-            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        }
+        JpaUtils.setPredicate(criteria, this.restrict(builder, merchandiseJoin, nameOrCode, storeJoin, stores));
 
-        if (pageable != null) {
-            criteria.orderBy(getOrderFromSort(builder, merchandiseJoin, pageable.getSort()));
-        }
+        criteria.orderBy(builder.desc(merchandiseJoin.get(Merchandise_.id)));
 
-        TypedQuery<Merchandise2DTO> query = manager.createQuery(criteria);
-
-        if (pageable != null) {
-            query.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
-        }
-
-        return query.getResultList();
+        return JpaUtils.getResultListByPageable(manager, criteria, pageable);
     }
 
     @Override
-    public Page<Merchandise2DTO> pageMerchandiseDTO2(String name, String code, List<Long> stores, Pageable pageable) {
-        return new PageImpl<>(this.findMerchandiseDTO2(name, code, stores, pageable), pageable, this.countMerchandiseDTO(name, code, stores));
+    public Page<MerchandiseOrdersDTO> pageMerchandiseOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
+        return new PageImpl<>(this.listMerchandiseOrdersDTO(nameOrCode, stores, pageable), pageable, this.countMerchandiseDTO(nameOrCode, stores));
     }
 
-    private List<Predicate> predicates(CriteriaBuilder builder, Join<MerchandiseStore, Merchandise> merchandiseJoin, Join<MerchandiseStore, Store> storeJoin, String name, String code, List<Long> stores) {
-        List<Predicate> predicates = new ArrayList<>();
-        if (StringUtils.hasText(name)) {
-            predicates.add(builder.like(merchandiseJoin.get(Merchandise_.name), matchString(name)));
+    private Collection<Predicate> restrict(
+            CriteriaBuilder builder,
+            Path<Merchandise> merchandisePath, String nameOrCode,
+            Path<Store> storePath, List<Long> stores
+    ) {
+        return PredicateFactory.instance()
+                .append(this.restrictForMerchandise(builder, merchandisePath, nameOrCode))
+                .append(this.restrictForStore(storePath, stores))
+                .get();
+    }
+
+    private Predicate restrictForMerchandise(CriteriaBuilder builder, Path<Merchandise> path, String nameOrCode) {
+        if (StringUtils.hasText(nameOrCode)) {
+            Predicate likeName = builder.like(path.get(Merchandise_.name), JpaUtils.matchString(nameOrCode));
+            Predicate likePhone = builder.like(path.get(Merchandise_.code), JpaUtils.matchString(nameOrCode));
+            return builder.or(likeName, likePhone);
         }
-        if (StringUtils.hasText(code)) {
-            predicates.add(builder.like(merchandiseJoin.get(Merchandise_.code), matchString(code)));
-        }
-        if (!CollectionUtils.isEmpty(stores)) {
-            predicates.add(storeJoin.get(Store_.id).in(stores));
-        }
-        return predicates;
+        return null;
+    }
+
+    private Predicate restrictForStore(Path<Store> path, List<Long> stores) {
+        return CollectionUtils.isEmpty(stores) ? null : path.get(Store_.id).in(stores);
     }
 }

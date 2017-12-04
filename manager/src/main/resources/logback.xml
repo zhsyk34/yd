@@ -21,9 +21,9 @@
         </encoder>
     </appender>
 
-    <!--<logger name="com.mxzx.sanmao" level="debug" additivity="false">-->
-    <!--<appender-ref ref="console"/>-->
-    <!--</logger>-->
+    <logger name="com.yd.manager.controller" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+    </logger>
 
     <logger name="org.hibernate.SQL" level="debug"/>
 
