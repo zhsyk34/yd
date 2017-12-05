@@ -1,6 +1,6 @@
 package com.yd.manager.service;
 
-import com.yd.manager.dto.UserOrdersCollectByDateDTO;
+import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.UserRepository;
 import lombok.NonNull;
@@ -19,15 +19,15 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserOrdersCollectByDateDTO getForToday(long userId, List<Long> stores) {
-        return userRepository.getUserOrderCollectByDateDTO(userId, LocalDate.now(), stores);
+    public UserOrdersDateDTO getForToday(long userId, List<Long> stores) {
+        return userRepository.getUserOrdersDateDTO(userId, LocalDate.now(), stores);
     }
 
-    public List<UserOrdersCollectByDateDTO> listForWeek(long userId, List<Long> stores) {
+    public List<UserOrdersDateDTO> listForWeek(long userId, List<Long> stores) {
         return this.listForDateRange(userId, DateRange.week(), stores);
     }
 
-    private List<UserOrdersCollectByDateDTO> listForDateRange(long userId, DateRange dateRange, List<Long> stores) {
+    private List<UserOrdersDateDTO> listForDateRange(long userId, DateRange dateRange, List<Long> stores) {
         LocalDate begin = dateRange.getBegin();
         LocalDate end = dateRange.getEnd();
 
@@ -35,22 +35,22 @@ public class UserService {
         return begin != null && end != null ? this.listForDateRange(userId, begin, end, stores) : null;
     }
 
-    public List<UserOrdersCollectByDateDTO> listForDateRange(long userId, @NonNull LocalDate begin, @NonNull LocalDate end, List<Long> stores) {
-        List<UserOrdersCollectByDateDTO> list = new ArrayList<>();
+    public List<UserOrdersDateDTO> listForDateRange(long userId, @NonNull LocalDate begin, @NonNull LocalDate end, List<Long> stores) {
+        List<UserOrdersDateDTO> list = new ArrayList<>();
 
         while (!begin.isAfter(end)) {
-            Optional.ofNullable(userRepository.getUserOrderCollectByDateDTO(userId, begin, stores)).ifPresent(list::add);
+            Optional.ofNullable(userRepository.getUserOrdersDateDTO(userId, begin, stores)).ifPresent(list::add);
             begin = begin.plusDays(1);
         }
 
         return list;
     }
 
-    public List<UserOrdersCollectByDateDTO> listForMonth(long userId, List<Long> stores) {
+    public List<UserOrdersDateDTO> listForMonth(long userId, List<Long> stores) {
         return this.listForDateRange(userId, DateRange.month(), stores);
     }
 
-    public List<UserOrdersCollectByDateDTO> listForSeason(long userId, List<Long> stores) {
+    public List<UserOrdersDateDTO> listForSeason(long userId, List<Long> stores) {
         return this.listForDateRange(userId, DateRange.season(), stores);
     }
 }

@@ -1,5 +1,6 @@
 package com.yd.manager.utils.jpa;
 
+import com.yd.manager.dto.util.TimeRange;
 import org.hibernate.criterion.MatchMode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -8,10 +9,9 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import javax.persistence.metamodel.SingularAttribute;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 import static java.util.Collections.emptyList;
@@ -36,6 +36,22 @@ public abstract class JpaUtils {
 
     public static String matchString(String s, MatchMode mode) {
         return mode.toMatchString(s);
+    }
+
+    @Deprecated
+    public static <T> Predicate like(CriteriaBuilder builder, Path<T> path, SingularAttribute<? super T, String> attribute, String value) {
+        return builder.like(path.get(attribute), matchString(value));
+    }
+
+    public static Collection<Predicate> between(CriteriaBuilder builder, Path<LocalDateTime> path, TimeRange timeRange) {
+        if (timeRange == null) {
+            return null;
+        }
+
+        Collection<Predicate> predicates = new LinkedList<>();
+        Optional.ofNullable(timeRange.getBegin()).map(begin -> builder.greaterThanOrEqualTo(path, begin)).ifPresent(predicates::add);
+        Optional.ofNullable(timeRange.getEnd()).map(end -> builder.lessThanOrEqualTo(path, end)).ifPresent(predicates::add);
+        return predicates;
     }
 
     public static void setOrderByPageable(CriteriaQuery<?> criteria, Pageable pageable, OrderBuilder orderBuilder) {

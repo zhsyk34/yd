@@ -1,7 +1,7 @@
 package com.yd.manager.repository.custom;
 
-import com.yd.manager.dto.UserOrdersCollectByDateDTO;
-import com.yd.manager.dto.UserOrdersCollectDTO;
+import com.yd.manager.dto.UserOrdersDTO;
+import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.UserStoreOrdersDTO;
 import com.yd.manager.dto.util.TimeRange;
 import lombok.NonNull;
@@ -13,15 +13,17 @@ import java.util.List;
 
 public interface UserDTORepository {
 
-    List<UserOrdersCollectDTO> listUserOrderCollectDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable);
+    List<UserOrdersDTO> listUserOrdersDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable);
 
-    long countUserOrderCollectDTO(String nameOrPhone, List<Long> stores);
+    List<UserOrdersDTO> listUserOrdersDTO(String nameOrPhone, List<Long> stores, Pageable pageable);
 
-    Page<UserOrdersCollectDTO> pageUserOrderCollectDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable);
+    long countUserOrdersDTO(String nameOrPhone, List<Long> stores);
+
+    Page<UserOrdersDTO> pageUserOrdersDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable);
 
     List<UserStoreOrdersDTO> listUserStoreOrdersDTO(long userId, TimeRange timeRange, List<Long> stores);
 
-    UserOrdersCollectByDateDTO getUserOrderCollectByDateDTO(long userId, @NonNull LocalDate day, List<Long> stores);
+    UserOrdersDateDTO getUserOrdersDateDTO(long userId, @NonNull LocalDate date, List<Long> stores);
 
     long countByCreateTime(TimeRange timeRange, List<Long> stores);
 

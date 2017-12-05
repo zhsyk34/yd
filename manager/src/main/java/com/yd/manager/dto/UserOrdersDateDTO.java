@@ -5,15 +5,14 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * 用户在店铺订单信息汇总
+ * 用户订单按日汇总
  */
 @Data
-public class UserStoreOrdersDTO {
+public class UserOrdersDateDTO {
     private final long userId;
     private final String userName;
 
-    private final long storeId;
-    private final String storeName;
+    private final String date;
 
     private final long ordersCount;
     private final BigDecimal ordersMoney;

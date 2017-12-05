@@ -1,4 +1,4 @@
-package com.yd.manager.dto;
+package com.yd.manager.dto.util;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

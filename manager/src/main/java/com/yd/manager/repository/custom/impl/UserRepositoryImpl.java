@@ -1,7 +1,7 @@
 package com.yd.manager.repository.custom.impl;
 
-import com.yd.manager.dto.UserOrdersCollectByDateDTO;
-import com.yd.manager.dto.UserOrdersCollectDTO;
+import com.yd.manager.dto.UserOrdersDTO;
+import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.UserStoreOrdersDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
@@ -22,9 +22,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import static javax.persistence.criteria.JoinType.LEFT;
 
@@ -34,14 +32,22 @@ public class UserRepositoryImpl implements UserDTORepository {
     private EntityManager manager;
 
     @Override
-    public List<UserOrdersCollectDTO> listUserOrderCollectDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable) {
+    public List<UserOrdersDTO> listUserOrdersDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-
-        CriteriaQuery<UserOrdersCollectDTO> criteria = builder.createQuery(UserOrdersCollectDTO.class);
+        CriteriaQuery<UserOrdersDTO> criteria = builder.createQuery(UserOrdersDTO.class);
 
         Root<User> userPath = criteria.from(User.class);
         SetJoin<User, Orders> ordersPath = userPath.join(User_.orders, LEFT);
         Join<Orders, Store> storePath = ordersPath.join(Orders_.store, LEFT);
+
+        Collection<Predicate> predicates = PredicateFactory.instance()
+                .append(this.restrictForUser(builder, userPath, nameOrPhone))
+                .append(this.restrictForOrders(builder, ordersPath, timeRange))
+                .append(this.restrictForStore(storePath, stores))
+                .get();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        criteria.groupBy(userPath);
 
         criteria.multiselect(
                 userPath.get(User_.id),
@@ -55,50 +61,52 @@ public class UserRepositoryImpl implements UserDTORepository {
                 builder.avg(ordersPath.get(Orders_.actual))
         );
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
-                .append(restrictForUser(builder, userPath, nameOrPhone))
-                .append(restrictForOrders(builder, ordersPath, timeRange))
-                .append(restrictForStore(storePath, stores))
-                .get();
-
-        JpaUtils.setPredicate(criteria, predicates);
-
-        criteria.groupBy(userPath);
-
         criteria.orderBy(builder.desc(userPath.get(User_.createTime)));
 
         return JpaUtils.getResultListByPageable(manager, criteria, pageable);
     }
 
     @Override
-    public long countUserOrderCollectDTO(String nameOrPhone, List<Long> stores) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
+    public List<UserOrdersDTO> listUserOrdersDTO(String nameOrPhone, List<Long> stores, Pageable pageable) {
+        return this.listUserOrdersDTO(nameOrPhone, null, stores, pageable);
+    }
 
+    @Override
+    public long countUserOrdersDTO(String nameOrPhone, List<Long> stores) {
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
 
         Root<User> userPath = criteria.from(User.class);
 
-        criteria.select(builder.count(userPath));
+        JpaUtils.setPredicate(criteria, PredicateFactory.instance().append(this.restrictForUser(builder, userPath, nameOrPhone)).get());
 
-        JpaUtils.setPredicate(criteria, PredicateFactory.instance().append(restrictForUser(builder, userPath, nameOrPhone)).get());
+        criteria.select(builder.count(userPath));
 
         return manager.createQuery(criteria).getSingleResult();
     }
 
     @Override
-    public Page<UserOrdersCollectDTO> pageUserOrderCollectDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable) {
-        return new PageImpl<>(this.listUserOrderCollectDTO(nameOrPhone, timeRange, stores, pageable), pageable, this.countUserOrderCollectDTO(nameOrPhone, stores));
+    public Page<UserOrdersDTO> pageUserOrdersDTO(String nameOrPhone, TimeRange timeRange, List<Long> stores, Pageable pageable) {
+        return new PageImpl<>(this.listUserOrdersDTO(nameOrPhone, timeRange, stores, pageable), pageable, this.countUserOrdersDTO(nameOrPhone, stores));
     }
 
     @Override
     public List<UserStoreOrdersDTO> listUserStoreOrdersDTO(long userId, TimeRange timeRange, List<Long> stores) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-
         CriteriaQuery<UserStoreOrdersDTO> criteria = builder.createQuery(UserStoreOrdersDTO.class);
 
         Root<User> userPath = criteria.from(User.class);
         SetJoin<User, Orders> ordersPath = userPath.join(User_.orders, LEFT);
         Join<Orders, Store> storePath = ordersPath.join(Orders_.store, LEFT);
+
+        Collection<Predicate> predicates = PredicateFactory.instance()
+                .append(restrictForUser(builder, userPath, userId))
+                .append(restrictForOrders(builder, ordersPath, timeRange))
+                .append(restrictForStore(storePath, stores))
+                .get();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        criteria.groupBy(userPath, storePath);
 
         criteria.multiselect(
                 userPath.get(User_.id),
@@ -110,50 +118,38 @@ public class UserRepositoryImpl implements UserDTORepository {
                 builder.avg(ordersPath.get(Orders_.actual))
         );
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
-                .append(restrictForUser(builder, userPath, userId))
-                .append(restrictForOrders(builder, ordersPath, timeRange))
-                .append(restrictForStore(storePath, stores))
-                .get();
-
-        JpaUtils.setPredicate(criteria, predicates);
-
-        criteria.groupBy(userPath, storePath);
-
         criteria.orderBy(builder.asc(storePath.get(Store_.id)));
 
         return JpaUtils.getResultListByPageable(manager, criteria, null);
     }
 
     @Override
-    public UserOrdersCollectByDateDTO getUserOrderCollectByDateDTO(long userId, LocalDate day, List<Long> stores) {
+    public UserOrdersDateDTO getUserOrdersDateDTO(long userId, LocalDate date, List<Long> stores) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-
-        CriteriaQuery<UserOrdersCollectByDateDTO> criteria = builder.createQuery(UserOrdersCollectByDateDTO.class);
+        CriteriaQuery<UserOrdersDateDTO> criteria = builder.createQuery(UserOrdersDateDTO.class);
 
         Root<User> userPath = criteria.from(User.class);
         SetJoin<User, Orders> ordersPath = userPath.join(User_.orders, LEFT);
         Join<Orders, Store> storePath = ordersPath.join(Orders_.store, LEFT);
 
+        Collection<Predicate> predicates = PredicateFactory.instance()
+                .append(restrictForUser(builder, userPath, userId))
+                .append(restrictForOrders(builder, ordersPath, DateRange.ofDate(date).toTimeRange()))
+                .append(restrictForStore(storePath, stores))
+                .get();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        criteria.groupBy(userPath);
+
         criteria.multiselect(
                 userPath.get(User_.id),
                 userPath.get(User_.name),
-                builder.literal(TimeUtils.format(day)),
-//                builder.literal(day),//TODO=>ERROR?ValueHandlerFactory::determineAppropriateHandler not support
+                builder.literal(TimeUtils.format(date)),
+                //builder.literal(date),//TODO=>ERROR?ValueHandlerFactory::determineAppropriateHandler not support
                 builder.count(ordersPath.get(Orders_.id)),
                 builder.sum(ordersPath.get(Orders_.actual)),
                 builder.avg(ordersPath.get(Orders_.actual))
         );
-
-        Collection<Predicate> predicates = PredicateFactory.instance()
-                .append(restrictForUser(builder, userPath, userId))
-                .append(restrictForOrders(builder, ordersPath, DateRange.ofDate(day).toTimeRange()))
-                .append(restrictForStore(storePath, stores))
-                .get();
-
-        JpaUtils.setPredicate(criteria, predicates);
-
-        criteria.groupBy(userPath);
 
         return manager.createQuery(criteria).getResultList().stream().findFirst().orElse(null);
     }
@@ -161,19 +157,17 @@ public class UserRepositoryImpl implements UserDTORepository {
     @Override
     public long countByCreateTime(TimeRange timeRange, List<Long> stores) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
-
         CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
 
         Root<User> userPath = criteria.from(User.class);
-
-        criteria.select(builder.count(userPath));
 
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForUser(builder, userPath, timeRange))
                 .append(this.restrictForStore(userPath.join(User_.store), stores))
                 .get();
-
         JpaUtils.setPredicate(criteria, predicates);
+
+        criteria.select(builder.count(userPath));
 
         return manager.createQuery(criteria).getSingleResult();
     }
@@ -192,25 +186,11 @@ public class UserRepositoryImpl implements UserDTORepository {
     }
 
     private Collection<Predicate> restrictForUser(CriteriaBuilder builder, Path<User> path, TimeRange timeRange) {
-        if (timeRange == null) {
-            return null;
-        }
-
-        Collection<Predicate> predicates = new LinkedList<>();
-        Optional.ofNullable(timeRange.getBegin()).map(begin -> builder.greaterThanOrEqualTo(path.get(User_.createTime), begin)).ifPresent(predicates::add);
-        Optional.ofNullable(timeRange.getEnd()).map(end -> builder.lessThanOrEqualTo(path.get(User_.createTime), end)).ifPresent(predicates::add);
-        return predicates;
+        return JpaUtils.between(builder, path.get(User_.createTime), timeRange);
     }
 
     private Collection<Predicate> restrictForOrders(CriteriaBuilder builder, Path<Orders> path, TimeRange timeRange) {
-        if (timeRange == null) {
-            return null;
-        }
-
-        Collection<Predicate> predicates = new LinkedList<>();
-        Optional.ofNullable(timeRange.getBegin()).map(begin -> builder.greaterThanOrEqualTo(path.get(Orders_.createTime), begin)).ifPresent(predicates::add);
-        Optional.ofNullable(timeRange.getEnd()).map(end -> builder.lessThanOrEqualTo(path.get(Orders_.createTime), end)).ifPresent(predicates::add);
-        return predicates;
+        return JpaUtils.between(builder, path.get(Orders_.createTime), timeRange);
     }
 
     private Predicate restrictForStore(Path<Store> path, List<Long> stores) {

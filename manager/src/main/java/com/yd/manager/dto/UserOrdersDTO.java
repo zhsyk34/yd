@@ -1,22 +1,23 @@
 package com.yd.manager.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
- * 用户订单明细
+ * 用户订单汇总
  */
 @Data
-@AllArgsConstructor
 public class UserOrdersDTO {
-    private long userId;
-    private String userName;
+    private final long userId;
+    private final String userName;
+    private final String userPhone;
+    private final String userAddress;
+    private final BigDecimal userBalance;
+    private final LocalDateTime userCreateTime;
 
-    private long storeId;
-    private String storeName;
-
-    private long orderId;
-    private BigDecimal actual;
+    private final long ordersCount;
+    private final BigDecimal ordersMoney;
+    private final Double ordersAverage;
 }

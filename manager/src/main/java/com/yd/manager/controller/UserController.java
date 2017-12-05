@@ -1,9 +1,9 @@
 package com.yd.manager.controller;
 
-import com.yd.manager.dto.Result;
-import com.yd.manager.dto.UserOrdersCollectByDateDTO;
-import com.yd.manager.dto.UserOrdersCollectDTO;
+import com.yd.manager.dto.UserOrdersDTO;
+import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
+import com.yd.manager.dto.util.Result;
 import com.yd.manager.dto.util.TimeRange;
 import com.yd.manager.listener.AuthInitializationListener;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 public class UserController extends CommonController {
 
     @GetMapping
-    public Result<Page<UserOrdersCollectDTO>> listCollect(
+    public Result<Page<UserOrdersDTO>> listCollect(
             String nameOrPhone,
             @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin,
             @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end,
@@ -35,36 +35,36 @@ public class UserController extends CommonController {
         logger.info("pageable:{}", pageable);
         List<Long> stores = AuthInitializationListener.getStores("");
         TimeRange timeRange = DateRange.of(begin, end).toTimeRange();
-        Page<UserOrdersCollectDTO> page = userRepository.pageUserOrderCollectDTO(nameOrPhone, timeRange, stores, pageable);
+        Page<UserOrdersDTO> page = userRepository.pageUserOrdersDTO(nameOrPhone, timeRange, stores, pageable);
         return Result.success(page);
     }
 
     @GetMapping("{userId}/today")
-    public Result<UserOrdersCollectByDateDTO> listToday(@PathVariable long userId) {
+    public Result<UserOrdersDateDTO> listToday(@PathVariable long userId) {
         List<Long> stores = AuthInitializationListener.getStores("");
         return Result.success(userService.getForToday(userId, stores));
     }
 
     @GetMapping("{userId}/week")
-    public Result<List<UserOrdersCollectByDateDTO>> listWeek(@PathVariable long userId) {
+    public Result<List<UserOrdersDateDTO>> listWeek(@PathVariable long userId) {
         List<Long> stores = AuthInitializationListener.getStores("");
         return Result.success(userService.listForWeek(userId, stores));
     }
 
     @GetMapping("{userId}/month")
-    public Result<List<UserOrdersCollectByDateDTO>> listMonth(@PathVariable long userId) {
+    public Result<List<UserOrdersDateDTO>> listMonth(@PathVariable long userId) {
         List<Long> stores = AuthInitializationListener.getStores("");
         return Result.success(userService.listForMonth(userId, stores));
     }
 
     @GetMapping("{userId}/season")
-    public Result<List<UserOrdersCollectByDateDTO>> listSeason(@PathVariable long userId) {
+    public Result<List<UserOrdersDateDTO>> listSeason(@PathVariable long userId) {
         List<Long> stores = AuthInitializationListener.getStores("");
         return Result.success(userService.listForSeason(userId, stores));
     }
 
     @GetMapping("{userId}")
-    public Result<List<UserOrdersCollectByDateDTO>> listByDate(
+    public Result<List<UserOrdersDateDTO>> listByDate(
             @PathVariable long userId,
             @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin,
             @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end

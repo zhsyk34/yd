@@ -21,7 +21,10 @@ public class OrdersMerchandise {
 
     @ManyToOne
     @JoinColumn(name = "inventory_id")
-    private MerchandiseSpecification specification;
+    private MerchandiseStore merchandiseStore;
+
+    @Column(name = "spec_id")
+    private String specId;
 
     @Column(name = "qty")
     private int count;
