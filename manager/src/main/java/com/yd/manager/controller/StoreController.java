@@ -27,7 +27,7 @@ public class StoreController extends CommonController {
         return Result.success(storeService.listTop5(begin, end, null));
     }
 
-    @GetMapping("{storeId}/all")
+    @GetMapping("{storeId}")
     public Result<StoreOrdersDTO> getUntilNow(@PathVariable long storeId) {
         return Result.success(storeService.getUntilNow(storeId));
     }

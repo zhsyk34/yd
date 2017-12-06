@@ -25,12 +25,12 @@ public class UserController extends CommonController {
     }
 
     @GetMapping("{userId}/range")
-    public Result<List<UserOrdersDateDTO>> listByDate(@PathVariable long userId, @RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end) {
+    public Result<List<UserOrdersDateDTO>> listForDateRange(@PathVariable long userId, @RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end) {
         return Result.success(userService.listForDateRange(userId, begin, end, stores));
     }
 
     @GetMapping("{userId}/today")
-    public Result<UserOrdersDateDTO> listToday(@PathVariable long userId) {
+    public Result<UserOrdersDateDTO> getForToday(@PathVariable long userId) {
         return Result.success(userService.getForToday(userId, stores));
     }
 
