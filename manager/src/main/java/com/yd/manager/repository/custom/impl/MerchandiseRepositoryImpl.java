@@ -100,8 +100,8 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
         subQuery.where(
                 builder.and(
                         builder.equal(ordersMerchandiseRoot.get(OrdersMerchandise_.specId), specificationPath.get(MerchandiseSpecification_.specId)),
-                        builder.equal(ordersMerchandiseRoot.get(OrdersMerchandise_.merchandiseStore), merchandiseStorePath)
-                        //builder.equal(ordersMerchandiseRoot.join(OrdersMerchandise_.merchandiseStore), merchandiseStorePath) //the same
+//                        builder.equal(ordersMerchandiseRoot.get(OrdersMerchandise_.merchandiseStore), merchandiseStorePath)
+                        builder.equal(ordersMerchandiseRoot.join(OrdersMerchandise_.merchandiseStore), merchandiseStorePath) //the same
                 )
         );
 

@@ -6,7 +6,6 @@ import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.Result;
 import com.yd.manager.dto.util.TimeRange;
 import com.yd.manager.interceptor.AuthInitializationListener;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +18,6 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 
 @RestController
 @RequestMapping("users")
-@Slf4j
 public class UserController extends CommonController {
 
     @GetMapping
@@ -29,10 +27,6 @@ public class UserController extends CommonController {
             @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end,
             Pageable pageable
     ) {
-        logger.info("nameOrPhone:{}", nameOrPhone);
-        logger.info("begin:{}", begin);
-        logger.info("end:{}", end);
-        logger.info("pageable:{}", pageable);
         List<Long> stores = AuthInitializationListener.getStores("");
         TimeRange timeRange = DateRange.of(begin, end).toTimeRange();
         Page<UserOrdersDTO> page = userRepository.pageUserOrdersDTO(nameOrPhone, timeRange, stores, pageable);
