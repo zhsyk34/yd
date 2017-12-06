@@ -1,6 +1,6 @@
 //package com.yd.manager.repository;
 //
-//import com.yd.manager.dto.OrdersDTO;
+//import com.yd.manager.dto.StoreOrdersDTO;
 //import com.yd.manager.dto.UserOrdersDTO;
 //import org.junit.Test;
 //import org.springframework.data.domain.PageRequest;
@@ -28,7 +28,7 @@
 //    public void findOrdersCollectDTO() throws Exception {
 //        Pageable pageable = new PageRequest(0, 10, Direction.DESC, "count");
 //        List<Long> stores = Arrays.asList(13L, 14L, 10L, 9L, 11L, 4L);
-//        List<OrdersDTO> list = ordersRepository.listOrdersCollectDTO(end, null, pageable);
+//        List<StoreOrdersDTO> list = ordersRepository.listOrdersCollectDTO(end, null, pageable);
 //        list.forEach(System.err::println);
 //    }
 //

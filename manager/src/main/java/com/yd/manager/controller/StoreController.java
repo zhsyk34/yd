@@ -27,14 +27,14 @@ public class StoreController extends CommonController {
         return Result.success(storeService.listTop5(begin, end, null));
     }
 
-    @GetMapping("{storeId}/range")
-    public Result<List<StoreOrdersDateDTO>> listRange(@PathVariable long storeId, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end) {
-        return Result.success(storeService.listForDateRange(storeId, begin, end));
-    }
-
     @GetMapping("{storeId}/all")
     public Result<StoreOrdersDTO> getUntilNow(@PathVariable long storeId) {
         return Result.success(storeService.getUntilNow(storeId));
+    }
+
+    @GetMapping("{storeId}/range")
+    public Result<List<StoreOrdersDateDTO>> listRange(@PathVariable long storeId, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end) {
+        return Result.success(storeService.listForDateRange(storeId, begin, end));
     }
 
     @GetMapping("{storeId}/today")

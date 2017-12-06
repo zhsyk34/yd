@@ -1,7 +1,7 @@
 package com.yd.manager.repository;
 
-import com.yd.manager.dto.UserOrdersCollectByDateDTO;
-import com.yd.manager.dto.UserOrdersCollectDTO;
+import com.yd.manager.dto.UserOrdersDTO;
+import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.UserStoreOrdersDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
@@ -39,20 +39,20 @@ public class UserRepositoryTest extends SpringTestInit {
     @Test
     public void listUserOrderCollectDTO() throws Exception {
         Pageable pageable = new PageRequest(0, 100);
-        List<UserOrdersCollectDTO> list = userRepository.listUserOrderCollectDTO("", null, null, null);
+        List<UserOrdersDTO> list = userRepository.listUserOrdersDTO("", null, null, null);
         list.forEach(System.err::println);
     }
 
     @Test
     public void countUserOrderCollectDTO() throws Exception {
-        System.out.println(userRepository.countUserOrderCollectDTO("a", null));//71
+        System.out.println(userRepository.countUserOrdersDTO("a", null));//71
     }
 
     @Test
     public void pageUserOrderCollectDTO() throws Exception {
         Pageable pageable = new PageRequest(1, 8);
         List<Long> stores = Arrays.asList(13L, 14L);
-        Page<UserOrdersCollectDTO> page = userRepository.pageUserOrderCollectDTO("a", range, null, pageable);
+        Page<UserOrdersDTO> page = userRepository.pageUserOrdersDTO("a", range, null, pageable);
         System.out.println(mapper.writeValueAsString(page));
     }
 
@@ -78,7 +78,7 @@ public class UserRepositoryTest extends SpringTestInit {
         LocalDate base = LocalDate.of(2017, 8, 1);
         for (int i = 0; i < 100; i++) {
             LocalDate day = base.plusDays(i);
-            UserOrdersCollectByDateDTO dto = userRepository.getUserOrderCollectByDateDTO(115L, day, null);
+            UserOrdersDateDTO dto = userRepository.getUserOrdersDateDTO(115L, day, null);
             Optional.ofNullable(dto).ifPresent(System.err::println);
         }
     }
