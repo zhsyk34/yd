@@ -20,8 +20,8 @@ public interface StoreDTORepository {
 
     Page<StoreOrdersDTO> pageStoreOrdersDTO(String nameOrCode, TimeRange timeRange, List<Long> stores, Pageable pageable);
 
-    StoreOrdersDTO getStoreOrdersDTO(long storeId, TimeRange timeRange, List<Long> stores);
+    StoreOrdersDTO getStoreOrdersDTO(long storeId, TimeRange timeRange);
 
-    StoreOrdersDateDTO getStoreOrdersDateDTO(long storeId, @NonNull LocalDate date, List<Long> stores);
+    StoreOrdersDateDTO getStoreOrdersDateDTO(long storeId, @NonNull LocalDate date);
 
 }

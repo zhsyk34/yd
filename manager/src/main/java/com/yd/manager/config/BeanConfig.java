@@ -3,7 +3,7 @@ package com.yd.manager.config;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.yd.manager.listener.AuthInitializationListener;
+import com.yd.manager.interceptor.AuthInitializationListener;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

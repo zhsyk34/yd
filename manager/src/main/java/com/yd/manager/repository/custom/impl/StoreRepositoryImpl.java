@@ -100,7 +100,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
     }
 
     @Override
-    public StoreOrdersDTO getStoreOrdersDTO(long storeId, TimeRange timeRange, List<Long> stores) {
+    public StoreOrdersDTO getStoreOrdersDTO(long storeId, TimeRange timeRange) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<StoreOrdersDTO> criteria = builder.createQuery(StoreOrdersDTO.class);
 
@@ -111,7 +111,6 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         //where
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForStore(builder, storeRoot, storeId))
-                .append(this.restrictForStore(storeRoot, stores))
                 .append(this.restrictForOrders(builder, ordersJoin, timeRange))
                 .get();
         JpaUtils.setPredicate(criteria, predicates);
@@ -119,13 +118,12 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         //group by
         criteria.groupBy(storeRoot);
 
-        Expression<BigDecimal> sum = builder.sum(ordersJoin.get(Orders_.actual));
         criteria.multiselect(
                 storeRoot.get(Store_.id),
                 storeRoot.get(Store_.name),
                 storeRoot.get(Store_.address),
                 builder.count(ordersJoin),
-                sum,
+                builder.sum(ordersJoin.get(Orders_.actual)),
                 builder.avg(ordersJoin.get(Orders_.actual))
         );
 
@@ -133,7 +131,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
     }
 
     @Override
-    public StoreOrdersDateDTO getStoreOrdersDateDTO(long storeId, LocalDate date, List<Long> stores) {
+    public StoreOrdersDateDTO getStoreOrdersDateDTO(long storeId, LocalDate date) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<StoreOrdersDateDTO> criteria = builder.createQuery(StoreOrdersDateDTO.class);
 
@@ -144,7 +142,6 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         //where
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForStore(builder, storeRoot, storeId))
-                .append(this.restrictForStore(storeRoot, stores))
                 .append(this.restrictForOrders(builder, ordersJoin, DateRange.ofDate(date).toTimeRange()))
                 .get();
         JpaUtils.setPredicate(criteria, predicates);

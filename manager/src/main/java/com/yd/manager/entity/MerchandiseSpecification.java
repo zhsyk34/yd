@@ -16,11 +16,15 @@ public class MerchandiseSpecification {
     @GeneratedValue
     private Long id;
 
+    /**
+     * 商品库存
+     */
     @ManyToOne
     @JoinColumn(name = "inventory_id")
     private MerchandiseStore MerchandiseStore;
 
     /**
+     * 商品规格
      * 逗号分隔的规格id字符串
      * table-name.spec_id:estore_goods_format_groups
      */

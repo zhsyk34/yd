@@ -3,6 +3,7 @@ package com.yd.manager.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * 商品库存
@@ -22,4 +23,7 @@ public class MerchandiseStore {
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Store store;
+
+    @OneToMany(mappedBy = "merchandiseStore")
+    private Set<OrdersMerchandise> ordersMerchandises;
 }

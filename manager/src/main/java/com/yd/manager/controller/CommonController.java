@@ -1,6 +1,7 @@
 package com.yd.manager.controller;
 
 import com.yd.manager.repository.*;
+import com.yd.manager.service.StoreService;
 import com.yd.manager.service.UserService;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,4 +20,6 @@ abstract class CommonController {
 
     @Setter(onMethod = @__({@Autowired}))
     protected UserService userService;
+    @Setter(onMethod = @__({@Autowired}))
+    protected StoreService storeService;
 }

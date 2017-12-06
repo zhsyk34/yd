@@ -1,4 +1,4 @@
-package com.yd.manager.listener;
+package com.yd.manager.interceptor;
 
 import com.yd.manager.entity.Manager;
 import com.yd.manager.repository.ManagerRepository;
@@ -34,7 +34,7 @@ public class AuthInitializationListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        this.init();
+//        this.init();
     }
 
     @Override

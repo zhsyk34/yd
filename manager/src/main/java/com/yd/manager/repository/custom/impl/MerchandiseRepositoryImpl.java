@@ -38,9 +38,6 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
         //where
         JpaUtils.setPredicate(criteria, this.restrict(builder, merchandiseJoin, nameOrCode, storeJoin, stores));
 
-        //order by
-        criteria.orderBy(builder.desc(merchandiseJoin.get(Merchandise_.id)));
-
         //select
         criteria.multiselect(
                 merchandiseJoin.get(Merchandise_.id),
@@ -53,6 +50,9 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
                 specificationRoot.get(MerchandiseSpecification_.name),
                 specificationRoot.get(MerchandiseSpecification_.price)
         );
+
+        //order by
+        criteria.orderBy(builder.desc(merchandiseJoin.get(Merchandise_.id)));
 
         return JpaUtils.getResultListByPageable(manager, criteria, pageable);
     }
@@ -79,109 +79,101 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
         return new PageImpl<>(this.listMerchandiseDTO(nameOrCode, stores, pageable), pageable, this.countMerchandiseDTO(nameOrCode, stores));
     }
 
-//    @Override
-//    public List<MerchandiseOrdersDTO> listMerchandiseOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
-//        CriteriaBuilder builder = manager.getCriteriaBuilder();
-//        CriteriaQuery<MerchandiseOrdersDTO> criteria = builder.createQuery(MerchandiseOrdersDTO.class);
-//
-//        //from
-//        Root<MerchandiseSpecification> specificationRoot = criteria.from(MerchandiseSpecification.class);
-//        Join<MerchandiseSpecification, MerchandiseStore> merchandiseStoreJoin = specificationRoot.join(MerchandiseSpecification_.MerchandiseStore);
-//        Join<MerchandiseStore, Merchandise> merchandiseJoin = merchandiseStoreJoin.join(MerchandiseStore_.merchandise);
-//        Join<MerchandiseStore, Store> storeJoin = merchandiseStoreJoin.join(MerchandiseStore_.store);
-//
-//        //where
-//        JpaUtils.setPredicate(criteria, this.restrict(builder, merchandiseJoin, nameOrCode, storeJoin, stores));
-//
-//        //sub query
-//        Subquery<Long> subQuery = criteria.subquery(Long.class);
-//        Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.from(OrdersMerchandise.class);
-//        Join<OrdersMerchandise, MerchandiseSpecification> specificationJoin = ordersMerchandiseRoot.join(OrdersMerchandise_.specification);
-//
-//        //OrdersMerchandise om
-//        //inner join MerchandiseSpecification ms
-//        //on om.specification = ms
-//        //where ms = (outer) MerchandiseSpecification
-//
-//        //the same as
-//        //builder.equal(specificationJoin.get(MerchandiseSpecification_.id), specificationRoot.get(MerchandiseSpecification_.id));
-//        subQuery.where(builder.equal(specificationJoin, specificationRoot));
-//
-//        subQuery.select(builder.count(ordersMerchandiseRoot));
-//
-//        //select
-//        criteria.multiselect(
-//                merchandiseJoin.get(Merchandise_.id),
-//                merchandiseJoin.get(Merchandise_.name),
-//                merchandiseJoin.get(Merchandise_.code),
-//                merchandiseJoin.join(Merchandise_.category).get(MerchandiseCategory_.name),
-//                storeJoin.get(Store_.id),
-//                storeJoin.get(Store_.name),
-//                specificationRoot.get(MerchandiseSpecification_.no),
-//                specificationRoot.get(MerchandiseSpecification_.name),
-//                specificationRoot.get(MerchandiseSpecification_.price),
-//                subQuery.getSelection()
-//        );
-//
-//        //order by
-//        criteria.orderBy(builder.desc(merchandiseJoin.get(Merchandise_.id)));
-//        //criteria.orderBy(builder.desc(subQuery));//TODO
-//
-//        return JpaUtils.getResultListByPageable(manager, criteria, pageable);
-//    }
-
     @Override
     public List<MerchandiseOrdersDTO> listMerchandiseOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<MerchandiseOrdersDTO> criteria = builder.createQuery(MerchandiseOrdersDTO.class);
 
         //from
-        Root<MerchandiseSpecification> specificationRoot = criteria.from(MerchandiseSpecification.class);
-        Join<MerchandiseSpecification, MerchandiseStore> merchandiseStoreJoin = specificationRoot.join(MerchandiseSpecification_.MerchandiseStore);
-        Join<MerchandiseStore, Merchandise> merchandiseJoin = merchandiseStoreJoin.join(MerchandiseStore_.merchandise);
-        Join<MerchandiseStore, Store> storeJoin = merchandiseStoreJoin.join(MerchandiseStore_.store);
-//        specificationRoot.join(MerchandiseSpecification_.)
+        Root<MerchandiseSpecification> specificationPath = criteria.from(MerchandiseSpecification.class);
+        Join<MerchandiseSpecification, MerchandiseStore> merchandiseStorePath = specificationPath.join(MerchandiseSpecification_.MerchandiseStore);
+        Join<MerchandiseStore, Merchandise> merchandisePath = merchandiseStorePath.join(MerchandiseStore_.merchandise);
+        Join<MerchandiseStore, Store> storePath = merchandiseStorePath.join(MerchandiseStore_.store);
 
-        //estore_order_goods.inventory_id = estore_inventory_spec.id ?
         //where
-        JpaUtils.setPredicate(criteria, this.restrict(builder, merchandiseJoin, nameOrCode, storeJoin, stores));
+        JpaUtils.setPredicate(criteria, this.restrict(builder, merchandisePath, nameOrCode, storePath, stores));
 
         //sub query
         Subquery<Long> subQuery = criteria.subquery(Long.class);
         Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.from(OrdersMerchandise.class);
-        Join<OrdersMerchandise, MerchandiseSpecification> specificationJoin = ordersMerchandiseRoot.join(OrdersMerchandise_.specification);
 
-        //OrdersMerchandise om
-        //inner join MerchandiseSpecification ms
-        //on om.specification = ms
-        //where ms = (outer) MerchandiseSpecification
-
-        //the same as
-        //builder.equal(specificationJoin.get(MerchandiseSpecification_.id), specificationRoot.get(MerchandiseSpecification_.id));
-        subQuery.where(builder.equal(specificationJoin, specificationRoot));
+        subQuery.where(
+                builder.and(
+                        builder.equal(ordersMerchandiseRoot.get(OrdersMerchandise_.specId), specificationPath.get(MerchandiseSpecification_.specId)),
+                        builder.equal(ordersMerchandiseRoot.get(OrdersMerchandise_.merchandiseStore), merchandiseStorePath)
+                        //builder.equal(ordersMerchandiseRoot.join(OrdersMerchandise_.merchandiseStore), merchandiseStorePath) //the same
+                )
+        );
 
         subQuery.select(builder.count(ordersMerchandiseRoot));
 
         //select
         criteria.multiselect(
-                merchandiseJoin.get(Merchandise_.id),
-                merchandiseJoin.get(Merchandise_.name),
-                merchandiseJoin.get(Merchandise_.code),
-                merchandiseJoin.join(Merchandise_.category).get(MerchandiseCategory_.name),
-                storeJoin.get(Store_.id),
-                storeJoin.get(Store_.name),
-                specificationRoot.get(MerchandiseSpecification_.no),
-                specificationRoot.get(MerchandiseSpecification_.name),
-                specificationRoot.get(MerchandiseSpecification_.price),
+                merchandisePath.get(Merchandise_.id),
+                merchandisePath.get(Merchandise_.name),
+                merchandisePath.get(Merchandise_.code),
+                merchandisePath.join(Merchandise_.category).get(MerchandiseCategory_.name),
+                storePath.get(Store_.id),
+                storePath.get(Store_.name),
+                specificationPath.get(MerchandiseSpecification_.specId),
+                specificationPath.get(MerchandiseSpecification_.name),
+                specificationPath.get(MerchandiseSpecification_.price),
                 subQuery.getSelection()
         );
 
         //order by
-        criteria.orderBy(builder.desc(merchandiseJoin.get(Merchandise_.id)));
-        //criteria.orderBy(builder.desc(subQuery));//TODO
+        criteria.orderBy(builder.desc(merchandisePath.get(Merchandise_.id)));
+//        criteria.orderBy(builder.desc(subQuery.getSelection()));//TODO
 
         return JpaUtils.getResultListByPageable(manager, criteria, pageable);
     }
+
+//    @Override
+//    public List<MerchandiseOrdersDTO> listMerchandiseOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
+//        CriteriaBuilder builder = manager.getCriteriaBuilder();
+//        CriteriaQuery<MerchandiseOrdersDTO> criteria = builder.createQuery(MerchandiseOrdersDTO.class);
+//
+//        //from
+//        Root<MerchandiseSpecification> specificationPath = criteria.from(MerchandiseSpecification.class);
+//        Join<MerchandiseSpecification, MerchandiseStore> merchandiseStorePath = specificationPath.join(MerchandiseSpecification_.MerchandiseStore);
+//        Join<MerchandiseStore, Merchandise> merchandisePath = merchandiseStorePath.join(MerchandiseStore_.merchandise);
+//        Join<MerchandiseStore, Store> storePath = merchandiseStorePath.join(MerchandiseStore_.store);
+//
+//        SetJoin<MerchandiseStore, OrdersMerchandise> ordersMerchandisePath = merchandiseStorePath.join(MerchandiseStore_.ordersMerchandises, LEFT);
+//
+//        //where
+//        Predicate equal = builder.equal(specificationPath.get(MerchandiseSpecification_.specId), ordersMerchandisePath.get(OrdersMerchandise_.specId));
+//        Collection<Predicate> predicates = PredicateFactory.instance()
+//                .append()
+//                .append(equal)
+//                .get();
+//
+//        //left join on *** and *** != join on where ?
+//        JpaUtils.setPredicate(criteria, this.restrict(builder, merchandisePath, nameOrCode, storePath, stores));
+//
+//        //select
+//        Expression<Long> count = builder.count(ordersMerchandisePath);
+//        criteria.multiselect(
+//                merchandisePath.get(Merchandise_.id),
+//                merchandisePath.get(Merchandise_.name),
+//                merchandisePath.get(Merchandise_.code),
+//                merchandisePath.join(Merchandise_.category).get(MerchandiseCategory_.name),
+//                storePath.get(Store_.id),
+//                storePath.get(Store_.name),
+//                specificationPath.get(MerchandiseSpecification_.specId),
+//                specificationPath.get(MerchandiseSpecification_.name),
+//                specificationPath.get(MerchandiseSpecification_.price),
+//                count
+//        );
+//
+//        criteria.groupBy(merchandisePath, storePath, specificationPath);
+//
+//        //order by
+//        criteria.orderBy(builder.desc(merchandisePath.get(Merchandise_.id)));
+////        criteria.orderBy(builder.desc(count));//TODO
+//
+//        return JpaUtils.getResultListByPageable(manager, criteria, pageable);
+//    }
 
     @Override
     public Page<MerchandiseOrdersDTO> pageMerchandiseOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
