@@ -31,11 +31,11 @@ public class StoreService {
         return storeRepository.listStoreOrdersDTO(null, DateRange.of(begin, end).toTimeRange(), stores, new PageRequest(0, 5));
     }
 
-    public StoreOrdersDTO getUntilNow(long storeId) {
+    public StoreOrdersDTO getAll(long storeId) {
         return storeRepository.getStoreOrdersDTO(storeId, null);
     }
 
-    public List<StoreOrdersDateDTO> listForDateRange(long storeId, @NonNull LocalDate begin, @NonNull LocalDate end) {
+    public List<StoreOrdersDateDTO> listBetween(long storeId, @NonNull LocalDate begin, @NonNull LocalDate end) {
         List<StoreOrdersDateDTO> list = new ArrayList<>();
 
         while (!begin.isAfter(end)) {
@@ -55,23 +55,28 @@ public class StoreService {
         return storeRepository.getStoreOrdersDateDTO(storeId, LocalDate.now());
     }
 
+    public List<StoreOrdersDateDTO> listForRecent(long storeId) {
+        return this.listBetween(storeId, DateRange.recent());
+    }
+
     public List<StoreOrdersDateDTO> listForWeek(long storeId) {
-        return this.listForDateRange(storeId, DateRange.week());
+        return this.listBetween(storeId, DateRange.week());
     }
 
     public List<StoreOrdersDateDTO> listForMonth(long storeId) {
-        return this.listForDateRange(storeId, DateRange.month());
+        return this.listBetween(storeId, DateRange.month());
     }
 
     public List<StoreOrdersDateDTO> listForSeason(long storeId) {
-        return this.listForDateRange(storeId, DateRange.season());
+        return this.listBetween(storeId, DateRange.season());
     }
 
-    private List<StoreOrdersDateDTO> listForDateRange(long storeId, DateRange dateRange) {
+    private List<StoreOrdersDateDTO> listBetween(long storeId, DateRange dateRange) {
         LocalDate begin = dateRange.getBegin();
         LocalDate end = dateRange.getEnd();
 
         //此处查询必须为闭区间
-        return begin != null && end != null ? this.listForDateRange(storeId, begin, end) : null;
+        return begin != null && end != null ? this.listBetween(storeId, begin, end) : null;
     }
+
 }

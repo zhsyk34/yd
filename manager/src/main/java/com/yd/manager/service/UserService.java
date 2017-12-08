@@ -22,7 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Page<UserOrdersDTO> list(String nameOrPhone, LocalDate begin, LocalDate end, List<Long> stores, Pageable pageable) {
+    public Page<UserOrdersDTO> pageUserOrdersDTO(String nameOrPhone, LocalDate begin, LocalDate end, List<Long> stores, Pageable pageable) {
         return userRepository.pageUserOrdersDTO(nameOrPhone, DateRange.of(begin, end).toTimeRange(), stores, pageable);
     }
 
@@ -30,15 +30,15 @@ public class UserService {
         return userRepository.getUserOrdersDateDTO(userId, LocalDate.now(), stores);
     }
 
-    private List<UserOrdersDateDTO> listForDateRange(long userId, DateRange dateRange, List<Long> stores) {
+    private List<UserOrdersDateDTO> listBetween(long userId, DateRange dateRange, List<Long> stores) {
         LocalDate begin = dateRange.getBegin();
         LocalDate end = dateRange.getEnd();
 
         //此处查询必须为闭区间
-        return begin != null && end != null ? this.listForDateRange(userId, begin, end, stores) : null;
+        return begin != null && end != null ? this.listBetween(userId, begin, end, stores) : null;
     }
 
-    public List<UserOrdersDateDTO> listForDateRange(long userId, @NonNull LocalDate begin, @NonNull LocalDate end, List<Long> stores) {
+    public List<UserOrdersDateDTO> listBetween(long userId, @NonNull LocalDate begin, @NonNull LocalDate end, List<Long> stores) {
         List<UserOrdersDateDTO> list = new ArrayList<>();
 
         while (!begin.isAfter(end)) {
@@ -54,16 +54,20 @@ public class UserService {
         return list;
     }
 
+    public List<UserOrdersDateDTO> listForRecent(long userId, List<Long> stores) {
+        return this.listBetween(userId, DateRange.recent(), stores);
+    }
+
     public List<UserOrdersDateDTO> listForWeek(long userId, List<Long> stores) {
-        return this.listForDateRange(userId, DateRange.week(), stores);
+        return this.listBetween(userId, DateRange.week(), stores);
     }
 
     public List<UserOrdersDateDTO> listForMonth(long userId, List<Long> stores) {
-        return this.listForDateRange(userId, DateRange.month(), stores);
+        return this.listBetween(userId, DateRange.month(), stores);
     }
 
     public List<UserOrdersDateDTO> listForSeason(long userId, List<Long> stores) {
-        return this.listForDateRange(userId, DateRange.season(), stores);
+        return this.listBetween(userId, DateRange.season(), stores);
     }
 
     public long countRange(LocalDate begin, LocalDate end, List<Long> stores) {

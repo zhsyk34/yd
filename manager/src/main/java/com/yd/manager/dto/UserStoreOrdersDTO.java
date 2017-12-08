@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * 用户在店铺订单信息汇总
+ * 用户在店铺订单统计
  */
 @Data
 public class UserStoreOrdersDTO {

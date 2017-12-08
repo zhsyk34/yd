@@ -3,6 +3,7 @@ package com.yd.manager.controller;
 import com.yd.manager.dto.UserOrdersDTO;
 import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.util.Result;
+import com.yd.manager.interceptor.OwnerStore;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,45 +18,48 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 @RequestMapping("users")
 public class UserController extends CommonController {
 
-    private List<Long> stores = null;//AuthInitializationListener.getStores("");TODO
-
     @GetMapping
-    public Result<Page<UserOrdersDTO>> list(String nameOrPhone, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, Pageable pageable) {
-        return Result.success(userService.list(nameOrPhone, begin, end, null, pageable));
+    public Result<Page<UserOrdersDTO>> list(String nameOrPhone, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, Pageable pageable, @RequestParam(required = false) @OwnerStore List<Long> stores) {
+        return Result.success(userService.pageUserOrdersDTO(nameOrPhone, begin, end, stores, pageable));
     }
 
     @GetMapping("{userId}/range")
-    public Result<List<UserOrdersDateDTO>> listForDateRange(@PathVariable long userId, @RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end) {
-        return Result.success(userService.listForDateRange(userId, begin, end, stores));
+    public Result<List<UserOrdersDateDTO>> listBetween(@PathVariable long userId, @RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end, @OwnerStore List<Long> stores) {
+        return Result.success(userService.listBetween(userId, begin, end, stores));
     }
 
-    @GetMapping("{userId}/today")
-    public Result<UserOrdersDateDTO> getForToday(@PathVariable long userId) {
+    @GetMapping("{userId}/range/today")
+    public Result<UserOrdersDateDTO> getForToday(@PathVariable long userId, @OwnerStore List<Long> stores) {
         return Result.success(userService.getForToday(userId, stores));
     }
 
-    @GetMapping("{userId}/week")
-    public Result<List<UserOrdersDateDTO>> listWeek(@PathVariable long userId) {
+    @GetMapping("{userId}/range/recent")
+    public Result<List<UserOrdersDateDTO>> listForRecent(@PathVariable long userId, @OwnerStore List<Long> stores) {
+        return Result.success(userService.listForRecent(userId, stores));
+    }
+
+    @GetMapping("{userId}/range/week")
+    public Result<List<UserOrdersDateDTO>> listForWeek(@PathVariable long userId, @OwnerStore List<Long> stores) {
         return Result.success(userService.listForWeek(userId, stores));
     }
 
-    @GetMapping("{userId}/month")
-    public Result<List<UserOrdersDateDTO>> listMonth(@PathVariable long userId) {
+    @GetMapping("{userId}/range/month")
+    public Result<List<UserOrdersDateDTO>> listForMonth(@PathVariable long userId, @OwnerStore List<Long> stores) {
         return Result.success(userService.listForMonth(userId, stores));
     }
 
-    @GetMapping("{userId}/season")
-    public Result<List<UserOrdersDateDTO>> listSeason(@PathVariable long userId) {
+    @GetMapping("{userId}/range/season")
+    public Result<List<UserOrdersDateDTO>> listForSeason(@PathVariable long userId, @OwnerStore List<Long> stores) {
         return Result.success(userService.listForSeason(userId, stores));
     }
 
     @GetMapping("register/count/range")
-    public Result<Long> countRange(@RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end) {
+    public Result<Long> countRange(@RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, @OwnerStore List<Long> stores) {
         return Result.success(userService.countRange(begin, end, stores));
     }
 
     @GetMapping("register/count/toady")
-    public Result<Long> countToday() {
+    public Result<Long> countToday(@OwnerStore List<Long> stores) {
         return Result.success(userService.countToday(stores));
     }
 }

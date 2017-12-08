@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * 店铺订单按日汇总
+ * 具体店铺按日统计订单
  */
 @Data
 public class StoreOrdersDateDTO {

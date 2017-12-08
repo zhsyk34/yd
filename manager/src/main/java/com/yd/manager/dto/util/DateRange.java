@@ -27,8 +27,12 @@ public class DateRange {
         return ofDate(LocalDate.now());
     }
 
+    public static DateRange recent() {
+        return rangeFrom(LocalDate.now().minusDays(1));
+    }
+
     public static DateRange week() {
-        return rangeFrom(LocalDate.now().minusWeeks(1).plusDays(1));
+        return rangeFrom(LocalDate.now().minusWeeks(1));
     }
 
     public static DateRange month() {

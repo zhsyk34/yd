@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * 用户订单汇总
+ * 用户订单统计
  */
 @Data
 public class UserOrdersDTO {
