@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
+import static com.yd.upload.config.RfidConfig.IDENTIFIER;
 import static com.yd.upload.config.StoreConfig.DEVICE_TYPE;
-import static com.yd.upload.config.StoreConfig.MAC;
 
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 
@@ -19,13 +19,12 @@ public class Tag {
 
     private final String deviceType = DEVICE_TYPE;
 
-    private final String rfidCode = MAC;
+    private final String rfidCode = IDENTIFIER;
 
     private final String tid;
 
     public static Map<String, Object> from(String tid) {
-        Tag tag = Tag.of(tid);
-        return JsonUtils.toMap(tag);
+        return JsonUtils.toMap(Tag.of(tid));
     }
 
 }

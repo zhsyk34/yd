@@ -10,8 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>manager</artifactId>
-    <packaging>war</packaging>
     <description>后台管理</description>
+    <packaging>jar</packaging>
 
     <properties>
         <mysql.version>6.0.6</mysql.version>
@@ -90,6 +90,11 @@
             <artifactId>spring-boot-starter-jetty</artifactId>
         </dependency>
 
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-security</artifactId>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -105,6 +110,8 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>5.2.12.Final</version>
+            <optional>true</optional>
         </dependency>
 
         <!--php-->
@@ -112,6 +119,11 @@
             <groupId>de.ailis.pherialize</groupId>
             <artifactId>pherialize</artifactId>
             <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
     </dependencies>
 
@@ -127,22 +139,51 @@
         </pluginManagement>
 
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerArguments>
-                        <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-                        <!--<processor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</processor>-->
-                    </compilerArguments>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+            <!--<artifactId>maven-compiler-plugin</artifactId>-->
+            <!--<configuration>-->
+            <!--&lt;!&ndash;<compilerArguments>&ndash;&gt;-->
+            <!--&lt;!&ndash;<processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>&ndash;&gt;-->
+            <!--&lt;!&ndash;</compilerArguments>&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<annotationProcessorPaths>&ndash;&gt;-->
+            <!--&lt;!&ndash;<path>&ndash;&gt;-->
+            <!--&lt;!&ndash;<groupId>org.projectlombok</groupId>&ndash;&gt;-->
+            <!--&lt;!&ndash;<artifactId>lombok</artifactId>&ndash;&gt;-->
+            <!--&lt;!&ndash;<version>${lombok.version}</version>&ndash;&gt;-->
+            <!--&lt;!&ndash;</path>&ndash;&gt;-->
+            <!--&lt;!&ndash;</annotationProcessorPaths>&ndash;&gt;-->
+            <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!--<plugin>-->
+            <!--<groupId>org.projectlombok</groupId>-->
+            <!--<artifactId>lombok-maven-plugin</artifactId>-->
+            <!--<version>1.16.18.1</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<phase>generate-sources</phase>-->
+            <!--<goals>-->
+            <!--<goal>delombok</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <includeSystemScope>true</includeSystemScope>
                     <fork>true</fork>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

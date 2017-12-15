@@ -3,7 +3,7 @@ package com.yd.manager.config.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.yd.manager.utils.TimeUtils;
+import com.yd.manager.util.TimeUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

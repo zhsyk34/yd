@@ -1,22 +1,32 @@
 package com.yd.apk.controller;
 
-import com.yd.apk.exception.*;
-import com.yd.apk.util.*;
-import org.slf4j.*;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import com.yd.apk.exception.WebException;
+import com.yd.apk.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
-import java.nio.channels.*;
-import java.nio.file.*;
-import java.util.*;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
-import static com.yd.apk.constant.Config.*;
-import static java.nio.charset.StandardCharsets.*;
-import static org.springframework.http.HttpHeaders.*;
-import static org.springframework.http.MediaType.*;
+import static com.yd.apk.constant.Config.DIR;
+import static com.yd.apk.constant.Config.SUFFIX;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
 @RestController
 public class DownloadController {
@@ -25,30 +35,31 @@ public class DownloadController {
 
     @GetMapping("/download/{type}")
     public void download(@PathVariable("type") String type, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        logger.info("请求下载 {} 的最新版本", type);
         Path path = Paths.get(DIR, type).normalize();
 
         if (!Files.exists(path)) {
-            throw WebException.from(HttpStatus.NOT_FOUND);
+            throw WebException.from(HttpStatus.NOT_FOUND.value(), "文件不存在");
         }
 
-        Path target = FileUtils.getNewestFile(path).orElseThrow(() -> WebException.from(HttpStatus.NOT_FOUND));
-        logger.info("the newest version file for {} is {}", type, target);
+        Path target = FileUtils.getNewestFile(path).orElseThrow(() -> WebException.from(HttpStatus.NOT_FOUND.value(), "文件不存在"));
+        logger.info("{} 的最新版本是 {}", type, target);
 
         this.transfer(target, request, response);
     }
 
     @GetMapping("/download/{type}/{version:.+}")
-    public void download(@PathVariable("type") String type, @PathVariable(value = "version", required = false) String version, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void download(@PathVariable("type") String type, @PathVariable(value = "version") String version, HttpServletRequest request, HttpServletResponse response) throws IOException {
         Path path = Paths.get(DIR, type, version + SUFFIX).normalize();
-        logger.debug("request download file from path:{}", path.toAbsolutePath());
+        logger.debug("请求下载 {}", path.toAbsolutePath());
 
         //validate
         boolean exists = Files.exists(path);
 
         if (!exists) {
-            logger.error("file {} not exists!", path.toAbsolutePath());
+            logger.error("文件 {} 不存在", path.toAbsolutePath());
 
-            throw WebException.from(HttpStatus.NOT_FOUND);
+            throw WebException.from(HttpStatus.NOT_FOUND.value(), "文件不存在");
         }
 
         this.transfer(path, request, response);

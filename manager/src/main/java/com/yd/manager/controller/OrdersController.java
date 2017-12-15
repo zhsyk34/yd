@@ -20,37 +20,37 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 public class OrdersController extends CommonController {
 
     @GetMapping
-    public Result<OrdersDTO> getBetween(@RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, @OwnerStore List<Long> stores) {
+    public Result<OrdersDTO> getBetween(@RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, @RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.getBetween(begin, end, stores));
     }
 
     @GetMapping("range/week")
-    public Result<List<OrdersDateDTO>> listForWeek(@OwnerStore List<Long> stores) {
+    public Result<List<OrdersDateDTO>> listForWeek(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.listForWeek(stores));
     }
 
     @GetMapping("all")
-    public Result<OrdersDTO> getForAll(@OwnerStore List<Long> stores) {
+    public Result<OrdersDTO> getForAll(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.getForAll(stores));
     }
 
     @GetMapping("today")
-    public Result<OrdersDTO> getForToday(@OwnerStore List<Long> stores) {
+    public Result<OrdersDTO> getForToday(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.getForToday(stores));
     }
 
     @GetMapping("week")
-    public Result<OrdersDTO> getForWeek(@OwnerStore List<Long> stores) {
+    public Result<OrdersDTO> getForWeek(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.getForWeek(stores));
     }
 
     @GetMapping("month")
-    public Result<OrdersDTO> getForMonth(@OwnerStore List<Long> stores) {
+    public Result<OrdersDTO> getForMonth(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.getForMonth(stores));
     }
 
     @GetMapping("season")
-    public Result<OrdersDTO> getForSeason(@OwnerStore List<Long> stores) {
+    public Result<OrdersDTO> getForSeason(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.getForSeason(stores));
     }
 

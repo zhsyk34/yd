@@ -1,20 +1,20 @@
 package com.yd.apk.exception;
 
-import com.yd.apk.domain.*;
-import org.slf4j.*;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import com.yd.apk.domain.Result;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalControllerExceptionHandler {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler(WebException.class)
     @ResponseBody
     public Result<String> handWebException(WebException e) {
-        e.printStackTrace();
-        return Result.error(e.getHttpStatus());
+        return Result.of(e.getValue(), e.getReasonPhrase(), null);
     }
 
     @ExceptionHandler(RuntimeException.class)
@@ -30,4 +30,5 @@ public class GlobalControllerExceptionHandler {
         logger.error(throwable.getMessage(), throwable);
         return Result.from(HttpStatus.INTERNAL_SERVER_ERROR, throwable.getMessage());
     }
+
 }

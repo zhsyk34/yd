@@ -4,7 +4,7 @@ import com.yd.manager.dto.UserOrdersDTO;
 import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.UserRepository;
-import com.yd.manager.utils.TimeUtils;
+import com.yd.manager.util.TimeUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -76,5 +77,12 @@ public class UserService {
 
     public long countToday(List<Long> stores) {
         return userRepository.countByCreateTime(DateRange.today().toTimeRange(), stores);
+    }
+
+    public List<Long> countRecent(List<Long> stores) {
+        return Arrays.asList(
+                userRepository.countByCreateTime(DateRange.ofDate(LocalDate.now().minusDays(1)).toTimeRange(), stores),
+                userRepository.countByCreateTime(DateRange.today().toTimeRange(), stores)
+        );
     }
 }

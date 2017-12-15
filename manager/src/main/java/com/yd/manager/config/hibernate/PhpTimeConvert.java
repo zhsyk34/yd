@@ -1,6 +1,6 @@
 package com.yd.manager.config.hibernate;
 
-import com.yd.manager.utils.TimeUtils;
+import com.yd.manager.util.TimeUtils;
 
 import javax.persistence.AttributeConverter;
 import java.time.LocalDateTime;

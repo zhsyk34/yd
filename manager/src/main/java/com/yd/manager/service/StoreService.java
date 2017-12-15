@@ -4,7 +4,7 @@ import com.yd.manager.dto.StoreOrdersDTO;
 import com.yd.manager.dto.StoreOrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.StoreRepository;
-import com.yd.manager.utils.TimeUtils;
+import com.yd.manager.util.TimeUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

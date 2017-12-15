@@ -35,4 +35,9 @@ public class MerchandiseSpecification {
     private String name;
 
     private BigDecimal price;
+
+    /**
+     * 1:区域,2:云店
+     */
+    private int source;
 }

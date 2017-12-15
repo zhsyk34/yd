@@ -14,6 +14,10 @@
     <description>云柜</description>
     <packaging>jar</packaging>
 
+    <properties>
+        <pi4j.version>1.1</pi4j.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com</groupId>
@@ -35,10 +39,20 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-core</artifactId>
+            <version>${pi4j.version}</version>
         </dependency>
     </dependencies>
 

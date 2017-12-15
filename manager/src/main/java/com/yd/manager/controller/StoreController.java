@@ -19,12 +19,12 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 public class StoreController extends CommonController {
 
     @GetMapping
-    public Result<Page<StoreOrdersDTO>> list(String nameOrCode, Pageable pageable, @OwnerStore List<Long> stores) {
+    public Result<Page<StoreOrdersDTO>> list(String nameOrCode, Pageable pageable, @RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(storeService.pageStoreOrdersDTO(nameOrCode, stores, pageable));
     }
 
     @GetMapping("top5")
-    public Result<List<StoreOrdersDTO>> listTop5(@RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, @OwnerStore List<Long> stores) {
+    public Result<List<StoreOrdersDTO>> listTop5(@RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, @RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(storeService.listTop5(begin, end, stores));
     }
 

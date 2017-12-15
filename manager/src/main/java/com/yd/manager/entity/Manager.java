@@ -16,6 +16,11 @@ public class Manager {
     @GeneratedValue
     private Long id;
 
+    @Column(name = "user_login")
+    private String loginName;
+    @Column(name = "user_pass")
+    private String password;
+
     @Column(name = "user_truename")
     private String name;
     @Column(name = "mobile")
@@ -23,6 +28,10 @@ public class Manager {
     @Column(name = "user_address")
     private String address;
 
+    /**
+     * 用户类型
+     * 0:超级管理员,1一般管理员,2:代理商,3:小蜜蜂,4:店主
+     */
     @Column(name = "user_type")
     private int type;
 

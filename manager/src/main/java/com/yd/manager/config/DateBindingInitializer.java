@@ -8,7 +8,7 @@ import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-//@Component
+//TODO:@Component
 public class DateBindingInitializer implements WebBindingInitializer {
     @Override
     public void initBinder(WebDataBinder binder, WebRequest request) {

@@ -1,7 +1,7 @@
 package com.yd.upload.util;
 
 import org.slf4j.Logger;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 
@@ -20,8 +20,8 @@ public abstract class PropUtils {
     private static final Map<String, String> map = new HashMap<>();
 
     static {
-//        Resource resource = new FileSystemResource("./" + PROFILE);
-        Resource resource = new ClassPathResource(PROFILE);
+        Resource resource = new FileSystemResource("./" + PROFILE);
+//        Resource resource = new ClassPathResource("./" + PROFILE);
 
         if (resource.exists()) {
             try {

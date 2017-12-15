@@ -5,7 +5,7 @@ import com.yd.manager.dto.UserOrdersDateDTO;
 import com.yd.manager.dto.UserStoreOrdersDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
-import com.yd.manager.utils.TimeUtils;
+import com.yd.manager.util.TimeUtils;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

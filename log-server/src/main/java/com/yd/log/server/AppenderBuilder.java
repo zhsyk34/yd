@@ -8,15 +8,15 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import static com.yd.log.config.Config.*;
+import static com.yd.log.config.LoggerConfig.*;
 import static com.yd.log.server.LoggerBuilder.CONTEXT;
 import static java.io.File.separator;
 
 @RequiredArgsConstructor(staticName = "instance")
 @Setter
 class AppenderBuilder {
-    //base
-    private final String dir;
+
+    private final String prefix;
 
     Appender<ILoggingEvent> build() {
         RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<>();
@@ -26,13 +26,15 @@ class AppenderBuilder {
         appender.setAppend(true);
         appender.setPrudent(false);
 
+        String dir = SAVE_DIR + separator + prefix;
+
         //file
         appender.setFile(dir + separator + CURRENT + SUFFIX);
 
         //rollingPolicy
         TimeBasedRollingPolicy rollingPolicy = new TimeBasedRollingPolicy<>();
         rollingPolicy.setFileNamePattern(dir + separator + ROLL_PATTERN + SUFFIX);
-        rollingPolicy.setMaxHistory(MAX_HISTORY);
+        rollingPolicy.setMaxHistory(ROLL_HISTORY);
         rollingPolicy.setContext(CONTEXT);
         rollingPolicy.setParent(appender);
         rollingPolicy.start();

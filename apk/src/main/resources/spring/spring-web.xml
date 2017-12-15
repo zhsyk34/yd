@@ -6,8 +6,16 @@
     <context:component-scan base-package="com.yd.apk.controller"/>
     <context:component-scan base-package="com.yd.apk.exception"/>
 
+    <!--http://www.jianshu.com/p/81d613c63d52-->
     <mvc:annotation-driven/>
 
-    <mvc:default-servlet-handler/>
+    <!--DefaultServletHttpRequestHandler:处理静态资源:转由Web应用服务器默认的Servlet处理-->
+    <mvc:default-servlet-handler default-servlet-name="default"/>
+
+    <!--由Spring MVC框架自己处理静态资源并添加一些有用的附加值功能-->
+    <!--两个*表示映射路径下所有的URL-->
+
+    <!--ResourcesBeanDefinitionParser-->
+    <mvc:resources mapping="/**" location="/html/" cache-period="6000"/>
 
 </beans>

@@ -34,7 +34,7 @@
 
     <root level="debug">
         <appender-ref ref="console"/>
-        <!--<appender-ref ref="local"/>-->
+        <appender-ref ref="local"/>
         <!--<appender-ref ref="remote"/>-->
     </root>
 </configuration>

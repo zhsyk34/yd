@@ -1,6 +1,6 @@
 package com.yd.manager.dto;
 
-import com.yd.manager.utils.TimeUtils;
+import com.yd.manager.util.TimeUtils;
 import lombok.Data;
 
 import java.math.BigDecimal;

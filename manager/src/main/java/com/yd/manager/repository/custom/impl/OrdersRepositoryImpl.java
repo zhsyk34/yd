@@ -7,8 +7,8 @@ import com.yd.manager.entity.Orders_;
 import com.yd.manager.entity.Store;
 import com.yd.manager.entity.Store_;
 import com.yd.manager.repository.custom.OrdersDTORepository;
-import com.yd.manager.utils.jpa.JpaUtils;
-import com.yd.manager.utils.jpa.PredicateFactory;
+import com.yd.manager.util.jpa.JpaUtils;
+import com.yd.manager.util.jpa.PredicateFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 

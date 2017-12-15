@@ -8,9 +8,13 @@ public abstract class RfidConfig {
     static final int ANT;
     static final int RETRY = -1;
 
+    public static final String IDENTIFIER;
+
     static {
         ID = PropUtils.getString("rfid.id");
         ANT = PropUtils.getInt("rfid.ant");
         SYNC = PropUtils.getInt("rfid.sync");
+
+        IDENTIFIER = PropUtils.getString("rfid.identifier");
     }
 }

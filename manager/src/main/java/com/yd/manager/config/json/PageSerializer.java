@@ -21,6 +21,7 @@ public class PageSerializer extends StdSerializer<Page> {
 
         gen.writeNumberField("page", value.getNumber());
         gen.writeNumberField("size", value.getSize());
+        gen.writeObjectField("count", value.getTotalElements());
         gen.writeNumberField("total", value.getTotalPages());
         gen.writeObjectField("data", value.getContent());
 

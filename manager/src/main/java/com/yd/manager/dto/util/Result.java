@@ -16,10 +16,6 @@ public class Result<T> {
         return Result.of(code, message, null);
     }
 
-    public static <T> Result<T> success() {
-        return Result.from(HttpStatus.OK, null);
-    }
-
     public static <T> Result<T> from(HttpStatus status, T t) {
         return Result.of(status.value(), status.getReasonPhrase(), t);
     }
@@ -28,8 +24,16 @@ public class Result<T> {
         return Result.from(HttpStatus.OK, t);
     }
 
+    public static <T> Result<T> success() {
+        return Result.success(null);
+    }
+
+    public static <T> Result<T> error(HttpStatus status) {
+        return Result.from(status, null);
+    }
+
     public static <T> Result<T> error() {
-        return Result.from(HttpStatus.SERVICE_UNAVAILABLE, null);
+        return Result.error(HttpStatus.SERVICE_UNAVAILABLE);
     }
 
 }

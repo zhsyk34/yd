@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <property name="host" value="47.94.252.28"/>
+    <property name="port" value="1873"/>
+    <!--<property name="host" value="127.0.0.1"/>-->
+    <!--<property name="port" value="9999"/>-->
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{100} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="remote" class="ch.qos.logback.classic.net.SocketAppender">
+        <remoteHost>${host}</remoteHost>
+        <port>${port}</port>
+        <reconnectionDelay>10000</reconnectionDelay>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!--<logger name="org.apache.http" level="info" additivity="false"/>-->
+
+    <!--<logger name="org.springframework" level="info" additivity="false"/>-->
+
+    <root level="debug">
+        <appender-ref ref="console"/>
+        <appender-ref ref="remote"/>
+    </root>
+</configuration>

@@ -9,7 +9,6 @@ public abstract class StoreConfig {
     public static final String SERVER;
 
     public static final String DEVICE_TYPE = "estore";
-    public static String MAC = "000000000000";
 
     static {
         NAME = PropUtils.getString("store.name");

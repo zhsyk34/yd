@@ -1,27 +1,40 @@
 package com.yd.manager.interceptor;
 
+import com.yd.manager.dto.util.ManagerInfo;
+import com.yd.manager.dto.util.Result;
+import com.yd.manager.service.ManagerService;
+import com.yd.manager.util.EncryptUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
+import java.util.List;
 
-//注解? 修饰符? 返回值类型 类型声明?方法名(参数列表) 异常列表?
 @Aspect
 @Component
+
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
 public class ControllerAspect {
+
+    private static final String TOKEN_KEY = "credential";
+
+    private final ManagerService managerService;
 
     @Pointcut("execution(public !void com.yd.manager.controller.*.*(..))")
     private void matchController() {
@@ -31,61 +44,74 @@ public class ControllerAspect {
     private void matchParameter() {
     }
 
-//    @Pointcut("@args(..,com.yd.manager.interceptor.OwnerStore)")
-//    private void matchParameter() {
-//    }
-
     @Around("matchController() && matchParameter()")
-    public Object before(ProceedingJoinPoint point) throws Throwable {
-        logger.info("------------------aop around");
+    public Object around(ProceedingJoinPoint point) throws Throwable {
+        logger.debug("------------------aop around");
 
-        Object target = point.getTarget();
         Object[] args = point.getArgs();
         Method method = ((MethodSignature) point.getSignature()).getMethod();
 
-        logger.info("------------------target:{}", target.getClass());
-        logger.info("------------------method:{}", method.getName());
-        logger.info("------------------param:{}", StringUtils.arrayToCommaDelimitedString(args));
+        logger.debug("------------------target:{}", point.getTarget().getClass());
+        logger.debug("------------------method:{}", method.getName());
+        logger.debug("------------------param:{}", StringUtils.arrayToCommaDelimitedString(args));
 
         Parameter[] parameters = method.getParameters();
         Parameter parameter = parameters[parameters.length - 1];
+
+        //validate needed
         if (parameter.getAnnotation(OwnerStore.class) == null) {
             logger.info("------------------不需要权限验证");
             return point.proceed();
         }
 
-        HttpServletRequest request = this.getHttpServletRequest();
+        String token = this.getToken();
+        logger.debug("------------------token:{}", token);
 
-        Cookie[] cookies = request.getCookies();
-        logger.info("cookies list:");
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                logger.info("{}:{}", cookie.getName(), cookie.getValue());
+        if (!StringUtils.hasText(token)) {
+            logger.info("------------------未登录不能访问");
+            return Result.from(HttpStatus.UNAUTHORIZED, "身份认证失败");
+        }
+
+        long managerId = Long.parseLong(EncryptUtils.decodeToString(token));
+        ManagerInfo info = managerService.getManagerInfo(managerId);
+        logger.info("------------------id:{},info:{}", managerId, info);
+
+        if (info == null) {
+            logger.info("------------------未登录不能访问");
+            return Result.from(HttpStatus.UNAUTHORIZED, "身份认证失败");
+        }
+
+        List<Long> stores = null;
+        if (info.getType() == 0) {
+            logger.info("------------------超级管理员");
+        } else {
+            stores = info.getStores();
+
+            if (CollectionUtils.isEmpty(stores)) {
+                logger.info("------------------用户没有访问权限");
+                return Result.from(HttpStatus.UNAUTHORIZED, "没有权限");
             }
         }
 
-        logger.info("------------------权限验证");
-        args[parameters.length - 1] = Arrays.asList(14L, 13L, 8L);//TODO
+        args[parameters.length - 1] = stores;
         return point.proceed(args);
     }
 
-    private HttpServletRequest getHttpServletRequest() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        return attributes.getRequest();
-    }
+    private String getToken() {
+        Cookie[] cookies = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getCookies();
+        logger.debug("------------------cookies list");
 
-    private int getOwnerStoreParameterIndex(Parameter[] parameters) {
-        int index = -1;
-        for (int i = 0; i < parameters.length; i++) {
-            Parameter parameter = parameters[i];
-            if (parameter.getAnnotation(OwnerStore.class) != null) {
-                String parameterName = parameter.getName();
-                System.err.println(i + ":" + parameterName);
-                index = i;
-                break;
+        if (ObjectUtils.isEmpty(cookies)) {
+            return null;
+        }
+
+        for (Cookie cookie : cookies) {
+            logger.debug("------------------{}:{}", cookie.getName(), cookie.getValue());
+            if (cookie.getName().equals(TOKEN_KEY)) {
+                return cookie.getValue();
             }
         }
-        return index;
+        return null;
     }
 
 }

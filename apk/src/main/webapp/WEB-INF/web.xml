@@ -44,7 +44,7 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
         <multipart-config>
-            <location>e:/upload</location>
+            <location>/home/yd/upload</location>
             <max-file-size>104857600</max-file-size><!--100M-->
             <max-request-size>524288000</max-request-size><!--500M-->
             <file-size-threshold>0</file-size-threshold>
@@ -54,22 +54,4 @@
         <servlet-name>spring</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.jpg</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.js</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.css</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.html</url-pattern>
-    </servlet-mapping>
-
 </web-app>

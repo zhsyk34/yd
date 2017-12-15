@@ -3,50 +3,35 @@ package com.yd.log.server;
 import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.Socket;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class LoggerHandler implements Runnable, AutoCloseable {
+public class LoggerHandler implements Runnable {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Socket client;
-
-    private HardenedLoggingEventInputStream stream;
-
-    private volatile boolean closed = false;
 
     @Override
     public void run() {
-        try {
-            this.stream = new HardenedLoggingEventInputStream(this.client.getInputStream());
-            while (!this.closed) {
+        try (HardenedLoggingEventInputStream stream = new HardenedLoggingEventInputStream(this.client.getInputStream())) {
+            while (!Thread.currentThread().isInterrupted()) {
+                ILoggingEvent remote = (ILoggingEvent) stream.readObject();
 
-                ILoggingEvent event = (ILoggingEvent) this.stream.readObject();
-                String name = event.getLoggerName();
-
-                Optional.ofNullable(LoggerBuilder.getLogger(name)).ifPresent(logger -> {
-                    if (logger.isEnabledFor(event.getLevel())) {
-                        logger.callAppenders(event);
-                    }
+                Optional.ofNullable(LoggerBuilder.build(remote.getLoggerName())).ifPresent(local -> {
+//                    logger.error("local logger:{},{}", local.getName(), local.getLevel());
+//                    logger.error("remote logger:{}", remote.getLevel());
+//                    if(remote.getLevel())
+                    local.callAppenders(remote);
+//                    if (local.isEnabledFor(remote.getLevel())) {
+//                    }
                 });
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            this.close();
-        }
-    }
-
-    @Override
-    public void close() {
-        this.closed = true;
-        if (this.stream != null) {
-            try {
-                this.stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            logger.error("error", e);
         }
     }
 

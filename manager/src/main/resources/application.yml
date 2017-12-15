@@ -1,6 +1,6 @@
 server:
   port: 8080
-  address: 127.0.0.1
+  address: 192.168.1.202
   connectionTimeout: 30
   contextPath: /
 

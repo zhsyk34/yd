@@ -835,7 +835,7 @@
     }
 
 订单:orders
-    range:时间区间内的订单统计:begin(必需),end(必需)
+    range:时间区间内的订单统计:begin,end
     all:同上,截止至当前
     today:
     week:

@@ -3,8 +3,6 @@ package com.yd.manager.config;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.yd.manager.interceptor.AuthInitializationListener;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -14,10 +12,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
-import javax.servlet.ServletContextListener;
 import java.util.List;
-
-import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Configuration
 public class BeanConfig {
@@ -32,7 +27,7 @@ public class BeanConfig {
     @Bean
     public PageableArgumentResolver pageableArgumentResolver() {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(new PageRequest(0, 10, DESC, "id"));
+        resolver.setFallbackPageable(new PageRequest(0, 10));
         return resolver;
     }
 
@@ -44,9 +39,9 @@ public class BeanConfig {
         return new MappingJackson2HttpMessageConverter(mapper);
     }
 
-    @Bean
-    public ServletListenerRegistrationBean<ServletContextListener> authListener(AuthInitializationListener authInitializationListener) {
-        return new ServletListenerRegistrationBean<>(authInitializationListener);
-    }
+//    @Bean
+//    public ServletListenerRegistrationBean<ServletContextListener> authListener(AuthInitializationListener authInitializationListener) {
+//        return new ServletListenerRegistrationBean<>(authInitializationListener);
+//    }
 
 }

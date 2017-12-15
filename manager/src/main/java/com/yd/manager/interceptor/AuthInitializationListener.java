@@ -2,11 +2,10 @@ package com.yd.manager.interceptor;
 
 import com.yd.manager.entity.Manager;
 import com.yd.manager.repository.ManagerRepository;
-import com.yd.manager.utils.PhpUtils;
+import com.yd.manager.util.PhpUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletContextEvent;
@@ -18,19 +17,15 @@ import java.util.Map;
 /**
  * 权限初始化
  */
-@Component
+//@Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
+@Deprecated
 public class AuthInitializationListener implements ServletContextListener {
 
     private static final Map<Manager, List<Long>> map = new HashMap<>(1 << 8);
 
     private final ManagerRepository managerRepository;
-
-    //TODO
-    public static List<Long> getStores(String name) {
-        return null;
-    }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {

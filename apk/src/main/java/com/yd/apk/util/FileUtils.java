@@ -1,20 +1,20 @@
 package com.yd.apk.util;
 
-import org.slf4j.*;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
-import java.nio.file.*;
-import java.nio.file.attribute.*;
-import java.time.*;
-import java.util.*;
-import java.util.function.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.function.Predicate;
 
-import static java.nio.file.FileVisitOption.*;
+import static java.nio.file.FileVisitOption.FOLLOW_LINKS;
 
-@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
+@Slf4j
 public abstract class FileUtils {
-
-    private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     public static Path createPath(Path path) throws IOException {
         path = path.normalize();
@@ -32,12 +32,9 @@ public abstract class FileUtils {
         return path;
     }
 
-    public static Path createPath(String path) throws IOException {
-        return createPath(Paths.get(path));
-    }
-
     public static Optional<Path> getNewestFile(Path path) throws IOException {
         return Files.walk(path, 1, FOLLOW_LINKS)
+//                .filter(Files::isDirectory)
                 .filter(((Predicate<Path>) (Files::isDirectory)).negate())
                 .max(Comparator.comparing(p -> {
                     try {
@@ -47,13 +44,5 @@ public abstract class FileUtils {
                         return FileTime.from(Instant.MIN);
                     }
                 }));
-
-//        Files.walkFileTree(path, EnumSet.of(FOLLOW_LINKS), 3, new SimpleFileVisitor<Path>() {
-//            @Override
-//            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-//                System.out.println(file);
-//                return FileVisitResult.CONTINUE;
-//            }
-//        });
     }
 }

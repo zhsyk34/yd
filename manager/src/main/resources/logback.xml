@@ -21,7 +21,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.yd.manager.controller" level="debug" additivity="false">
+    <logger name="com.yd.manager" level="debug" additivity="false">
         <appender-ref ref="console"/>
     </logger>
 

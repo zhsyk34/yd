@@ -25,7 +25,7 @@ public class RfidMessageHandler extends RfidMessageAdapter {
             EXECUTOR.submit(() -> {
                 Map<String, Object> info = Tag.from(tag._TID);
                 String result = HttpUtils.postForm(StoreConfig.SERVER, info);
-                logger.info("已上传标签信息{},服务器响应:{}", info, result);
+                logger.info("----------已上传标签信息{}\n----------服务器响应:{}", info, result);
             });
         }
     }
