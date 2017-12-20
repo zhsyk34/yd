@@ -202,6 +202,6 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
                 .append(this.restrictForMerchandiseSpecification(builder, specificationPath))
                 .append(this.restrictForMerchandise(builder, merchandisePath, nameOrCode))
                 .append(this.restrictForStore(storePath, stores))
-                .get();
+                .build();
     }
 }

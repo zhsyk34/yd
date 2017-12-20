@@ -47,7 +47,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
                 .append(this.restrictForStore(builder, storeRoot, nameOrCode))
                 .append(this.restrictForStore(storeRoot, stores))
                 .append(this.restrictForOrders(builder, ordersJoin, timeRange))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         //group by
@@ -86,7 +86,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForStore(builder, storePath, nameOrCode))
                 .append(this.restrictForStore(storePath, stores))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         criteria.select(builder.count(storePath));
@@ -112,7 +112,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForStore(builder, storeRoot, storeId))
                 .append(this.restrictForOrders(builder, ordersJoin, timeRange))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         //group by
@@ -143,7 +143,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForStore(builder, storeRoot, storeId))
                 .append(this.restrictForOrders(builder, ordersJoin, DateRange.ofDate(date).toTimeRange()))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         //group by

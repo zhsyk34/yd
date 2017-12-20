@@ -34,7 +34,7 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForOrders(builder, ordersRoot, timeRange))
                 .append(this.restrictForStore(storeJoin, stores))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         criteria.multiselect(

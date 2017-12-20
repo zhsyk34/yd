@@ -27,7 +27,7 @@ public class PredicateFactory {
         return this;
     }
 
-    public Collection<Predicate> get() {
+    public Collection<Predicate> build() {
         return result;
     }
 }

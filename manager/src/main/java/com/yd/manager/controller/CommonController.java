@@ -19,4 +19,10 @@ abstract class CommonController {
 
     @Setter(onMethod = @__({@Autowired}))
     protected ManagerService managerService;
+
+    @Setter(onMethod = @__({@Autowired}))
+    protected AccessRecordService accessRecordService;
+
+    @Setter(onMethod = @__({@Autowired}))
+    protected AccessAttachService accessAttachService;
 }

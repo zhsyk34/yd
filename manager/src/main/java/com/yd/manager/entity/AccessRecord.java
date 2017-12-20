@@ -6,7 +6,6 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-//访问数 新客数 注册率
 @Entity
 @Table(name = "estore_user_log")
 @Data
@@ -17,6 +16,9 @@ public class AccessRecord {
 
     @ManyToOne
     private User user;
+
+    @Column(name = "is_new")
+    private boolean newUser;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")

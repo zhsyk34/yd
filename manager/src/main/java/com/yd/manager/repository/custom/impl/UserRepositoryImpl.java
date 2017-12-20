@@ -44,7 +44,7 @@ public class UserRepositoryImpl implements UserDTORepository {
                 .append(this.restrictForUser(builder, userPath, nameOrPhone))
                 .append(this.restrictForOrders(builder, ordersPath, timeRange))
                 .append(this.restrictForStore(storePath, stores))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         criteria.groupBy(userPath);
@@ -78,7 +78,11 @@ public class UserRepositoryImpl implements UserDTORepository {
 
         Root<User> userPath = criteria.from(User.class);
 
-        JpaUtils.setPredicate(criteria, PredicateFactory.instance().append(this.restrictForUser(builder, userPath, nameOrPhone)).get());
+        Collection<Predicate> predicates = PredicateFactory.instance()
+                .append(this.restrictForUser(builder, userPath, nameOrPhone))
+                .append(this.restrictForStore(userPath.join(User_.orders, LEFT).join(Orders_.store, LEFT), stores))
+                .build();
+        JpaUtils.setPredicate(criteria, predicates);
 
         criteria.select(builder.count(userPath));
 
@@ -103,7 +107,7 @@ public class UserRepositoryImpl implements UserDTORepository {
                 .append(restrictForUser(builder, userPath, userId))
                 .append(restrictForOrders(builder, ordersPath, timeRange))
                 .append(restrictForStore(storePath, stores))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         criteria.groupBy(userPath, storePath);
@@ -136,7 +140,7 @@ public class UserRepositoryImpl implements UserDTORepository {
                 .append(restrictForUser(builder, userPath, userId))
                 .append(restrictForOrders(builder, ordersPath, DateRange.ofDate(date).toTimeRange()))
                 .append(restrictForStore(storePath, stores))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         criteria.groupBy(userPath);
@@ -164,7 +168,7 @@ public class UserRepositoryImpl implements UserDTORepository {
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForUser(builder, userPath, timeRange))
                 .append(this.restrictForStore(userPath.join(User_.store), stores))
-                .get();
+                .build();
         JpaUtils.setPredicate(criteria, predicates);
 
         criteria.select(builder.count(userPath));

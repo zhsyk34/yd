@@ -75,7 +75,6 @@ public class StoreService {
         LocalDate begin = dateRange.getBegin();
         LocalDate end = dateRange.getEnd();
 
-        //此处查询必须为闭区间
         return begin != null && end != null ? this.listBetween(storeId, begin, end) : null;
     }
 
