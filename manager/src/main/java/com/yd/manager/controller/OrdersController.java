@@ -24,6 +24,11 @@ public class OrdersController extends CommonController {
         return Result.success(ordersService.getBetween(begin, end, stores));
     }
 
+    @GetMapping("range/recent")
+    public Result<List<OrdersDateDTO>> listForRecent(@RequestParam(required = false) @OwnerStore List<Long> stores) {
+        return Result.success(ordersService.listForRecent(stores));
+    }
+
     @GetMapping("range/week")
     public Result<List<OrdersDateDTO>> listForWeek(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(ordersService.listForWeek(stores));

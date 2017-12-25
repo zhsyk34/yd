@@ -1,5 +1,6 @@
 package com.yd.manager.controller;
 
+import com.yd.manager.dto.AccessRecordDTO;
 import com.yd.manager.dto.AccessRecordDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.Result;
@@ -12,33 +13,37 @@ import java.util.List;
 
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 
-//TODO:stores==>@RequestParam(required = false)
 @RestController
 @RequestMapping("records")
 public class AccessRecordController extends CommonController {
 
+    @GetMapping("all")
+    public Result<AccessRecordDTO> getAll(@RequestParam(required = false) @OwnerStore List<Long> stores) {
+        return Result.success(accessRecordService.getAccessRecordDTO(null, stores));
+    }
+
     @GetMapping("range")
-    public Result<List<AccessRecordDateDTO>> listBetweenByStores(@RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end, @OwnerStore List<Long> stores) {
+    public Result<List<AccessRecordDateDTO>> listBetweenByStores(@RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end, @RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(accessRecordService.listBetweenByStores(stores, DateRange.of(begin, end)));
     }
 
     @GetMapping("range/recent")
-    public Result<List<AccessRecordDateDTO>> listForRecentByStores(@OwnerStore List<Long> stores) {
+    public Result<List<AccessRecordDateDTO>> listForRecentByStores(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(accessRecordService.listForRecentByStores(stores));
     }
 
     @GetMapping("range/week")
-    public Result<List<AccessRecordDateDTO>> listForWeekByStores(@OwnerStore List<Long> stores) {
+    public Result<List<AccessRecordDateDTO>> listForWeekByStores(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(accessRecordService.listForWeekByStores(stores));
     }
 
     @GetMapping("range/month")
-    public Result<List<AccessRecordDateDTO>> listForMonthByStores(@OwnerStore List<Long> stores) {
+    public Result<List<AccessRecordDateDTO>> listForMonthByStores(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(accessRecordService.listForMonthByStores(stores));
     }
 
     @GetMapping("range/season")
-    public Result<List<AccessRecordDateDTO>> listForSeasonByStores(@OwnerStore List<Long> stores) {
+    public Result<List<AccessRecordDateDTO>> listForSeasonByStores(@RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(accessRecordService.listForSeasonByStores(stores));
     }
 
@@ -46,6 +51,11 @@ public class AccessRecordController extends CommonController {
     @GetMapping("users/{userId}/range")
     public Result<List<AccessRecordDateDTO>> listBetweenByUser(@PathVariable long userId, @RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end, @RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(accessRecordService.listBetweenByUser(userId, DateRange.of(begin, end), stores));
+    }
+
+    @GetMapping("users/{userId}/range/recent")
+    public Result<List<AccessRecordDateDTO>> listForRecentByUser(@PathVariable long userId, @RequestParam(required = false) @OwnerStore List<Long> stores) {
+        return Result.success(accessRecordService.listForRecentByUser(userId, stores));
     }
 
     @GetMapping("users/{userId}/range/week")
@@ -67,6 +77,11 @@ public class AccessRecordController extends CommonController {
     @GetMapping("stores/{storeId}/range")
     public Result<List<AccessRecordDateDTO>> listBetweenByStore(@PathVariable long storeId, @RequestParam @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam @DateTimeFormat(iso = DATE) LocalDate end) {
         return Result.success(accessRecordService.listBetweenByStore(storeId, DateRange.of(begin, end)));
+    }
+
+    @GetMapping("stores/{storeId}/range/recent")
+    public Result<List<AccessRecordDateDTO>> listForRecentByStore(@PathVariable long storeId) {
+        return Result.success(accessRecordService.listForRecentByStore(storeId));
     }
 
     @GetMapping("stores/{storeId}/range/week")

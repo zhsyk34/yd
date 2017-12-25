@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -21,12 +22,14 @@ public class UserOrdersAccessDTO {
     @JsonUnwrapped
     private final AccessRecordDTO accessRecordDTO;
 
+    private static final AccessRecordDTO EMPTY = AccessRecordDTO.from(0, 0);
+
     public static List<UserOrdersAccessDTO> fromMerge(@NonNull List<UserOrdersDTO> userOrdersDTOS, List<UserAccessRecordDTO> userAccessRecordDTOS) {
         if (CollectionUtils.isEmpty(userAccessRecordDTOS)) {
-            return userOrdersDTOS.stream().map(dto -> UserOrdersAccessDTO.of(dto, null)).collect(toList());
+            return userOrdersDTOS.stream().map(dto -> UserOrdersAccessDTO.of(dto, EMPTY)).collect(toList());
         }
 
-        Map<Long, UserAccessRecordDTO> map = userAccessRecordDTOS.stream().collect(toMap(UserAccessRecordDTO::getUserId, identity()));
-        return userOrdersDTOS.stream().map(dto -> UserOrdersAccessDTO.of(dto, map.get(dto.getUserId()))).collect(toList());
+        Map<Long, AccessRecordDTO> map = userAccessRecordDTOS.stream().collect(toMap(UserAccessRecordDTO::getUserId, identity()));
+        return userOrdersDTOS.stream().map(dto -> UserOrdersAccessDTO.of(dto, Optional.ofNullable(map.get(dto.getUserId())).orElse(EMPTY))).collect(toList());
     }
 }

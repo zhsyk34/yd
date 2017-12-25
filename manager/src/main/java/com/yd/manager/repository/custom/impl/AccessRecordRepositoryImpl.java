@@ -16,6 +16,9 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -268,6 +271,11 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
     private Collection<Predicate> restrictForAccess(Path<AccessRecord> path, TimeRange timeRange) {
         return JpaUtils.between(builder, path.get(AccessRecord_.enterTime), timeRange);
+    }
+
+    //TODO
+    private Predicate restrictForAccessIn(Path<AccessRecord> path) {
+        return builder.greaterThan(path.get(AccessRecord_.enterTime), LocalDateTime.of(LocalDate.ofYearDay(1970, 0), LocalTime.MIN));
     }
 
     private Predicate restrictForNewAccess(Path<AccessRecord> path) {

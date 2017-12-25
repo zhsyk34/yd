@@ -59,4 +59,9 @@ public class OrdersService {
         DateRange week = DateRange.week();
         return listBetween(week.getBegin(), week.getEnd(), stores);
     }
+
+    public List<OrdersDateDTO> listForRecent(List<Long> stores) {
+        DateRange recent = DateRange.recent();
+        return listBetween(recent.getBegin(), recent.getEnd(), stores);
+    }
 }

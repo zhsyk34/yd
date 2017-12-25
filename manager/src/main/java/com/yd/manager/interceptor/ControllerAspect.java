@@ -13,7 +13,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -26,7 +25,7 @@ import java.lang.reflect.Parameter;
 import java.util.List;
 
 @Aspect
-@Component
+//@Component
 
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
