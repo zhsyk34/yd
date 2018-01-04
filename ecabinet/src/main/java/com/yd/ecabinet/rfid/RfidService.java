@@ -3,29 +3,22 @@ package com.yd.ecabinet.rfid;
 import com.clou.uhf.G3Lib.ClouInterface.IAsynchronousMessage;
 import com.yd.rfid.RfidOperator;
 import com.yd.rfid.executor.AbstractDaemonService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.yd.ecabinet.config.StoreConfig.INTERVAL;
-
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RfidService extends AbstractDaemonService {
 
     private final IAsynchronousMessage callback;
 
     private final RfidOperator rfidOperator;
 
-    @Autowired
-    public RfidService(IAsynchronousMessage callback, RfidOperator rfidOperator) {
-        super(INTERVAL);
-        this.callback = callback;
-        this.rfidOperator = rfidOperator;
-    }
-
     @Override
     public void run() {
         rfidOperator.connect(callback);
-        super.setStartup(true);
+        super.setFinished(true);
     }
 
 }

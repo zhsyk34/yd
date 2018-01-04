@@ -1,6 +1,5 @@
 package com.yd.ecabinet.util;
 
-import com.yd.ecabinet.config.StoreConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,7 +7,7 @@ import org.slf4j.LoggerFactory;
 public abstract class LoggerUtils {
 
     public static Logger getLogger(String name) {
-        return LoggerFactory.getLogger(StoreConfig.NAME + "." + name);
+        return LoggerFactory.getLogger(name);//TODO
     }
 
     public static Logger getLogger(Class<?> clazz) {

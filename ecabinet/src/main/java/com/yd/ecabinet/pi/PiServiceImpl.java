@@ -2,10 +2,9 @@ package com.yd.ecabinet.pi;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
-import org.springframework.stereotype.Service;
 
 //TODO
-@Service
+//@Service
 public class PiServiceImpl implements PiService {
 
     private static GpioController controller = GpioFactory.getInstance();

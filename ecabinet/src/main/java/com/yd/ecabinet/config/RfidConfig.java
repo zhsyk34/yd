@@ -1,21 +1,18 @@
 package com.yd.ecabinet.config;
 
-import com.yd.ecabinet.util.PropUtils;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
-public abstract class RfidConfig {
-    public static final int SYNC;
-    public static final int SCAN;
-    public static final int WAIT;
-    static final String ID;
-    static final int ANT;
-    static final int RETRY;
+import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 
-    static {
-        ID = PropUtils.getString("rfid.id");
-        ANT = PropUtils.getInt("rfid.ant");
-        SYNC = PropUtils.getInt("rfid.sync");
-        RETRY = PropUtils.getInt("rfid.retry");
-        SCAN = PropUtils.getInt("rfid.scan");
-        WAIT = PropUtils.getInt("rfid.wait");
-    }
+@Configuration
+@PropertySource(CLASSPATH_URL_PREFIX + "ecabinet.properties")
+@Data
+public class RfidConfig {
+    @Value("${rfid.id}")
+    private String id;
+    @Value("${rfid.ant}")
+    private int ant;
 }

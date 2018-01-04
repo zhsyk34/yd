@@ -2,31 +2,34 @@ package com.yd.ecabinet.config;
 
 import com.clou.uhf.G3Lib.ClouInterface.IAsynchronousMessage;
 import com.yd.ecabinet.Entry;
+import com.yd.ecabinet.util.LoggerUtils;
 import com.yd.rfid.DefaultRfidOperator;
 import com.yd.rfid.RfidMonitor;
 import com.yd.rfid.RfidOperator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import static com.yd.ecabinet.config.RfidConfig.*;
-import static com.yd.ecabinet.config.StoreConfig.INTERVAL;
-import static com.yd.ecabinet.util.LoggerUtils.getLogger;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Configuration
 @ComponentScan(basePackageClasses = Entry.class)
 public class SpringConfig {
 
     @Bean
-    public RfidOperator rfidOperator() {
-        return DefaultRfidOperator.instance(getLogger(RfidOperator.class), ID, ANT, INTERVAL, RETRY);
+    public RfidOperator rfidOperator(RfidConfig rfidConfig) {
+        return DefaultRfidOperator.instance(rfidConfig.getId(), rfidConfig.getAnt()).setLogger(LoggerUtils.getLogger(RfidOperator.class));
     }
 
     @Bean
-    @Autowired
     public RfidMonitor rfidMonitor(IAsynchronousMessage callback, RfidOperator rfidOperator) {
-        return RfidMonitor.instance(getLogger(RfidMonitor.class), callback, rfidOperator, INTERVAL);
+        return RfidMonitor.instance(callback, rfidOperator).setLogger(LoggerUtils.getLogger(RfidMonitor.class));
+    }
+
+    @Bean
+    public ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(3);
     }
 
 }

@@ -1,30 +1,24 @@
 package com.yd.ecabinet.rfid;
 
 import com.clou.uhf.G3Lib.Protocol.Tag_Model;
-import com.yd.ecabinet.rfid.order.TagService;
-import com.yd.ecabinet.util.LoggerUtils;
+import com.yd.ecabinet.tcp.TcpServer;
 import com.yd.rfid.RfidMessageAdapter;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+
+import static com.yd.ecabinet.util.LoggerUtils.getLogger;
 
 @Component
 public class RfidMessageHandler extends RfidMessageAdapter {
 
-    private final Logger logger = LoggerUtils.getLogger(this.getClass());
+    private final Logger logger = getLogger(getClass());
 
-    private final TagService tagService;
-
-    public RfidMessageHandler(@Autowired TagService tagService) {
-        this.tagService = tagService;
-    }
+    @Autowired
+    private TcpServer tcpServer;
 
     @Override
     public void OutPutTags(Tag_Model tag) {
-        if (StringUtils.hasText(tag._TID)) {
-            tagService.statistics(tag._TID);
-        }
     }
 
     /**
@@ -38,10 +32,35 @@ public class RfidMessageHandler extends RfidMessageAdapter {
         if (gpiState == 1) {
             logger.debug("检测到开门事件");
         } else {
-            logger.debug("检测到关门事件,开始汇总剩余商品以统计订单...");
-
-            tagService.process();
+            logger.debug("检测到关门事件,开始请求Python接口以提交订单...");
+            tcpServer.send("0");//TODO
         }
     }
+
+//    //TODO: test
+//    private static void reportOrders() throws JsonProcessingException {
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("device_type", "cabinet");
+//        map.put("shop_code", StoreConfig.NUMBER);
+//
+//        Map<String, String> info = new HashMap<>();
+//        info.put("6928804014649", "2");
+//        info.put("6917878027333", "3");
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        String json = mapper.writeValueAsString(info);
+//
+////        map.put("spec_code", "\"" + json + "\"");
+//        map.put("spec_code", json);
+//
+//        System.out.println(map);
+//
+//        System.err.println(StoreConfig.SERVER);
+//        System.out.println(HttpUtils.postForm(StoreConfig.SERVER, map));
+//    }
+//
+//    public static void main(String[] args) throws JsonProcessingException {
+//        reportOrders();
+//    }
 
 }
