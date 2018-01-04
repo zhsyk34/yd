@@ -3,19 +3,17 @@ package com.yd.ecabinet.rfid;
 import com.clou.uhf.G3Lib.Protocol.Tag_Model;
 import com.yd.ecabinet.tcp.TcpServer;
 import com.yd.rfid.RfidMessageAdapter;
-import org.slf4j.Logger;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static com.yd.ecabinet.util.LoggerUtils.getLogger;
-
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class RfidMessageHandler extends RfidMessageAdapter {
 
-    private final Logger logger = getLogger(getClass());
-
-    @Autowired
-    private TcpServer tcpServer;
+    private final TcpServer tcpServer;
 
     @Override
     public void OutPutTags(Tag_Model tag) {
@@ -36,31 +34,5 @@ public class RfidMessageHandler extends RfidMessageAdapter {
             tcpServer.send("0");//TODO
         }
     }
-
-//    //TODO: test
-//    private static void reportOrders() throws JsonProcessingException {
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("device_type", "cabinet");
-//        map.put("shop_code", StoreConfig.NUMBER);
-//
-//        Map<String, String> info = new HashMap<>();
-//        info.put("6928804014649", "2");
-//        info.put("6917878027333", "3");
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        String json = mapper.writeValueAsString(info);
-//
-////        map.put("spec_code", "\"" + json + "\"");
-//        map.put("spec_code", json);
-//
-//        System.out.println(map);
-//
-//        System.err.println(StoreConfig.SERVER);
-//        System.out.println(HttpUtils.postForm(StoreConfig.SERVER, map));
-//    }
-//
-//    public static void main(String[] args) throws JsonProcessingException {
-//        reportOrders();
-//    }
 
 }

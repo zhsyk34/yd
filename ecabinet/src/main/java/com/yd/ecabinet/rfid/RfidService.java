@@ -20,5 +20,4 @@ public class RfidService extends AbstractDaemonService {
         rfidOperator.connect(callback);
         super.setFinished(true);
     }
-
 }

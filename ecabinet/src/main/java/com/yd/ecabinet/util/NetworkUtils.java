@@ -1,6 +1,6 @@
 package com.yd.ecabinet.util;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.*;
 import java.util.Collections;
@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static java.net.NetworkInterface.getNetworkInterfaces;
 import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings("unused")
+@Slf4j
 public abstract class NetworkUtils {
-
-    private static final Logger logger = LoggerUtils.getLogger(NetworkUtils.class);
 
     public static String getHost() {
         try {
@@ -26,7 +26,7 @@ public abstract class NetworkUtils {
 
     public static List<String> findHosts() {
         try {
-            return Collections.list(NetworkInterface.getNetworkInterfaces()).stream()
+            return Collections.list(getNetworkInterfaces()).stream()
                     .filter(NetworkUtils::Loopback)
                     .filter(NetworkUtils::isUp)
                     .map(NetworkUtils::mapToAddress)

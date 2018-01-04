@@ -2,7 +2,6 @@ package com.yd.ecabinet.config;
 
 import com.clou.uhf.G3Lib.ClouInterface.IAsynchronousMessage;
 import com.yd.ecabinet.Entry;
-import com.yd.ecabinet.util.LoggerUtils;
 import com.yd.rfid.DefaultRfidOperator;
 import com.yd.rfid.RfidMonitor;
 import com.yd.rfid.RfidOperator;
@@ -19,12 +18,12 @@ public class SpringConfig {
 
     @Bean
     public RfidOperator rfidOperator(RfidConfig rfidConfig) {
-        return DefaultRfidOperator.instance(rfidConfig.getId(), rfidConfig.getAnt()).setLogger(LoggerUtils.getLogger(RfidOperator.class));
+        return DefaultRfidOperator.instance(rfidConfig.getId(), rfidConfig.getAnt());
     }
 
     @Bean
     public RfidMonitor rfidMonitor(IAsynchronousMessage callback, RfidOperator rfidOperator) {
-        return RfidMonitor.instance(callback, rfidOperator).setLogger(LoggerUtils.getLogger(RfidMonitor.class));
+        return RfidMonitor.instance(callback, rfidOperator);
     }
 
     @Bean

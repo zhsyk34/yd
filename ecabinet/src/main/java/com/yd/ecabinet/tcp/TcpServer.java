@@ -1,9 +1,10 @@
 package com.yd.ecabinet.tcp;
 
 import com.yd.ecabinet.config.TcpConfig;
+import com.yd.rfid.RfidOperator;
 import com.yd.rfid.executor.AbstractDaemonService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +20,15 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 
-import static com.yd.ecabinet.util.LoggerUtils.getLogger;
-
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class TcpServer extends AbstractDaemonService {
     private static final String ANY_ADDRESS = "0.0.0.0";
 
     private final TcpConfig tcpConfig;
     private final ExecutorService service;
-    private final Logger logger = getLogger(getClass());
+    private final RfidOperator rfidOperator;
 
     private AsynchronousSocketChannel client;
 
@@ -55,6 +55,7 @@ public class TcpServer extends AbstractDaemonService {
                 }
             });
 
+            logger.info("tcp server startup success.");
             super.setFinished(true);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -100,6 +101,7 @@ public class TcpServer extends AbstractDaemonService {
                 try {
                     CharBuffer c = StandardCharsets.UTF_8.newDecoder().decode(attachment);
                     logger.info("receive msg:{}", c);
+                    rfidOperator.openAndClose();//TODO
                 } catch (CharacterCodingException e) {
                     logger.error(e.getMessage(), e);
                 }
