@@ -1,7 +1,7 @@
 package com.yd.manager.repository.custom;
 
-import com.yd.manager.dto.StoreOrdersDTO;
-import com.yd.manager.dto.StoreOrdersDateDTO;
+import com.yd.manager.dto.orders.StoreOrdersDTO;
+import com.yd.manager.dto.orders.StoreOrdersDateDTO;
 import com.yd.manager.dto.util.TimeRange;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
@@ -13,8 +13,6 @@ import java.util.List;
 public interface StoreDTORepository {
 
     List<StoreOrdersDTO> listStoreOrdersDTO(String nameOrCode, TimeRange timeRange, List<Long> stores, Pageable pageable);
-
-    List<StoreOrdersDTO> listStoreOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable);
 
     long countStoreOrdersDTO(String nameOrCode, List<Long> stores);
 

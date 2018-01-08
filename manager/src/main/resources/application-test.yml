@@ -1,0 +1,14 @@
+server:
+  port: 80
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/yd_estore?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+
+
+
+
+
+

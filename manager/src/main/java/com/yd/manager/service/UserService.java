@@ -1,7 +1,7 @@
 package com.yd.manager.service;
 
-import com.yd.manager.dto.UserOrdersDTO;
-import com.yd.manager.dto.UserOrdersDateDTO;
+import com.yd.manager.dto.orders.UserOrdersDTO;
+import com.yd.manager.dto.orders.UserOrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.UserRepository;
 import com.yd.manager.util.TimeUtils;
@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -35,7 +36,6 @@ public class UserService {
         LocalDate begin = dateRange.getBegin();
         LocalDate end = dateRange.getEnd();
 
-        //此处查询必须为闭区间
         return begin != null && end != null ? this.listBetween(userId, begin, end, stores) : null;
     }
 
@@ -44,11 +44,7 @@ public class UserService {
 
         while (!begin.isAfter(end)) {
             UserOrdersDateDTO dto = userRepository.getUserOrdersDateDTO(userId, begin, stores);
-            if (dto != null) {
-                list.add(dto);
-            } else {
-                list.add(new UserOrdersDateDTO(userId, null, TimeUtils.format(begin), 0, null, null));
-            }
+            list.add(Optional.ofNullable(dto).orElse(UserOrdersDateDTO.of(TimeUtils.format(begin), userId)));
             begin = begin.plusDays(1);
         }
 

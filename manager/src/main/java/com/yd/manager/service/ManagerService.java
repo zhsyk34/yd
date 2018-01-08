@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yd.manager.dto.util.ManagerInfo;
 import com.yd.manager.dto.util.PhpData;
 import com.yd.manager.util.HttpUtils;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +22,28 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ManagerService {
 
-    private static final Map<Long, ManagerInfo> MANAGER_SHOP_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Long, ManagerInfo> ID_CACHE = new ConcurrentHashMap<>();
+    private static final Map<String, ManagerInfo> PHONE_CACHE = new ConcurrentHashMap<>();
     private static final String URL = "http://www.estore.ai/api/user/login";
     private final ObjectMapper mapper;
 
     public ManagerInfo getManagerInfo(String username, String password) {
         ManagerInfo managerInfo = Optional.ofNullable(this.getData(username, password)).map(PhpData::getResult).orElse(null);
-        Optional.ofNullable(managerInfo).ifPresent(info -> MANAGER_SHOP_CACHE.put(info.getId(), info));
+        Optional.ofNullable(managerInfo).ifPresent(this::cache);
         return managerInfo;
     }
 
+    private void cache(@NonNull ManagerInfo info) {
+        ID_CACHE.put(info.getId(), info);
+//        PHONE_CACHE.put(info.getId(), info);//todo
+    }
+
+    public ManagerInfo getManagerInfo(String phone) {
+        return PHONE_CACHE.get(phone);
+    }
+
     public ManagerInfo getManagerInfo(long id) {
-        return MANAGER_SHOP_CACHE.get(id);
+        return ID_CACHE.get(id);
     }
 
     private PhpData getData(String username, String password) {

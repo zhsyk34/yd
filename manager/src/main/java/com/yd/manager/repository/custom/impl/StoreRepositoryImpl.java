@@ -1,7 +1,7 @@
 package com.yd.manager.repository.custom.impl;
 
-import com.yd.manager.dto.StoreOrdersDTO;
-import com.yd.manager.dto.StoreOrdersDateDTO;
+import com.yd.manager.dto.orders.StoreOrdersDTO;
+import com.yd.manager.dto.orders.StoreOrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
 import com.yd.manager.entity.Orders;
@@ -60,6 +60,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
                 storeRoot.get(Store_.address),
                 builder.count(ordersJoin),
                 sum,
+                builder.sum(ordersJoin.get(Orders_.profit)),
                 builder.avg(ordersJoin.get(Orders_.actual))
         );
 
@@ -67,11 +68,6 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         criteria.orderBy(builder.desc(sum));
 
         return JpaUtils.getResultListByPageable(manager, criteria, pageable);
-    }
-
-    @Override
-    public List<StoreOrdersDTO> listStoreOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
-        return this.listStoreOrdersDTO(nameOrCode, null, stores, pageable);
     }
 
     @Override
@@ -124,6 +120,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
                 storeRoot.get(Store_.address),
                 builder.count(ordersJoin),
                 builder.sum(ordersJoin.get(Orders_.actual)),
+                builder.sum(ordersJoin.get(Orders_.profit)),
                 builder.avg(ordersJoin.get(Orders_.actual))
         );
 
@@ -150,11 +147,11 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         criteria.groupBy(storeRoot);
 
         criteria.multiselect(
-                storeRoot.get(Store_.id),
-                storeRoot.get(Store_.name),
                 builder.literal(TimeUtils.format(date)),
+                storeRoot.get(Store_.id),
                 builder.count(ordersJoin),
                 builder.sum(ordersJoin.get(Orders_.actual)),
+                builder.sum(ordersJoin.get(Orders_.profit)),
                 builder.avg(ordersJoin.get(Orders_.actual))
         );
 

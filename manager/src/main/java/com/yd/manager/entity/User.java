@@ -28,7 +28,7 @@ public class User {
     private Store store;
 
     @Column(name = "user_money")
-    private BigDecimal balance;//余额
+    private BigDecimal balance;
 
     @Column(name = "create_time")
     @Convert(converter = PhpTimeConvert.class)

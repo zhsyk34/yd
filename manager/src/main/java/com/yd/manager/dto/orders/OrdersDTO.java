@@ -1,4 +1,4 @@
-package com.yd.manager.dto;
+package com.yd.manager.dto.orders;
 
 import lombok.Data;
 
@@ -11,5 +11,7 @@ import java.math.BigDecimal;
 public class OrdersDTO {
     private final long ordersCount;
     private final BigDecimal ordersMoney;
+    static final OrdersDTO EMPTY = new OrdersDTO(0, null, null, null);
     private final Double ordersAverage;
+    private final BigDecimal ordersProfit;
 }

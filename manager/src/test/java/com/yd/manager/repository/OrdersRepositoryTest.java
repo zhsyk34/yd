@@ -1,7 +1,7 @@
 //package com.yd.manager.repository;
 //
-//import com.yd.manager.dto.StoreOrdersDTO;
-//import com.yd.manager.dto.UserOrdersDTO;
+//import com.yd.manager.dto.orders.StoreOrdersDTO;
+//import com.yd.manager.dto.orders.UserOrdersDTO;
 //import org.junit.Test;
 //import org.springframework.data.domain.PageRequest;
 //import org.springframework.data.domain.Pageable;

@@ -14,6 +14,14 @@ public class PredicateFactory {
 
     private final Collection<Predicate> result = new LinkedList<>();
 
+    public static PredicateFactory init(Predicate predicate) {
+        return PredicateFactory.instance().append(predicate);
+    }
+
+    public static PredicateFactory init(Collection<Predicate> predicates) {
+        return PredicateFactory.instance().append(predicates);
+    }
+
     public PredicateFactory append(Predicate predicate) {
         Optional.ofNullable(predicate).ifPresent(result::add);
         return this;

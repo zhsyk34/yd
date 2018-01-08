@@ -1,8 +1,8 @@
 package com.yd.manager.repository;
 
-import com.yd.manager.dto.UserOrdersDTO;
-import com.yd.manager.dto.UserOrdersDateDTO;
-import com.yd.manager.dto.UserStoreOrdersDTO;
+import com.yd.manager.dto.orders.UserOrdersDTO;
+import com.yd.manager.dto.orders.UserOrdersDateDTO;
+import com.yd.manager.dto.orders.UserStoreOrdersDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
 import com.yd.manager.util.TimeUtils;

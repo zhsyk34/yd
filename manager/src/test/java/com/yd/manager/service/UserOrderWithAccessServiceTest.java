@@ -1,8 +1,8 @@
 package com.yd.manager.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.yd.manager.dto.StoreOrdersAccessDTO;
-import com.yd.manager.dto.UserOrdersAccessDTO;
+import com.yd.manager.dto.record.StoreOrdersAccessDTO;
+import com.yd.manager.dto.record.UserOrdersAccessDTO;
 import com.yd.manager.repository.SpringTestInit;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

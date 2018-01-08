@@ -38,6 +38,8 @@ public class Orders {
     @Column(name = "paid_cost")
     private BigDecimal actual;//实际金额
 
+    private BigDecimal profit;//利润
+
     @Column(name = "paystatus")
     private boolean paid;//是否付款
 

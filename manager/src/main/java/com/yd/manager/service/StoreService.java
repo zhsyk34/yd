@@ -1,7 +1,7 @@
 package com.yd.manager.service;
 
-import com.yd.manager.dto.StoreOrdersDTO;
-import com.yd.manager.dto.StoreOrdersDateDTO;
+import com.yd.manager.dto.orders.StoreOrdersDTO;
+import com.yd.manager.dto.orders.StoreOrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.StoreRepository;
 import com.yd.manager.util.TimeUtils;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -40,11 +41,7 @@ public class StoreService {
 
         while (!begin.isAfter(end)) {
             StoreOrdersDateDTO dto = storeRepository.getStoreOrdersDateDTO(storeId, begin);
-            if (dto != null) {
-                list.add(dto);
-            } else {
-                list.add(new StoreOrdersDateDTO(storeId, null, TimeUtils.format(begin), 0, null, null));
-            }
+            list.add(Optional.ofNullable(dto).orElse(StoreOrdersDateDTO.of(TimeUtils.format(begin), storeId)));
             begin = begin.plusDays(1);
         }
 

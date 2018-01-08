@@ -8,4 +8,6 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
     Manager findByLoginName(@NonNull String loginName);
 
+    Manager findByPhone(@NonNull String phone);
+
 }

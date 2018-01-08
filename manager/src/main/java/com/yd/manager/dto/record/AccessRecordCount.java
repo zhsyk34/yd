@@ -1,4 +1,4 @@
-package com.yd.manager.dto;
+package com.yd.manager.dto.record;
 
 import lombok.Data;
 

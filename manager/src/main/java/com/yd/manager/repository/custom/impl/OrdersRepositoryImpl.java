@@ -1,6 +1,6 @@
 package com.yd.manager.repository.custom.impl;
 
-import com.yd.manager.dto.OrdersDTO;
+import com.yd.manager.dto.orders.OrdersDTO;
 import com.yd.manager.dto.util.TimeRange;
 import com.yd.manager.entity.Orders;
 import com.yd.manager.entity.Orders_;
@@ -40,6 +40,7 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
         criteria.multiselect(
                 builder.count(ordersRoot),
                 builder.sum(ordersRoot.get(Orders_.actual)),
+                builder.sum(ordersRoot.get(Orders_.profit)),
                 builder.avg(ordersRoot.get(Orders_.actual))
         );
 

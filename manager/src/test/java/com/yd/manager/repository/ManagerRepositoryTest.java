@@ -10,4 +10,9 @@ public class ManagerRepositoryTest extends SpringTestInit {
     public void findAll() throws Exception {
         managerRepository.findAll().forEach(System.out::println);
     }
+
+    @Test
+    public void findByPhone() {
+        managerRepository.findByPhone("132");
+    }
 }

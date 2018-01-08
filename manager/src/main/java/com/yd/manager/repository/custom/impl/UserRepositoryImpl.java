@@ -1,11 +1,13 @@
 package com.yd.manager.repository.custom.impl;
 
-import com.yd.manager.dto.UserOrdersDTO;
-import com.yd.manager.dto.UserOrdersDateDTO;
-import com.yd.manager.dto.UserStoreOrdersDTO;
+import com.yd.manager.dto.orders.UserOrdersDTO;
+import com.yd.manager.dto.orders.UserOrdersDateDTO;
+import com.yd.manager.dto.orders.UserStoreOrdersDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
-import com.yd.manager.entity.*;
+import com.yd.manager.entity.Orders;
+import com.yd.manager.entity.Store;
+import com.yd.manager.entity.User;
 import com.yd.manager.repository.custom.UserDTORepository;
 import com.yd.manager.util.TimeUtils;
 import com.yd.manager.util.jpa.JpaUtils;
@@ -58,17 +60,13 @@ public class UserRepositoryImpl implements UserDTORepository {
                 userPath.get(User_.createTime),
                 builder.count(ordersPath.get(Orders_.id)),
                 builder.sum(ordersPath.get(Orders_.actual)),
+                builder.sum(ordersPath.get(Orders_.profit)),
                 builder.avg(ordersPath.get(Orders_.actual))
         );
 
         criteria.orderBy(builder.desc(userPath.get(User_.createTime)));
 
         return JpaUtils.getResultListByPageable(manager, criteria, pageable);
-    }
-
-    @Override
-    public List<UserOrdersDTO> listUserOrdersDTO(String nameOrPhone, List<Long> stores, Pageable pageable) {
-        return this.listUserOrdersDTO(nameOrPhone, null, stores, pageable);
     }
 
     @Override
@@ -119,6 +117,7 @@ public class UserRepositoryImpl implements UserDTORepository {
                 storePath.get(Store_.name),
                 builder.count(ordersPath.get(Orders_.id)),
                 builder.sum(ordersPath.get(Orders_.actual)),
+                builder.sum(ordersPath.get(Orders_.profit)),
                 builder.avg(ordersPath.get(Orders_.actual))
         );
 
@@ -146,12 +145,11 @@ public class UserRepositoryImpl implements UserDTORepository {
         criteria.groupBy(userPath);
 
         criteria.multiselect(
-                userPath.get(User_.id),
-                userPath.get(User_.name),
                 builder.literal(TimeUtils.format(date)),
-                //builder.literal(date),//TODO=>ERROR?ValueHandlerFactory::determineAppropriateHandler not support
+                userPath.get(User_.id),
                 builder.count(ordersPath.get(Orders_.id)),
                 builder.sum(ordersPath.get(Orders_.actual)),
+                builder.sum(ordersPath.get(Orders_.profit)),
                 builder.avg(ordersPath.get(Orders_.actual))
         );
 

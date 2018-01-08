@@ -1,6 +1,5 @@
 server:
   port: 8080
-  address: 192.168.1.202
   connectionTimeout: 30
   contextPath: /
 
@@ -12,9 +11,9 @@ spring:
     cache: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/yd_estore?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password: root
+    url: jdbc:mysql://rm-bp1m7y8awms02a194.mysql.rds.aliyuncs.com:3306/estore_sql?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    username: estore_user
+    password: estore_user520
   jpa:
     hibernate:
       ddl-auto: none
@@ -26,6 +25,8 @@ spring:
   http:
     encoding:
       charset: UTF-8
+#  profiles:
+#    active: test
 
 
 

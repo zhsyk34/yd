@@ -1,7 +1,7 @@
 package com.yd.manager.controller;
 
-import com.yd.manager.dto.StoreOrdersAccessDTO;
-import com.yd.manager.dto.UserOrdersAccessDTO;
+import com.yd.manager.dto.record.StoreOrdersAccessDTO;
+import com.yd.manager.dto.record.UserOrdersAccessDTO;
 import com.yd.manager.interceptor.OwnerStore;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

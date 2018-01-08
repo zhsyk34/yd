@@ -1,7 +1,7 @@
 //package com.yd.manager.repository.custom.impl;
 //
 //import com.fasterxml.jackson.core.JsonProcessingException;
-//import com.yd.manager.dto.UserStoreAccessRecordDTO;
+//import com.yd.manager.dto.record.UserStoreAccessRecordDTO;
 //import com.yd.manager.dto.util.DateRange;
 //import com.yd.manager.repository.SpringTestInit;
 //import org.junit.Test;

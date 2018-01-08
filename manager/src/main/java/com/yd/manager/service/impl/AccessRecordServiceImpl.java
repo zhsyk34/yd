@@ -1,9 +1,11 @@
 package com.yd.manager.service.impl;
 
-import com.yd.manager.dto.*;
+import com.yd.manager.dto.record.*;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
+import com.yd.manager.entity.Store;
 import com.yd.manager.repository.AccessRecordRepository;
+import com.yd.manager.repository.StoreRepository;
 import com.yd.manager.service.AccessRecordService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -24,39 +27,41 @@ import static java.util.stream.Collectors.toMap;
 public class AccessRecordServiceImpl implements AccessRecordService {
 
     private final AccessRecordRepository accessRecordRepository;
+    private final StoreRepository storeRepository;
 
     @Override
     public AccessRecordDTO getAccessRecordDTO(TimeRange timeRange, List<Long> stores) {
         long enter = accessRecordRepository.countEnter(timeRange, stores);
         long entrant = accessRecordRepository.countEntrant(timeRange, stores);
-        return AccessRecordDTO.from(enter, entrant);
+        long valid = accessRecordRepository.countValid(timeRange, stores);
+        return AccessRecordDTO.from(enter, entrant, valid);
     }
 
     @Override
     public UserAccessRecordDTO getUserAccessRecordDTO(long userId, TimeRange timeRange, List<Long> stores) {
         AccessRecordCount enter = accessRecordRepository.countEnterByUser(userId, timeRange, stores);
         AccessRecordCount entrant = accessRecordRepository.countEntrantByUser(userId, timeRange, stores);
-        return UserAccessRecordDTO.from(userId, enter.getCount(), entrant.getCount());
+        AccessRecordCount valid = accessRecordRepository.countValidByUser(userId, timeRange, stores);
+        return UserAccessRecordDTO.from(userId, enter.getCount(), entrant.getCount(), valid.getCount());
     }
 
     @Override
     public List<UserAccessRecordDTO> listUserAccessRecordDTO(List<Long> users, TimeRange timeRange, List<Long> stores) {
-        List<AccessRecordCount> enters = accessRecordRepository.listCountEnterGroupByUser(users, timeRange, stores);
+        List<AccessRecordCount> enterList = accessRecordRepository.listCountEnterGroupByUser(users, timeRange, stores);
 
-        if (CollectionUtils.isEmpty(enters)) {
+        if (CollectionUtils.isEmpty(enterList)) {
             return null;
         }
 
-        List<AccessRecordCount> entrants = accessRecordRepository.listCountEntrantGroupByUser(users, timeRange, stores);
-
-        Map<Long, Long> enterMap = enters.stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
-        Map<Long, Long> entrantMap = entrants.stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
+        Map<Long, Long> enterMap = enterList.stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
+        Map<Long, Long> entrantMap = accessRecordRepository.listCountEntrantGroupByUser(users, timeRange, stores).stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
+        Map<Long, Long> validMap = accessRecordRepository.listCountValidGroupByUser(users, timeRange, stores).stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
 
         return enterMap.entrySet().stream().collect(
                 ArrayList::new,
                 (result, entry) -> {
                     long userId = entry.getKey();
-                    result.add(UserAccessRecordDTO.from(userId, entry.getValue(), Optional.ofNullable(entrantMap.get(userId)).orElse(0L)));
+                    result.add(UserAccessRecordDTO.from(userId, entry.getValue(), Optional.ofNullable(entrantMap.get(userId)).orElse(0L), Optional.ofNullable(validMap.get(userId)).orElse(0L)));
                 },
                 List::addAll
         );
@@ -66,7 +71,8 @@ public class AccessRecordServiceImpl implements AccessRecordService {
     public StoreAccessRecordDTO getStoreAccessRecordDTO(long storeId, TimeRange timeRange) {
         AccessRecordCount enter = accessRecordRepository.countEnterByStore(storeId, timeRange);
         AccessRecordCount entrant = accessRecordRepository.countEntrantByStore(storeId, timeRange);
-        return StoreAccessRecordDTO.from(storeId, enter.getCount(), entrant.getCount());
+        AccessRecordCount valid = accessRecordRepository.countValidByStore(storeId, timeRange);
+        return StoreAccessRecordDTO.from(storeId, enter.getCount(), entrant.getCount(), valid.getCount());
     }
 
     @Override
@@ -77,16 +83,15 @@ public class AccessRecordServiceImpl implements AccessRecordService {
             return null;
         }
 
-        List<AccessRecordCount> entrants = accessRecordRepository.listCountEntrantGroupByStore(timeRange, stores);
-
         Map<Long, Long> enterMap = enters.stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
-        Map<Long, Long> entrantMap = entrants.stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
+        Map<Long, Long> entrantMap = accessRecordRepository.listCountEntrantGroupByStore(timeRange, stores).stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
+        Map<Long, Long> validMap = accessRecordRepository.listCountValidGroupByStore(timeRange, stores).stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
 
         return enterMap.entrySet().stream().collect(
                 ArrayList::new,
                 (result, entry) -> {
                     long storeId = entry.getKey();
-                    result.add(StoreAccessRecordDTO.from(storeId, entry.getValue(), Optional.ofNullable(entrantMap.get(storeId)).orElse(0L)));
+                    result.add(StoreAccessRecordDTO.from(storeId, entry.getValue(), Optional.ofNullable(entrantMap.get(storeId)).orElse(0L), Optional.ofNullable(validMap.get(storeId)).orElse(0L)));
                 },
                 List::addAll
         );
@@ -100,16 +105,17 @@ public class AccessRecordServiceImpl implements AccessRecordService {
             return null;
         }
 
-        List<AccessRecordCount> entrants = accessRecordRepository.listEntrantByUserAndGroupByStore(userId, timeRange, stores);
-
         Map<Long, Long> enterMap = enters.stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
-        Map<Long, Long> entrantMap = entrants.stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
+        Map<Long, Long> entrantMap = accessRecordRepository.listEntrantByUserAndGroupByStore(userId, timeRange, stores).stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
+        Map<Long, Long> validMap = accessRecordRepository.listValidByUserAndGroupByStore(userId, timeRange, stores).stream().collect(toMap(AccessRecordCount::getUserOrStoreId, AccessRecordCount::getCount));
 
+        List<Store> storeList = storeRepository.findByIdIn(enters.stream().map(AccessRecordCount::getUserOrStoreId).collect(Collectors.toList()));
+        Map<Long, String> storeNameMap = storeList.stream().collect(toMap(Store::getId, Store::getName));
         return enterMap.entrySet().stream().collect(
                 ArrayList::new,
                 (result, entry) -> {
                     long storeId = entry.getKey();
-                    result.add(UserStoreAccessRecordDTO.from(userId, storeId, entry.getValue(), Optional.ofNullable(entrantMap.get(storeId)).orElse(0L)));
+                    result.add(UserStoreAccessRecordDTO.from(userId, storeId, storeNameMap.get(storeId), entry.getValue(), Optional.ofNullable(entrantMap.get(storeId)).orElse(0L), Optional.ofNullable(validMap.get(storeId)).orElse(0L)));
                 },
                 List::addAll
         );

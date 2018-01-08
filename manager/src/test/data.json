@@ -1,0 +1,329 @@
+{
+  "ret": 0,
+  "msg": "Get success!",
+  "page": 1,
+  "page_size": 10,
+  "size": 10,
+  "list": [
+    {
+      "device_no": 1000000005000,
+      "device_serial": "H10017CD09",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "云店进门监控",
+          "state": 0
+        },
+        {
+          "chan_no": 2,
+          "name": "购物区2",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "购物区1",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "结算区",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "湖里云创智谷",
+      "state": 1,
+      "type": 0
+    },
+    {
+      "device_no": 1000000008000,
+      "device_serial": "H20017CD02",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "结算区",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "购物区1",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "购物区2",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "云店进门监控",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "厦门酷鹭酷无人便利店",
+      "state": 1,
+      "type": 0
+    },
+    {
+      "device_no": 1000000009000,
+      "device_serial": "H10017CD04",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "云店进门监控",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "购物区2",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "购物区1",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "结算区",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "广州海珠区无人便利店",
+      "state": 1,
+      "type": 0
+    },
+    {
+      "device_no": 1000000010000,
+      "device_serial": "H20017CD00",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "通道1",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "通道2",
+          "state": 0
+        },
+        {
+          "chan_no": 3,
+          "name": "通道3",
+          "state": 0
+        },
+        {
+          "chan_no": 4,
+          "name": "通道4",
+          "state": 0
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "五里桥中庭旗舰店",
+      "state": 0,
+      "type": 0
+    },
+    {
+      "device_no": 1000000012000,
+      "device_serial": "H10017CD01",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "云店进门监控",
+          "state": 0
+        },
+        {
+          "chan_no": 2,
+          "name": "购物区2",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "购物区1",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "结算区",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "湖里区地丰公寓店",
+      "state": 1,
+      "type": 0
+    },
+    {
+      "device_no": 1000000013000,
+      "device_serial": "H10017CD03",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "购物区2",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "购物区1",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "结算区",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "云店进门监控",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "龙岩万阳城云店",
+      "state": 1,
+      "type": 0
+    },
+    {
+      "device_no": 1000000015000,
+      "device_serial": "H10017CD06",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "通道1",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "通道2",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "通道3",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "通道4",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "广州番禺区云店",
+      "state": 0,
+      "type": 0
+    },
+    {
+      "device_no": 1000000016000,
+      "device_serial": "H10017CD08",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "通道1",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "通道2",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "通道3",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "通道4",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "海盐新华书店店",
+      "state": 0,
+      "type": 0
+    },
+    {
+      "device_no": 1000000017000,
+      "device_serial": "H10017CD05",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "通道1",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "通道2",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "通道3",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "通道4",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "嘉兴海盐店",
+      "state": 0,
+      "type": 0
+    },
+    {
+      "device_no": 1000000019000,
+      "device_serial": "H10017CD07",
+      "device_type_name": "SGH4路720P(数字)",
+      "latitude": 0,
+      "list": [
+        {
+          "chan_no": 1,
+          "name": "通道1",
+          "state": 1
+        },
+        {
+          "chan_no": 2,
+          "name": "通道2",
+          "state": 1
+        },
+        {
+          "chan_no": 3,
+          "name": "通道3",
+          "state": 1
+        },
+        {
+          "chan_no": 4,
+          "name": "通道4",
+          "state": 1
+        }
+      ],
+      "longitude": 0,
+      "nick_name": "漳州市万达店",
+      "state": 0,
+      "type": 0
+    }
+  ]
+}

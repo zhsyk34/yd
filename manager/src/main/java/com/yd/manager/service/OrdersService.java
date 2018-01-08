@@ -1,7 +1,7 @@
 package com.yd.manager.service;
 
-import com.yd.manager.dto.OrdersDTO;
-import com.yd.manager.dto.OrdersDateDTO;
+import com.yd.manager.dto.orders.OrdersDTO;
+import com.yd.manager.dto.orders.OrdersDateDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.OrdersRepository;
 import lombok.NonNull;
@@ -43,7 +43,7 @@ public class OrdersService {
         return ordersRepository.getOrdersDTO(DateRange.season().toTimeRange(), stores);
     }
 
-    public List<OrdersDateDTO> listBetween(@NonNull LocalDate begin, @NonNull LocalDate end, List<Long> stores) {
+    private List<OrdersDateDTO> listBetween(@NonNull LocalDate begin, @NonNull LocalDate end, List<Long> stores) {
         List<OrdersDateDTO> list = new ArrayList<>();
 
         while (!begin.isAfter(end)) {

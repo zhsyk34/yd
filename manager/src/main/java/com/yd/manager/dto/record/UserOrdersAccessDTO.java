@@ -1,6 +1,7 @@
-package com.yd.manager.dto;
+package com.yd.manager.dto.record;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.yd.manager.dto.orders.UserOrdersDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.yd.manager.dto.record.AccessRecordDTO.EMPTY;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -21,8 +23,6 @@ public class UserOrdersAccessDTO {
     private final UserOrdersDTO userOrdersDTO;
     @JsonUnwrapped
     private final AccessRecordDTO accessRecordDTO;
-
-    private static final AccessRecordDTO EMPTY = AccessRecordDTO.from(0, 0);
 
     public static List<UserOrdersAccessDTO> fromMerge(@NonNull List<UserOrdersDTO> userOrdersDTOS, List<UserAccessRecordDTO> userAccessRecordDTOS) {
         if (CollectionUtils.isEmpty(userAccessRecordDTOS)) {

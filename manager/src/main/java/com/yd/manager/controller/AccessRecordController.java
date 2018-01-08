@@ -1,7 +1,8 @@
 package com.yd.manager.controller;
 
-import com.yd.manager.dto.AccessRecordDTO;
-import com.yd.manager.dto.AccessRecordDateDTO;
+import com.yd.manager.dto.record.AccessRecordDTO;
+import com.yd.manager.dto.record.AccessRecordDateDTO;
+import com.yd.manager.dto.record.UserStoreAccessRecordDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.Result;
 import com.yd.manager.interceptor.OwnerStore;
@@ -16,6 +17,11 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 @RestController
 @RequestMapping("records")
 public class AccessRecordController extends CommonController {
+
+    @GetMapping
+    public Result<AccessRecordDTO> listAll(@RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate begin, @RequestParam(required = false) @DateTimeFormat(iso = DATE) LocalDate end, @RequestParam(required = false) @OwnerStore List<Long> stores) {
+        return Result.success(accessRecordService.getAccessRecordDTO(DateRange.of(begin, end).toTimeRange(), stores));
+    }
 
     @GetMapping("all")
     public Result<AccessRecordDTO> getAll(@RequestParam(required = false) @OwnerStore List<Long> stores) {
@@ -71,6 +77,11 @@ public class AccessRecordController extends CommonController {
     @GetMapping("users/{userId}/range/season")
     public Result<List<AccessRecordDateDTO>> listForSeasonByUser(@PathVariable long userId, @RequestParam(required = false) @OwnerStore List<Long> stores) {
         return Result.success(accessRecordService.listForSeasonByUser(userId, stores));
+    }
+
+    @GetMapping("users/{userId}/top")
+    public Result<List<UserStoreAccessRecordDTO>> topByUser(@PathVariable long userId, @RequestParam(required = false) @OwnerStore List<Long> stores) {
+        return Result.success(accessRecordService.listUserStoreAccessRecordDTO(userId, null, stores));
     }
 
     /*店铺*/

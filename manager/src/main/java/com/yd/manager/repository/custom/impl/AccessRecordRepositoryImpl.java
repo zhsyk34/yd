@@ -1,12 +1,10 @@
 package com.yd.manager.repository.custom.impl;
 
-import com.yd.manager.dto.AccessRecordCount;
+import com.yd.manager.dto.record.AccessRecordCount;
 import com.yd.manager.dto.util.TimeRange;
 import com.yd.manager.entity.AccessRecord;
-import com.yd.manager.entity.AccessRecord_;
-import com.yd.manager.entity.Store_;
-import com.yd.manager.entity.User_;
 import com.yd.manager.repository.custom.AccessRecordDTORepository;
+import com.yd.manager.util.TimeUtils;
 import com.yd.manager.util.jpa.JpaUtils;
 import com.yd.manager.util.jpa.PredicateFactory;
 import org.springframework.stereotype.Repository;
@@ -16,9 +14,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,7 +35,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .build();
@@ -55,10 +50,26 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+                .append(this.restrictForAccess(path, timeRange))
+                .append(this.restrictForStores(path, stores))
+                .append(this.restrictForAccessNew(path))
+                .build();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        return manager.createQuery(criteria.select(builder.count(path))).getSingleResult();
+    }
+
+    @Override
+    public long countValid(TimeRange timeRange, List<Long> stores) {
+        CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+
+        Root<AccessRecord> path = criteria.from(AccessRecord.class);
+
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
-                .append(this.restrictForNewAccess(path))
+                .append(this.restrictForAccessValid(path))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
@@ -71,7 +82,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -87,11 +98,28 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+                .append(this.restrictForUser(path, userId))
+                .append(this.restrictForAccess(path, timeRange))
+                .append(this.restrictForStores(path, stores))
+                .append(this.restrictForAccessNew(path))
+                .build();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        return manager.createQuery(criteria.multiselect(builder.literal(userId), builder.count(path))).getSingleResult();
+    }
+
+    @Override
+    public AccessRecordCount countValidByUser(long userId, TimeRange timeRange, List<Long> stores) {
+        CriteriaQuery<AccessRecordCount> criteria = builder.createQuery(AccessRecordCount.class);
+
+        Root<AccessRecord> path = criteria.from(AccessRecord.class);
+
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
-                .append(this.restrictForNewAccess(path))
+                .append(this.restrictForAccessValid(path))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
@@ -104,7 +132,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUsers(path, users))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -114,10 +142,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
         Path<Long> userPath = path.get(AccessRecord_.user).get(User_.id);
         criteria.groupBy(userPath);
 
-        Expression<Long> countColumn = builder.count(path);
-        criteria.orderBy(builder.desc(countColumn));
-
-        return manager.createQuery(criteria.multiselect(userPath, countColumn)).getResultList();
+        return manager.createQuery(criteria.multiselect(userPath, builder.count(path))).getResultList();
     }
 
     @Override
@@ -126,11 +151,31 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+                .append(this.restrictForUsers(path, users))
+                .append(this.restrictForAccess(path, timeRange))
+                .append(this.restrictForStores(path, stores))
+                .append(this.restrictForAccessNew(path))
+                .build();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        Path<Long> userPath = path.get(AccessRecord_.user).get(User_.id);
+        criteria.groupBy(userPath);
+
+        return manager.createQuery(criteria.multiselect(userPath, builder.count(path))).getResultList();
+    }
+
+    @Override
+    public List<AccessRecordCount> listCountValidGroupByUser(List<Long> users, TimeRange timeRange, List<Long> stores) {
+        CriteriaQuery<AccessRecordCount> criteria = builder.createQuery(AccessRecordCount.class);
+
+        Root<AccessRecord> path = criteria.from(AccessRecord.class);
+
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForUsers(path, users))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
-                .append(this.restrictForNewAccess(path))
+                .append(this.restrictForAccessValid(path))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
@@ -146,7 +191,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForStore(path, storeId))
                 .append(this.restrictForAccess(path, timeRange))
                 .build();
@@ -161,10 +206,26 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+                .append(this.restrictForStore(path, storeId))
+                .append(this.restrictForAccess(path, timeRange))
+                .append(this.restrictForAccessNew(path))
+                .build();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        return manager.createQuery(criteria.multiselect(builder.literal(storeId), builder.count(path))).getSingleResult();
+    }
+
+    @Override
+    public AccessRecordCount countValidByStore(long storeId, TimeRange timeRange) {
+        CriteriaQuery<AccessRecordCount> criteria = builder.createQuery(AccessRecordCount.class);
+
+        Root<AccessRecord> path = criteria.from(AccessRecord.class);
+
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForStore(path, storeId))
                 .append(this.restrictForAccess(path, timeRange))
-                .append(this.restrictForNewAccess(path))
+                .append(this.restrictForAccessValid(path))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
@@ -177,7 +238,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .build();
@@ -198,10 +259,29 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+                .append(this.restrictForAccess(path, timeRange))
+                .append(this.restrictForStores(path, stores))
+                .append(this.restrictForAccessNew(path))
+                .build();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        Path<Long> storePath = path.get(AccessRecord_.store).get(Store_.id);
+        criteria.groupBy(storePath);
+
+        return manager.createQuery(criteria.multiselect(storePath, builder.count(path))).getResultList();
+    }
+
+    @Override
+    public List<AccessRecordCount> listCountValidGroupByStore(TimeRange timeRange, List<Long> stores) {
+        CriteriaQuery<AccessRecordCount> criteria = builder.createQuery(AccessRecordCount.class);
+
+        Root<AccessRecord> path = criteria.from(AccessRecord.class);
+
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
-                .append(this.restrictForNewAccess(path))
+                .append(this.restrictForAccessValid(path))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
@@ -217,7 +297,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -239,11 +319,31 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
+        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+                .append(this.restrictForUser(path, userId))
+                .append(this.restrictForAccess(path, timeRange))
+                .append(this.restrictForStores(path, stores))
+                .append(this.restrictForAccessNew(path))
+                .build();
+        JpaUtils.setPredicate(criteria, predicates);
+
+        Path<Long> storePath = path.get(AccessRecord_.store).get(Store_.id);
+        criteria.groupBy(storePath);
+
+        return manager.createQuery(criteria.multiselect(storePath, builder.count(path))).getResultList();
+    }
+
+    @Override
+    public List<AccessRecordCount> listValidByUserAndGroupByStore(long userId, TimeRange timeRange, List<Long> stores) {
+        CriteriaQuery<AccessRecordCount> criteria = builder.createQuery(AccessRecordCount.class);
+
+        Root<AccessRecord> path = criteria.from(AccessRecord.class);
+
         Collection<Predicate> predicates = PredicateFactory.instance()
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
-                .append(this.restrictForNewAccess(path))
+                .append(this.restrictForAccessValid(path))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
@@ -273,12 +373,15 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
         return JpaUtils.between(builder, path.get(AccessRecord_.enterTime), timeRange);
     }
 
-    //TODO
-    private Predicate restrictForAccessIn(Path<AccessRecord> path) {
-        return builder.greaterThan(path.get(AccessRecord_.enterTime), LocalDateTime.of(LocalDate.ofYearDay(1970, 0), LocalTime.MIN));
+    private Predicate restrictForAccessEnter(Path<AccessRecord> path) {
+        return builder.greaterThan(path.get(AccessRecord_.enterTime), TimeUtils.parseSecond(0));
     }
 
-    private Predicate restrictForNewAccess(Path<AccessRecord> path) {
+    private Predicate restrictForAccessNew(Path<AccessRecord> path) {
         return builder.equal(path.get(AccessRecord_.newUser), true);
+    }
+
+    private Predicate restrictForAccessValid(Path<AccessRecord> path) {
+        return builder.greaterThan(path.get(AccessRecord_.orders).get(Orders_.id), 0L);
     }
 }
