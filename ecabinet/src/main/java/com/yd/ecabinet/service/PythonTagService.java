@@ -30,10 +30,13 @@ public class PythonTagService implements TagService {
     @Override
     public String read() {
         String command = "python  " + storeConfig.getScript();
+        logger.debug("开始执行脚本:{}", command);
         try {
             Process process = Runtime.getRuntime().exec(command);
             process.waitFor();
             String result = read(process.getInputStream());
+
+            logger.debug("脚本执行结果:{}", result);
             process.destroy();
             return result;
         } catch (Exception e) {

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +19,6 @@ import static java.util.stream.Collectors.toMap;
 @RequiredArgsConstructor
 @Slf4j
 public class SimpleStockService implements StockService {
-
     private final TagService tagService;
 
     private Collection<Stock> stocks;
@@ -39,11 +39,6 @@ public class SimpleStockService implements StockService {
     }
 
     @Override
-    public void setStocks(Collection<Stock> stocks) {
-        this.stocks = stocks;
-    }
-
-    @Override
     public Collection<Stock> fromMap(Map<String, Integer> map) {
         return map.entrySet().stream().map(this::fromEntry).collect(toList());
     }
@@ -53,11 +48,15 @@ public class SimpleStockService implements StockService {
         return this.stocks;
     }
 
+    @Override
+    public void setStocks(Collection<Stock> stocks) {
+        this.stocks = stocks;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Collection<Stock> getRemainStocks() {
-        String json = tagService.read();
-        return fromMap(JsonUtils.parseJson(json, Map.class));
+        return fromMap(JsonUtils.parseJson(tagService.read(), Map.class));
     }
 
     @Override
@@ -77,4 +76,10 @@ public class SimpleStockService implements StockService {
         return delta;
     }
 
+    @PostConstruct
+    public void init() {
+        logger.info("正在初始化库存...");
+        this.setStocks(this.getRemainStocks());
+        logger.info("初始化库存完毕\n:{}", this.getStocks());
+    }
 }

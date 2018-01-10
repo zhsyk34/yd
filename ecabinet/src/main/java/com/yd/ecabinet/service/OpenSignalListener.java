@@ -1,5 +1,6 @@
 package com.yd.ecabinet.service;
 
+import com.yd.ecabinet.config.RfidConfig;
 import com.yd.ecabinet.config.StoreConfig;
 import com.yd.rfid.RfidOperator;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Slf4j
 public class OpenSignalListener {
     private final StoreConfig storeConfig;
+    private final RfidConfig rfidConfig;
+
     private final RfidOperator rfidOperator;
+
     private final ScheduledExecutorService service;
 
     private final PhpService phpService;
@@ -49,9 +53,11 @@ public class OpenSignalListener {
                 logger.info("是否允许开门:{}", allowed);
 
                 if (allowed) {
-                    rfidOperator.openAndClose();
+                    rfidOperator.openAndClose(rfidConfig.getInterval());
                     this.necessary = false;
                 }
+            } else {
+                logger.debug("当前不需要轮询-----------------");
             }
         } finally {
             logger.debug("结束轮询----------------");

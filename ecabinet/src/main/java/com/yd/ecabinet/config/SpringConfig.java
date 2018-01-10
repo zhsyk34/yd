@@ -8,19 +8,15 @@ import com.yd.rfid.RfidOperator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ResourceUtils;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
-
 @Configuration
 @ComponentScan(basePackageClasses = Entry.class)
 public class SpringConfig {
-
-    //TODO
-    //    static final String URL_PREFIX = FILE_URL_PREFIX;
-    static final String URL_PREFIX = CLASSPATH_URL_PREFIX;
+    static final String URL_PREFIX = ResourceUtils.FILE_URL_PREFIX;
 
     @Bean
     public RfidOperator rfidOperator(RfidConfig rfidConfig) {
@@ -34,7 +30,6 @@ public class SpringConfig {
 
     @Bean
     public ScheduledExecutorService scheduledExecutorService() {
-        return Executors.newScheduledThreadPool(3);
+        return Executors.newScheduledThreadPool(5);
     }
-
 }

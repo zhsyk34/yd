@@ -17,6 +17,7 @@ public class ServerStateReportService {
     private final StoreConfig storeConfig;
     private final ScheduledExecutorService service;
 
+    @Deprecated
     public void report() {
         service.scheduleAtFixedRate(() -> logger.info("当前服务器地址:{}", getHost()), storeConfig.getSync(), storeConfig.getSync(), SECONDS);
     }

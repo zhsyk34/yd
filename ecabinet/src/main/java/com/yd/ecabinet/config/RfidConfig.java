@@ -15,4 +15,6 @@ public class RfidConfig {
     private String id;
     @Value("${rfid.ant}")
     private int ant;
+    @Value("${rfid.interval}")
+    private int interval;
 }
