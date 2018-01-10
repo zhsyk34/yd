@@ -1,25 +1,27 @@
 package com.yd.ecabinet;
 
 import com.yd.ecabinet.rfid.RfidService;
-import com.yd.ecabinet.schedule.RfidMonitorService;
-import com.yd.ecabinet.schedule.ServerStateReportService;
-import com.yd.ecabinet.tcp.TcpServer;
-import com.yd.ecabinet.util.LocalBeanFactory;
+import com.yd.ecabinet.service.OpenSignalListener;
+import com.yd.ecabinet.service.RfidMonitorService;
+import com.yd.ecabinet.service.ServerStateReportService;
+import com.yd.ecabinet.util.BeanFactoryUtils;
 import org.slf4j.LoggerFactory;
 
 public class Entry {
 
     public static void main(String[] args) {
         //connect rfid
-        LocalBeanFactory.getBean(RfidService.class).startup();
+        BeanFactoryUtils.getBean(RfidService.class).startup();
 
-        LocalBeanFactory.getBean(TcpServer.class).startup();
+//        BeanFactoryUtils.getBean(TcpServer.class).startup();
 
         //monitor rfid status
-        LocalBeanFactory.getBean(RfidMonitorService.class).watch();
+        BeanFactoryUtils.getBean(RfidMonitorService.class).watch();
+
+        BeanFactoryUtils.getBean(OpenSignalListener.class).listen();
 
         //report host status
-        LocalBeanFactory.getBean(ServerStateReportService.class).report();
+        BeanFactoryUtils.getBean(ServerStateReportService.class).report();
 
         LoggerFactory.getLogger(Entry.class).info("服务器已启动完毕");
     }

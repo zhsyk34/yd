@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
+import static com.yd.ecabinet.config.SpringConfig.URL_PREFIX;
 
 @Configuration
-@PropertySource(CLASSPATH_URL_PREFIX + "ecabinet.properties")
+@PropertySource(URL_PREFIX + "ecabinet.properties")
 @Data
 public class StoreConfig {
     @Value("${store.name}")
@@ -17,4 +17,8 @@ public class StoreConfig {
     private String number;
     @Value("${store.sync}")
     private int sync;
+    @Value("${store.script}")
+    private String script;
+    @Value("${store.interval}")
+    private int interval;
 }

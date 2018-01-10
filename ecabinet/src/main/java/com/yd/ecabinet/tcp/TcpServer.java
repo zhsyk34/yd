@@ -5,7 +5,6 @@ import com.yd.rfid.RfidOperator;
 import com.yd.rfid.executor.AbstractDaemonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,8 +19,9 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 
+//TODO
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 @Slf4j
 public class TcpServer extends AbstractDaemonService {
     private static final String ANY_ADDRESS = "0.0.0.0";
@@ -55,7 +55,7 @@ public class TcpServer extends AbstractDaemonService {
                 }
             });
 
-            logger.info("tcp server startup success.");
+            logger.info("TCP服务已启动完毕");
             super.setFinished(true);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -100,7 +100,7 @@ public class TcpServer extends AbstractDaemonService {
 
                 try {
                     CharBuffer c = StandardCharsets.UTF_8.newDecoder().decode(attachment);
-                    logger.info("receive msg:{}", c);
+                    logger.info("接收到Python端请求:{}", c);
                     rfidOperator.openAndClose();//TODO
                 } catch (CharacterCodingException e) {
                     logger.error(e.getMessage(), e);

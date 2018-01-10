@@ -4,15 +4,12 @@ import com.clou.uhf.G3Lib.ClouInterface.IAsynchronousMessage;
 import com.yd.rfid.RfidOperator;
 import com.yd.rfid.executor.AbstractDaemonService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class RfidService extends AbstractDaemonService {
-
     private final IAsynchronousMessage callback;
-
     private final RfidOperator rfidOperator;
 
     @Override

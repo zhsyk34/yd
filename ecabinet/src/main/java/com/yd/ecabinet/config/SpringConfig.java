@@ -12,9 +12,15 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
+
 @Configuration
 @ComponentScan(basePackageClasses = Entry.class)
 public class SpringConfig {
+
+    //TODO
+    //    static final String URL_PREFIX = FILE_URL_PREFIX;
+    static final String URL_PREFIX = CLASSPATH_URL_PREFIX;
 
     @Bean
     public RfidOperator rfidOperator(RfidConfig rfidConfig) {
