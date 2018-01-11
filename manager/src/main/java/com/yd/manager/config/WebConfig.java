@@ -1,7 +1,6 @@
 package com.yd.manager.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableArgumentResolver;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -18,7 +17,7 @@ import static org.springframework.util.ResourceUtils.CLASSPATH_URL_PREFIX;
 
 @Configuration
 @EnableWebMvc
-@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
+@RequiredArgsConstructor
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     private final PageableArgumentResolver pageableArgumentResolver;

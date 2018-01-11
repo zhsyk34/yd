@@ -7,7 +7,6 @@ import com.yd.manager.util.HttpUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 //TODO
 @Service
 @Slf4j
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class ManagerService {
 
     private static final Map<Long, ManagerInfo> ID_CACHE = new ConcurrentHashMap<>();

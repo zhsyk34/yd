@@ -7,9 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * 商品种类
- */
 @Entity
 @Table(name = "estore_goods_category")
 @Data

@@ -1,28 +1,27 @@
 package com.yd.manager.controller;
 
 import com.yd.manager.service.*;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 abstract class CommonController {
-    @Setter(onMethod = @__({@Autowired}))
+    @Autowired
     protected OrdersService ordersService;
 
-    @Setter(onMethod = @__({@Autowired}))
+    @Autowired
     protected UserService userService;
 
-    @Setter(onMethod = @__({@Autowired}))
+    @Autowired
     protected StoreService storeService;
 
-    @Setter(onMethod = @__({@Autowired}))
+    @Autowired
     protected MerchandiseService merchandiseService;
 
-    @Setter(onMethod = @__({@Autowired}))
+    @Autowired
     protected ManagerService managerService;
 
-    @Setter(onMethod = @__({@Autowired}))
+    @Autowired
     protected AccessRecordService accessRecordService;
 
-    @Setter(onMethod = @__({@Autowired}))
+    @Autowired
     protected AccessAttachService accessAttachService;
 }

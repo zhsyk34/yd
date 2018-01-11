@@ -11,7 +11,7 @@ import com.yd.manager.entity.Store_;
 import com.yd.manager.repository.custom.StoreDTORepository;
 import com.yd.manager.util.TimeUtils;
 import com.yd.manager.util.jpa.JpaUtils;
-import com.yd.manager.util.jpa.PredicateFactory;
+import com.yd.manager.util.jpa.PredicateBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +20,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,28 +28,28 @@ import java.util.List;
 
 @Repository
 public class StoreRepositoryImpl implements StoreDTORepository {
+    private final EntityManager manager;
+    private final CriteriaBuilder builder;
 
-    @PersistenceContext
-    private EntityManager manager;
+    public StoreRepositoryImpl(EntityManager manager) {
+        this.manager = manager;
+        this.builder = manager.getCriteriaBuilder();
+    }
 
     @Override
     public List<StoreOrdersDTO> listStoreOrdersDTO(String nameOrCode, TimeRange timeRange, List<Long> stores, Pageable pageable) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<StoreOrdersDTO> criteria = builder.createQuery(StoreOrdersDTO.class);
 
-        //from
         Root<Store> storeRoot = criteria.from(Store.class);
         SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        //where
-        Collection<Predicate> predicates = PredicateFactory.instance()
-                .append(this.restrictForStore(builder, storeRoot, nameOrCode))
+        Collection<Predicate> predicates = PredicateBuilder.instance()
+                .append(this.restrictForStore(storeRoot, nameOrCode))
                 .append(this.restrictForStore(storeRoot, stores))
-                .append(this.restrictForOrders(builder, ordersJoin, timeRange))
+                .append(this.restrictForOrders(ordersJoin, timeRange))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
-        //group by
         criteria.groupBy(storeRoot);
 
         Expression<BigDecimal> sum = builder.sum(ordersJoin.get(Orders_.actual));
@@ -64,7 +63,6 @@ public class StoreRepositoryImpl implements StoreDTORepository {
                 builder.avg(ordersJoin.get(Orders_.actual))
         );
 
-        //order by
         criteria.orderBy(builder.desc(sum));
 
         return JpaUtils.getResultListByPageable(manager, criteria, pageable);
@@ -72,15 +70,12 @@ public class StoreRepositoryImpl implements StoreDTORepository {
 
     @Override
     public long countStoreOrdersDTO(String nameOrCode, List<Long> stores) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
 
-        //from
         Root<Store> storePath = criteria.from(Store.class);
 
-        //where
-        Collection<Predicate> predicates = PredicateFactory.instance()
-                .append(this.restrictForStore(builder, storePath, nameOrCode))
+        Collection<Predicate> predicates = PredicateBuilder.instance()
+                .append(this.restrictForStore(storePath, nameOrCode))
                 .append(this.restrictForStore(storePath, stores))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
@@ -97,21 +92,17 @@ public class StoreRepositoryImpl implements StoreDTORepository {
 
     @Override
     public StoreOrdersDTO getStoreOrdersDTO(long storeId, TimeRange timeRange) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<StoreOrdersDTO> criteria = builder.createQuery(StoreOrdersDTO.class);
 
-        //from
         Root<Store> storeRoot = criteria.from(Store.class);
         SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        //where
-        Collection<Predicate> predicates = PredicateFactory.instance()
-                .append(this.restrictForStore(builder, storeRoot, storeId))
-                .append(this.restrictForOrders(builder, ordersJoin, timeRange))
+        Collection<Predicate> predicates = PredicateBuilder.instance()
+                .append(this.restrictForStore(storeRoot, storeId))
+                .append(this.restrictForOrders(ordersJoin, timeRange))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
-        //group by
         criteria.groupBy(storeRoot);
 
         criteria.multiselect(
@@ -129,21 +120,17 @@ public class StoreRepositoryImpl implements StoreDTORepository {
 
     @Override
     public StoreOrdersDateDTO getStoreOrdersDateDTO(long storeId, LocalDate date) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<StoreOrdersDateDTO> criteria = builder.createQuery(StoreOrdersDateDTO.class);
 
-        //from
         Root<Store> storeRoot = criteria.from(Store.class);
         SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        //where
-        Collection<Predicate> predicates = PredicateFactory.instance()
-                .append(this.restrictForStore(builder, storeRoot, storeId))
-                .append(this.restrictForOrders(builder, ordersJoin, DateRange.ofDate(date).toTimeRange()))
+        Collection<Predicate> predicates = PredicateBuilder.instance()
+                .append(this.restrictForStore(storeRoot, storeId))
+                .append(this.restrictForOrders(ordersJoin, DateRange.ofDate(date).toTimeRange()))
                 .build();
         JpaUtils.setPredicate(criteria, predicates);
 
-        //group by
         criteria.groupBy(storeRoot);
 
         criteria.multiselect(
@@ -158,7 +145,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         return manager.createQuery(criteria).getResultList().stream().findFirst().orElse(null);
     }
 
-    private Predicate restrictForStore(CriteriaBuilder builder, Path<Store> path, String nameOrCode) {
+    private Predicate restrictForStore(Path<Store> path, String nameOrCode) {
         if (StringUtils.hasText(nameOrCode)) {
             Predicate likeName = builder.like(path.get(Store_.name), JpaUtils.matchString(nameOrCode));
             Predicate likeCode = builder.like(path.get(Store_.code), JpaUtils.matchString(nameOrCode));
@@ -171,11 +158,11 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         return CollectionUtils.isEmpty(stores) ? null : path.get(Store_.id).in(stores);
     }
 
-    private Collection<Predicate> restrictForOrders(CriteriaBuilder builder, Path<Orders> path, TimeRange timeRange) {
+    private Collection<Predicate> restrictForOrders(Path<Orders> path, TimeRange timeRange) {
         return JpaUtils.between(builder, path.get(Orders_.createTime), timeRange);
     }
 
-    private Predicate restrictForStore(CriteriaBuilder builder, Path<Store> path, long storeId) {
+    private Predicate restrictForStore(Path<Store> path, long storeId) {
         return builder.equal(path.get(Store_.id), storeId);
     }
 }

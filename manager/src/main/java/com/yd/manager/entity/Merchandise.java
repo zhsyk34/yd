@@ -4,9 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-/**
- * 商品
- */
 @Entity
 @Table(name = "estore_goods")
 @Data

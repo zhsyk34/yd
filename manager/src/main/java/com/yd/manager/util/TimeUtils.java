@@ -5,10 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-//TODO:时区
 public abstract class TimeUtils {
 
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -44,18 +42,6 @@ public abstract class TimeUtils {
 
     public static LocalDateTime parseMillis(long millis) {
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
-    }
-
-    //TODO
-    public static void main(String[] args) {
-        LocalDateTime now = LocalDateTime.now();
-        System.out.println(millis(now));
-        System.out.println(seconds(now));
-
-        System.out.println(now.atZone(ZoneId.systemDefault()).getLong(ChronoField.INSTANT_SECONDS));
-        System.out.println(now.atZone(ZoneId.systemDefault()).getLong(ChronoField.MILLI_OF_DAY));
-
-        System.err.println(parseMillis(0));
     }
 
     public static long millis(LocalDateTime time) {

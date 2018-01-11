@@ -11,7 +11,8 @@ import java.math.BigDecimal;
 public class OrdersDTO {
     private final long ordersCount;
     private final BigDecimal ordersMoney;
-    static final OrdersDTO EMPTY = new OrdersDTO(0, null, null, null);
-    private final Double ordersAverage;
     private final BigDecimal ordersProfit;
+    private final Double ordersAverage;
+
+    static final OrdersDTO EMPTY = new OrdersDTO(0, null, null, null);
 }

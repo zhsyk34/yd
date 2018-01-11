@@ -39,9 +39,4 @@ public class BeanConfig {
         return new MappingJackson2HttpMessageConverter(mapper);
     }
 
-//    @Bean
-//    public ServletListenerRegistrationBean<ServletContextListener> authListener(AuthInitializationListener authInitializationListener) {
-//        return new ServletListenerRegistrationBean<>(authInitializationListener);
-//    }
-
 }

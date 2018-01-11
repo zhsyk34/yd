@@ -8,30 +8,33 @@ import com.yd.manager.entity.Store;
 import com.yd.manager.entity.Store_;
 import com.yd.manager.repository.custom.OrdersDTORepository;
 import com.yd.manager.util.jpa.JpaUtils;
-import com.yd.manager.util.jpa.PredicateFactory;
+import com.yd.manager.util.jpa.PredicateBuilder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.Collection;
 import java.util.List;
 
 @Repository
 public class OrdersRepositoryImpl implements OrdersDTORepository {
-    @PersistenceContext
-    private EntityManager manager;
+    private final EntityManager manager;
+    private final CriteriaBuilder builder;
+
+    public OrdersRepositoryImpl(EntityManager manager) {
+        this.manager = manager;
+        this.builder = manager.getCriteriaBuilder();
+    }
 
     @Override
     public OrdersDTO getOrdersDTO(TimeRange timeRange, List<Long> stores) {
-        CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<OrdersDTO> criteria = builder.createQuery(OrdersDTO.class);
 
         Root<Orders> ordersRoot = criteria.from(Orders.class);
         Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateBuilder.instance()
                 .append(this.restrictForOrders(builder, ordersRoot, timeRange))
                 .append(this.restrictForStore(storeJoin, stores))
                 .build();

@@ -9,9 +9,10 @@ import java.math.BigDecimal;
  */
 @Getter
 public class AccessRecordDTO {
+    static final AccessRecordDTO EMPTY = AccessRecordDTO.from(0, 0, 0);
+
     private final long enterCount;
     private final long entrantCount;
-    static final AccessRecordDTO EMPTY = AccessRecordDTO.from(0, 0, 0);
     private final long validCount;
     private BigDecimal regRate;
 

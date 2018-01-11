@@ -6,7 +6,6 @@ import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.OrdersRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class OrdersService {
 
     private final OrdersRepository ordersRepository;

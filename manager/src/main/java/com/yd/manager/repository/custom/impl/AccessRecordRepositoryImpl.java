@@ -6,26 +6,22 @@ import com.yd.manager.entity.AccessRecord;
 import com.yd.manager.repository.custom.AccessRecordDTORepository;
 import com.yd.manager.util.TimeUtils;
 import com.yd.manager.util.jpa.JpaUtils;
-import com.yd.manager.util.jpa.PredicateFactory;
+import com.yd.manager.util.jpa.PredicateBuilder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.Collection;
 import java.util.List;
 
 @Repository
 public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
-    @PersistenceContext
-    private EntityManager manager;
+    private final EntityManager manager;
+    private final CriteriaBuilder builder;
 
-    private CriteriaBuilder builder;
-
-    @PostConstruct
-    public void initBuilder() {
+    public AccessRecordRepositoryImpl(EntityManager manager) {
+        this.manager = manager;
         this.builder = manager.getCriteriaBuilder();
     }
 
@@ -35,7 +31,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .build();
@@ -50,7 +46,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .append(this.restrictForAccessNew(path))
@@ -66,7 +62,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateBuilder.instance()
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .append(this.restrictForAccessValid(path))
@@ -82,7 +78,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -98,7 +94,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -115,7 +111,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateBuilder.instance()
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -132,7 +128,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUsers(path, users))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -151,7 +147,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUsers(path, users))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -171,7 +167,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateBuilder.instance()
                 .append(this.restrictForUsers(path, users))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -191,7 +187,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForStore(path, storeId))
                 .append(this.restrictForAccess(path, timeRange))
                 .build();
@@ -206,7 +202,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForStore(path, storeId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForAccessNew(path))
@@ -222,7 +218,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateBuilder.instance()
                 .append(this.restrictForStore(path, storeId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForAccessValid(path))
@@ -238,7 +234,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .build();
@@ -259,7 +255,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .append(this.restrictForAccessNew(path))
@@ -278,7 +274,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateBuilder.instance()
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
                 .append(this.restrictForAccessValid(path))
@@ -297,7 +293,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -319,7 +315,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.init(this.restrictForAccessEnter(path))
+        Collection<Predicate> predicates = PredicateBuilder.init(this.restrictForAccessEnter(path))
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))
@@ -339,7 +335,7 @@ public class AccessRecordRepositoryImpl implements AccessRecordDTORepository {
 
         Root<AccessRecord> path = criteria.from(AccessRecord.class);
 
-        Collection<Predicate> predicates = PredicateFactory.instance()
+        Collection<Predicate> predicates = PredicateBuilder.instance()
                 .append(this.restrictForUser(path, userId))
                 .append(this.restrictForAccess(path, timeRange))
                 .append(this.restrictForStores(path, stores))

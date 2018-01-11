@@ -6,16 +6,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yd.manager.util.HttpUtils;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class DeviceService {
 
@@ -33,8 +34,8 @@ public class DeviceService {
             new BasicHeader("Accept", "application/json"),
             new BasicHeader("Authorization", "f0becc06-e3c9-11e7-b696-00163e08a87b")
     );
-    @Autowired
-    private ObjectMapper mapper;
+
+    private final ObjectMapper mapper;
 
     public String getScreenshot(String account, String deviceSerial, int channelNo) {
         return this.post(SCREENSHOT, Parameter.builder().account(account).deviceSerial(deviceSerial).channelNo(channelNo).build());
@@ -56,10 +57,10 @@ public class DeviceService {
     private String post(String uri, Parameter params) {
         try {
             String json = mapper.writeValueAsString(params);
-            String r = HttpUtils.postJson(BASE_URL + uri, HEADERS, json);
-            logger.info("uri:{}\nparams:{}\nresult:{}\n------------------------", uri, json, r);
+            String result = HttpUtils.post(BASE_URL + uri, HEADERS, json);
+            logger.info("uri:{}\nparams:{}\nresult:{}\n------------------------", uri, json, result);
 
-            return r;
+            return result;
         } catch (JsonProcessingException e) {
             logger.error(e.getMessage(), e);
             return null;

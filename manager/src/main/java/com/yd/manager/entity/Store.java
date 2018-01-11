@@ -6,9 +6,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
-/**
- * 商店
- */
 @Entity
 @Table(name = "estore_shop")
 @Data

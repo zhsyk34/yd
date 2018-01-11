@@ -9,7 +9,6 @@ import com.yd.manager.repository.StoreRepository;
 import com.yd.manager.service.AccessRecordService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toMap;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class AccessRecordServiceImpl implements AccessRecordService {
 
     private final AccessRecordRepository accessRecordRepository;

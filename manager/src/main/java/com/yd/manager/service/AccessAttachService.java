@@ -7,7 +7,6 @@ import com.yd.manager.dto.record.StoreOrdersAccessDTO;
 import com.yd.manager.dto.record.UserAccessRecordDTO;
 import com.yd.manager.dto.record.UserOrdersAccessDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +19,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class AccessAttachService {
     private final UserService userService;
     private final StoreService storeService;

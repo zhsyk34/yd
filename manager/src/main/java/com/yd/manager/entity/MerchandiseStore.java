@@ -5,9 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Set;
 
-/**
- * 商品库存
- */
 @Entity
 @Table(name = "estore_inventory_shop")
 @Data

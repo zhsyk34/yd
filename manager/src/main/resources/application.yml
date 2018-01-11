@@ -25,8 +25,8 @@ spring:
   http:
     encoding:
       charset: UTF-8
-#  profiles:
-#    active: test
+  profiles:
+    active: test
 
 
 
