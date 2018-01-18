@@ -20,8 +20,8 @@ public class OrdersMerchandise {
     @JoinColumn(name = "inventory_id")
     private MerchandiseStore merchandiseStore;
 
-    @Column(name = "spec_id")
-    private String specId;
+    @Column(name = "spec_code")
+    private String specCode;
 
     @Column(name = "qty")
     private int count;

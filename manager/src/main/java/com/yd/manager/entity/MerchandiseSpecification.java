@@ -17,8 +17,8 @@ public class MerchandiseSpecification {
     @JoinColumn(name = "inventory_id")
     private MerchandiseStore MerchandiseStore;
 
-    @Column(name = "spec_id")
-    private String specId;
+    @Column(name = "spec_code")
+    private String specCode;
 
     @Column(name = "spec_name")
     private String name;
