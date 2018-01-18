@@ -2,6 +2,7 @@ package com.yd.manager.controller;
 
 import com.yd.manager.dto.orders.StoreOrdersDTO;
 import com.yd.manager.dto.orders.StoreOrdersDateDTO;
+import com.yd.manager.dto.orders.StoreOrdersDeviceDTO;
 import com.yd.manager.dto.util.Result;
 import com.yd.manager.interceptor.OwnerStore;
 import org.springframework.data.domain.Page;
@@ -19,8 +20,8 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 public class StoreController extends CommonController {
 
     @GetMapping
-    public Result<Page<StoreOrdersDTO>> list(String nameOrCode, Pageable pageable, @RequestParam(required = false) @OwnerStore List<Long> stores) {
-        return Result.success(storeService.pageStoreOrdersDTO(nameOrCode, stores, pageable));
+    public Result<Page<StoreOrdersDeviceDTO>> list(String nameOrCode, Pageable pageable, @RequestParam(required = false) @OwnerStore List<Long> stores) {
+        return Result.success(storeService.pageStoreOrdersDeviceDTO(nameOrCode, stores, pageable));
     }
 
     @GetMapping("top5")

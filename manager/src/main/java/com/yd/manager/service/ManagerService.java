@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ManagerService {
 
     private static final Map<Long, ManagerInfo> ID_CACHE = new ConcurrentHashMap<>();
-    private static final Map<String, ManagerInfo> PHONE_CACHE = new ConcurrentHashMap<>();
     private static final String URL = "http://www.estore.ai/api/user/login";
     private final ObjectMapper mapper;
 
@@ -34,11 +33,6 @@ public class ManagerService {
 
     private void cache(@NonNull ManagerInfo info) {
         ID_CACHE.put(info.getId(), info);
-//        PHONE_CACHE.put(info.getId(), info);//todo
-    }
-
-    public ManagerInfo getManagerInfo(String phone) {
-        return PHONE_CACHE.get(phone);
     }
 
     public ManagerInfo getManagerInfo(long id) {
@@ -55,6 +49,8 @@ public class ManagerService {
         param.put("password", password);
 
         String response = HttpUtils.get(URL, param);
+        logger.info("user login[{}:{}]", username, password);
+        logger.info("php response:{}", response);
 
         if (!StringUtils.hasText(response)) {
             return null;

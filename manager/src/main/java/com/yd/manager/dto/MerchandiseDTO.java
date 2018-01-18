@@ -22,7 +22,7 @@ public class MerchandiseDTO {
     private final String storeName;
 
     //规格
-    private final String specId;
+    private final String specCode;
     private final String specName;
     private final BigDecimal price;
 }

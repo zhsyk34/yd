@@ -46,7 +46,7 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
                 merchandiseJoin.join(Merchandise_.category).get(MerchandiseCategory_.name),
                 storeJoin.get(Store_.id),
                 storeJoin.get(Store_.name),
-                specificationRoot.get(MerchandiseSpecification_.specId),
+                specificationRoot.get(MerchandiseSpecification_.specCode),
                 specificationRoot.get(MerchandiseSpecification_.name),
                 specificationRoot.get(MerchandiseSpecification_.price)
         );
@@ -88,15 +88,11 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
 
         JpaUtils.setPredicate(criteria, this.restrict(specificationPath, merchandisePath, nameOrCode, storePath, stores));
 
-        Subquery<Long> subQuery = criteria.subquery(Long.class);
+        Subquery<Integer> subQuery = criteria.subquery(Integer.class);
         Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.from(OrdersMerchandise.class);
-
-        subQuery.where(builder.and(
-                builder.equal(ordersMerchandiseRoot.get(OrdersMerchandise_.specId), specificationPath.get(MerchandiseSpecification_.specId)),
-                builder.equal(ordersMerchandiseRoot.join(OrdersMerchandise_.merchandiseStore), merchandiseStorePath)
-        ));
-
-        subQuery.select(builder.count(ordersMerchandiseRoot));
+        Path<MerchandiseStore> merchandiseStore = ordersMerchandiseRoot.join(OrdersMerchandise_.merchandiseStore);
+        subQuery.where(builder.and(builder.equal(merchandiseStore.get(MerchandiseStore_.store).get(Store_.id), storePath.get(Store_.id)), builder.equal(merchandiseStore, merchandiseStorePath)));
+        subQuery.select(builder.sum(ordersMerchandiseRoot.get(OrdersMerchandise_.count)));
 
         criteria.multiselect(
                 merchandisePath.get(Merchandise_.id),
@@ -105,7 +101,7 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
                 merchandisePath.join(Merchandise_.category).get(MerchandiseCategory_.name),
                 storePath.get(Store_.id),
                 storePath.get(Store_.name),
-                specificationPath.get(MerchandiseSpecification_.specId),
+                specificationPath.get(MerchandiseSpecification_.specCode),
                 specificationPath.get(MerchandiseSpecification_.name),
                 specificationPath.get(MerchandiseSpecification_.price),
                 subQuery.getSelection()

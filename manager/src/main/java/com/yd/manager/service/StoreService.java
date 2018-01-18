@@ -1,13 +1,16 @@
 package com.yd.manager.service;
 
+import com.yd.manager.dto.device.StoreDevice;
 import com.yd.manager.dto.orders.StoreOrdersDTO;
 import com.yd.manager.dto.orders.StoreOrdersDateDTO;
+import com.yd.manager.dto.orders.StoreOrdersDeviceDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.repository.StoreRepository;
 import com.yd.manager.util.TimeUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,11 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.yd.manager.service.DeviceService.SUPER_ACCOUNT;
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor
 public class StoreService {
 
     private final StoreRepository storeRepository;
+    private final DeviceService deviceService;
+
+    public Page<StoreOrdersDeviceDTO> pageStoreOrdersDeviceDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
+        List<StoreDevice> devices = deviceService.listStoreDevice(SUPER_ACCOUNT);
+        Page<StoreOrdersDTO> page = storeRepository.pageStoreOrdersDTO(nameOrCode, null, stores, pageable);
+        List<StoreOrdersDTO> ds = page.getContent();
+        List<StoreOrdersDeviceDTO> list = ds.stream().map(dto -> StoreOrdersDeviceDTO.from(dto, devices)).collect(toList());
+        return new PageImpl<>(list, pageable, page.getTotalElements());
+    }
 
     public Page<StoreOrdersDTO> pageStoreOrdersDTO(String nameOrCode, List<Long> stores, Pageable pageable) {
         return storeRepository.pageStoreOrdersDTO(nameOrCode, null, stores, pageable);

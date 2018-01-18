@@ -1,24 +1,32 @@
 package com.yd.manager.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yd.manager.dto.device.DeviceResult;
+import com.yd.manager.dto.device.Parameter;
+import com.yd.manager.dto.device.StoreDevice;
 import com.yd.manager.util.HttpUtils;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DeviceService {
+
+    public static final String SUPER_ACCOUNT = "estore";
 
     private static final String BASE_URL = "http://data.estore.ai:18081/openapi/";
 
@@ -29,6 +37,7 @@ public class DeviceService {
     private static final String DEVICE_LIST = "device/list";
 
     private static final String ACCOUNT_LIST = "account/list";
+
     private static final Collection<Header> HEADERS = Arrays.asList(
             new BasicHeader("Content-Type", "application/json"),
             new BasicHeader("Accept", "application/json"),
@@ -45,15 +54,34 @@ public class DeviceService {
         return this.post(VIDEO, Parameter.builder().deviceSerial(deviceSerial).channelNo(channelNo).build());
     }
 
-    public String getDeviceList(String account, int pageNumber, int pageSize) {
-        return this.post(DEVICE_LIST, Parameter.builder().account(account).pageNumber(pageNumber).pageSize(pageSize).build());
+    private DeviceResult getDeviceList(String account, int pageNumber, int pageSize) {
+        String r = this.post(DEVICE_LIST, Parameter.builder().account(account).pageNumber(pageNumber).pageSize(pageSize).build());
+        try {
+            return mapper.readValue(r, DeviceResult.class);
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public List<StoreDevice> listStoreDevice(String account) {
+        return Optional.ofNullable(this.getDeviceList(account, 1, Integer.MAX_VALUE))
+                .map(DeviceResult::getList)
+                .orElse(null);
+    }
+
+    public StoreDevice getStoreDeviceByName(String account, String name) {
+        return Optional.ofNullable(this.getDeviceList(account, 1, Integer.MAX_VALUE))
+                .map(DeviceResult::getList)
+                .map(sd -> sd.stream().collect(toMap(StoreDevice::getStoreName, identity())))
+                .map(m -> m.get(name))
+                .orElse(null);
     }
 
     public String getAccountList(int pageNumber, int pageSize) {
         return this.post(ACCOUNT_LIST, Parameter.builder().pageNumber(pageNumber).pageSize(pageSize).build());
     }
 
-    //TODO
     private String post(String uri, Parameter params) {
         try {
             String json = mapper.writeValueAsString(params);
@@ -65,21 +93,6 @@ public class DeviceService {
             logger.error(e.getMessage(), e);
             return null;
         }
-    }
-
-    @Builder
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private static class Parameter {
-        @JsonProperty("account")
-        private String account;
-        @JsonProperty("device_serial")
-        private String deviceSerial;
-        @JsonProperty("chan_no")
-        private Integer channelNo;
-        @JsonProperty("page_num")
-        private Integer pageNumber;
-        @JsonProperty("page_size")
-        private Integer pageSize;
     }
 
 }

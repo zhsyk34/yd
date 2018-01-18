@@ -30,6 +30,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*");
+    }
+
+    @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(pageableArgumentResolver);
     }
@@ -37,10 +42,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(jackson2HttpMessageConverter);
-    }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*");
     }
 }

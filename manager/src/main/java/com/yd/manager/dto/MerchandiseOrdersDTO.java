@@ -22,10 +22,10 @@ public class MerchandiseOrdersDTO {
     private final String storeName;
 
     //规格
-    private final String specId;
+    private final String specCode;
     private final String specName;
     private final BigDecimal price;
 
     //sum():销量
-    private final long sales;
+    private final Long sales;
 }

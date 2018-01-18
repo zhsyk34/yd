@@ -6,9 +6,10 @@ import com.yd.manager.service.ManagerService;
 import com.yd.manager.util.EncryptUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.http.HttpStatus;
@@ -19,13 +20,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.List;
 
-@Aspect
 //@Component
-
+@Aspect
 @RequiredArgsConstructor
 @Slf4j
 public class ControllerAspect {
@@ -42,7 +43,22 @@ public class ControllerAspect {
     private void matchParameter() {
     }
 
-    @Around("matchController() && matchParameter()")
+    @Before("matchController()")
+    public void before(JoinPoint point) {
+        logger.debug("------------------before");
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String uri = request.getRequestURI();
+        logger.debug("------------------url:{}", uri);
+
+        Object[] args = point.getArgs();
+        Method method = ((MethodSignature) point.getSignature()).getMethod();
+
+        logger.debug("------------------target:{}", point.getTarget().getClass());
+        logger.debug("------------------method:{}", method.getName());
+        logger.debug("------------------param:{}", StringUtils.arrayToCommaDelimitedString(args));
+    }
+
+    //    @Around("matchController() && matchParameter()")
     public Object around(ProceedingJoinPoint point) throws Throwable {
         logger.debug("------------------aop around");
 

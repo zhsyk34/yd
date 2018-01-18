@@ -11,7 +11,7 @@ spring:
     cache: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-bp1m7y8awms02a194.mysql.rds.aliyuncs.com:3306/estore_sql?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://rm-bp1m7y8awms02a1940o.mysql.rds.aliyuncs.com:3306/estore_sql?useSSL=true&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8
     username: estore_user
     password: estore_user520
   jpa:
@@ -22,12 +22,6 @@ spring:
         format_sql: true
         dialect:
           storage_engine: innodb
-  http:
-    encoding:
-      charset: UTF-8
-  profiles:
-    active: test
-
 
 
 

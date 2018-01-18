@@ -2,7 +2,7 @@ package com.yd.manager.repository.custom.impl;
 
 import com.yd.manager.dto.record.AccessRecordCount;
 import com.yd.manager.dto.util.TimeRange;
-import com.yd.manager.entity.AccessRecord;
+import com.yd.manager.entity.*;
 import com.yd.manager.repository.custom.AccessRecordDTORepository;
 import com.yd.manager.util.TimeUtils;
 import com.yd.manager.util.jpa.JpaUtils;

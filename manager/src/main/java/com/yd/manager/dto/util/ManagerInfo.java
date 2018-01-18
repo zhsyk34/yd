@@ -1,15 +1,19 @@
 package com.yd.manager.dto.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class ManagerInfo {
-    private final long id;
+    private long id;
     @JsonProperty("user_type")
-    private final int type;
+    private int type;
     @JsonProperty("shop_id")
-    private final List<Long> stores;
+    private List<Long> stores;
 }

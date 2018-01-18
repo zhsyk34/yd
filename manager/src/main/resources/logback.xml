@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
-
-    <property name="dir" value="e:/logs"/>
+    <property name="dir" value="./logs"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <!--<pattern>%d{HH:mm:ss} [%thread] %-5level %logger{36} -%msg%n</pattern>-->
             <pattern>%-4relative [%thread] %-5level %logger{100} - %msg%n</pattern>
         </encoder>
     </appender>
@@ -31,6 +29,6 @@
 
     <root level="info">
         <appender-ref ref="console"/>
-        <!--<appender-ref ref="local"/>-->
+        <appender-ref ref="local"/>
     </root>
 </configuration>
