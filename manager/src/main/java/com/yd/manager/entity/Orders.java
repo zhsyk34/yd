@@ -41,9 +41,12 @@ public class Orders {
     private boolean paid;
 
     @Column(name = "paytype")
-    private String type;
+    private String payType;
 
     private String status;
+
+    @Column(name = "order_type")
+    private int type;
 
     @Column(name = "addtime")
     @Convert(converter = PhpTimeConvert.class)

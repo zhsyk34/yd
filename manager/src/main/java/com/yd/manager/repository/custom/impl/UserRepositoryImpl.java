@@ -6,6 +6,7 @@ import com.yd.manager.dto.orders.UserStoreOrdersDTO;
 import com.yd.manager.dto.util.DateRange;
 import com.yd.manager.dto.util.TimeRange;
 import com.yd.manager.entity.*;
+import com.yd.manager.repository.RestrictUtils;
 import com.yd.manager.repository.custom.UserDTORepository;
 import com.yd.manager.util.TimeUtils;
 import com.yd.manager.util.jpa.JpaUtils;
@@ -43,7 +44,7 @@ public class UserRepositoryImpl implements UserDTORepository {
         SetJoin<User, Orders> ordersPath = userPath.join(User_.orders, LEFT);
         Join<Orders, Store> storePath = ordersPath.join(Orders_.store, LEFT);
 
-        Collection<Predicate> predicates = PredicateBuilder.instance()
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersPath))
                 .append(this.restrictForUser(userPath, nameOrPhone))
                 .append(this.restrictForOrders(ordersPath, timeRange))
                 .append(this.restrictForStore(storePath, stores))
@@ -100,7 +101,7 @@ public class UserRepositoryImpl implements UserDTORepository {
         SetJoin<User, Orders> ordersPath = userPath.join(User_.orders, LEFT);
         Join<Orders, Store> storePath = ordersPath.join(Orders_.store, LEFT);
 
-        Collection<Predicate> predicates = PredicateBuilder.instance()
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersPath))
                 .append(restrictForUser(userPath, userId))
                 .append(restrictForOrders(ordersPath, timeRange))
                 .append(restrictForStore(storePath, stores))
@@ -133,7 +134,7 @@ public class UserRepositoryImpl implements UserDTORepository {
         SetJoin<User, Orders> ordersPath = userPath.join(User_.orders, LEFT);
         Join<Orders, Store> storePath = ordersPath.join(Orders_.store, LEFT);
 
-        Collection<Predicate> predicates = PredicateBuilder.instance()
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersPath))
                 .append(restrictForUser(userPath, userId))
                 .append(restrictForOrders(ordersPath, DateRange.ofDate(date).toTimeRange()))
                 .append(restrictForStore(storePath, stores))

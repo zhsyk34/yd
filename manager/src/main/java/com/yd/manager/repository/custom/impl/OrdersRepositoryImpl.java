@@ -6,6 +6,7 @@ import com.yd.manager.entity.Orders;
 import com.yd.manager.entity.Orders_;
 import com.yd.manager.entity.Store;
 import com.yd.manager.entity.Store_;
+import com.yd.manager.repository.RestrictUtils;
 import com.yd.manager.repository.custom.OrdersDTORepository;
 import com.yd.manager.util.jpa.JpaUtils;
 import com.yd.manager.util.jpa.PredicateBuilder;
@@ -34,7 +35,7 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
         Root<Orders> ordersRoot = criteria.from(Orders.class);
         Join<Orders, Store> storeJoin = ordersRoot.join(Orders_.store);
 
-        Collection<Predicate> predicates = PredicateBuilder.instance()
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersRoot))
                 .append(this.restrictForOrders(builder, ordersRoot, timeRange))
                 .append(this.restrictForStore(storeJoin, stores))
                 .build();
@@ -55,7 +56,7 @@ public class OrdersRepositoryImpl implements OrdersDTORepository {
     }
 
     private Collection<Predicate> restrictForOrders(CriteriaBuilder builder, Path<Orders> path, TimeRange timeRange) {
-        return JpaUtils.between(builder, path.get(Orders_.createTime), timeRange);
+        return JpaUtils.between(builder, path.get(Orders_.payTime), timeRange);//php以payTime计算
     }
 
 }

@@ -7,10 +7,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -41,7 +38,7 @@ public abstract class JpaUtils {
         return predicates;
     }
 
-    public static void setPredicate(CriteriaQuery<?> criteria, Collection<Predicate> predicates) {
+    public static void setPredicate(AbstractQuery<?> criteria, Collection<Predicate> predicates) {
         if (!CollectionUtils.isEmpty(predicates)) {
             criteria.where(predicates.toArray(new Predicate[predicates.size()]));
         }

@@ -1,10 +1,12 @@
 package com.yd.manager.util;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class TimeUtils {
@@ -49,7 +51,17 @@ public abstract class TimeUtils {
     }
 
     public static long seconds(LocalDateTime time) {
-        return time.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        return time.atZone(ZoneId.of("Asia/Shanghai")).toInstant().getEpochSecond();
+    }
+
+    public static void main(String[] args) {
+        Date d = new Date(1516204800 * 1000L);
+        System.out.println(d);
+
+        new Date(2018, 1, 1, 0, 0, 0);
+
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(f.format(d));
     }
 
 }

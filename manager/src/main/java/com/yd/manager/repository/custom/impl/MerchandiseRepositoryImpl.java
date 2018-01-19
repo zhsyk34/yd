@@ -3,6 +3,7 @@ package com.yd.manager.repository.custom.impl;
 import com.yd.manager.dto.MerchandiseDTO;
 import com.yd.manager.dto.MerchandiseOrdersDTO;
 import com.yd.manager.entity.*;
+import com.yd.manager.repository.RestrictUtils;
 import com.yd.manager.repository.custom.MerchandiseDTORepository;
 import com.yd.manager.util.jpa.JpaUtils;
 import com.yd.manager.util.jpa.PredicateBuilder;
@@ -91,7 +92,12 @@ public class MerchandiseRepositoryImpl implements MerchandiseDTORepository {
         Subquery<Integer> subQuery = criteria.subquery(Integer.class);
         Root<OrdersMerchandise> ordersMerchandiseRoot = subQuery.from(OrdersMerchandise.class);
         Path<MerchandiseStore> merchandiseStore = ordersMerchandiseRoot.join(OrdersMerchandise_.merchandiseStore);
-        subQuery.where(builder.and(builder.equal(merchandiseStore.get(MerchandiseStore_.store).get(Store_.id), storePath.get(Store_.id)), builder.equal(merchandiseStore, merchandiseStorePath)));
+
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersMerchandiseRoot.join(OrdersMerchandise_.orders)))
+                .append(builder.equal(merchandiseStore.get(MerchandiseStore_.store).get(Store_.id), storePath.get(Store_.id)))
+                .append(builder.equal(merchandiseStore, merchandiseStorePath)).build();
+        JpaUtils.setPredicate(subQuery, predicates);
+
         subQuery.select(builder.sum(ordersMerchandiseRoot.get(OrdersMerchandise_.count)));
 
         criteria.multiselect(

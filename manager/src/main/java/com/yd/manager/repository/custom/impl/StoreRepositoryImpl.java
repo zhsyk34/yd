@@ -8,6 +8,7 @@ import com.yd.manager.entity.Orders;
 import com.yd.manager.entity.Orders_;
 import com.yd.manager.entity.Store;
 import com.yd.manager.entity.Store_;
+import com.yd.manager.repository.RestrictUtils;
 import com.yd.manager.repository.custom.StoreDTORepository;
 import com.yd.manager.util.TimeUtils;
 import com.yd.manager.util.jpa.JpaUtils;
@@ -43,7 +44,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         Root<Store> storeRoot = criteria.from(Store.class);
         SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        Collection<Predicate> predicates = PredicateBuilder.instance()
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersJoin))
                 .append(this.restrictForStore(storeRoot, nameOrCode))
                 .append(this.restrictForStore(storeRoot, stores))
                 .append(this.restrictForOrders(ordersJoin, timeRange))
@@ -97,7 +98,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         Root<Store> storeRoot = criteria.from(Store.class);
         SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        Collection<Predicate> predicates = PredicateBuilder.instance()
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersJoin))
                 .append(this.restrictForStore(storeRoot, storeId))
                 .append(this.restrictForOrders(ordersJoin, timeRange))
                 .build();
@@ -125,7 +126,7 @@ public class StoreRepositoryImpl implements StoreDTORepository {
         Root<Store> storeRoot = criteria.from(Store.class);
         SetJoin<Store, Orders> ordersJoin = storeRoot.join(Store_.orders, JoinType.LEFT);
 
-        Collection<Predicate> predicates = PredicateBuilder.instance()
+        Collection<Predicate> predicates = PredicateBuilder.init(RestrictUtils.restrictForOrders(builder, ordersJoin))
                 .append(this.restrictForStore(storeRoot, storeId))
                 .append(this.restrictForOrders(ordersJoin, DateRange.ofDate(date).toTimeRange()))
                 .build();
