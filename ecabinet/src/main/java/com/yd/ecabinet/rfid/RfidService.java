@@ -12,9 +12,14 @@ public class RfidService extends AbstractDaemonService {
     private final IAsynchronousMessage callback;
     private final RfidOperator rfidOperator;
 
+    private final ConnectInitializing connectInitializing;
+
     @Override
     public void run() {
         rfidOperator.connect(callback);
+
+        connectInitializing.afterConnect();
+
         super.setFinished(true);
     }
 }

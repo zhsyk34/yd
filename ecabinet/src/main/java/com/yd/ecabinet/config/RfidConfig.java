@@ -17,4 +17,6 @@ public class RfidConfig {
     private int ant;
     @Value("${rfid.interval}")
     private int interval;
+    @Value("${rfid.scan}")
+    private int scan;
 }

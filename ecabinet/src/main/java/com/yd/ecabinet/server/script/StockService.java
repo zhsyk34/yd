@@ -1,4 +1,4 @@
-package com.yd.ecabinet.service;
+package com.yd.ecabinet.server.script;
 
 import com.yd.ecabinet.domain.Stock;
 import lombok.NonNull;
@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface StockService {
+    void init();
 
     Stock fromEntry(@NonNull Map.Entry<String, Integer> entry);
 

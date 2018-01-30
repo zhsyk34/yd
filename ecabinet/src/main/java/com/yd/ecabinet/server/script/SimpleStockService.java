@@ -1,4 +1,4 @@
-package com.yd.ecabinet.service;
+package com.yd.ecabinet.server.script;
 
 import com.yd.ecabinet.domain.Stock;
 import com.yd.ecabinet.util.JsonUtils;
@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +30,13 @@ public class SimpleStockService implements StockService {
         return original.entrySet().stream()
                 .map(o -> Stock.of(o.getKey(), o.getValue() - Optional.ofNullable(current.get(o.getKey())).orElse(0)))
                 .filter(s -> s.getCount() > 0).collect(toList());
+    }
+
+    @Override
+    public void init() {
+        logger.info("正在初始化库存...");
+        this.setStocks(this.getRemainStocks());
+        logger.info("初始化库存完毕\n:{}", this.getStocks());
     }
 
     @Override
@@ -76,10 +82,4 @@ public class SimpleStockService implements StockService {
         return delta;
     }
 
-    @PostConstruct
-    public void init() {
-        logger.info("正在初始化库存...");
-        this.setStocks(this.getRemainStocks());
-        logger.info("初始化库存完毕\n:{}", this.getStocks());
-    }
 }

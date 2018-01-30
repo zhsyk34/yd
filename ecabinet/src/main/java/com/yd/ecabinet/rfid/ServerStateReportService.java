@@ -1,4 +1,4 @@
-package com.yd.ecabinet.service;
+package com.yd.ecabinet.rfid;
 
 import com.yd.ecabinet.config.StoreConfig;
 import lombok.RequiredArgsConstructor;

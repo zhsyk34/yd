@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
-    <property name="host" value="47.94.252.28"/>
-    <property name="port" value="1873"/>
     <property name="dir" value="./logs"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -21,20 +19,10 @@
         </encoder>
     </appender>
 
-    <appender name="remote" class="ch.qos.logback.classic.net.SocketAppender">
-        <remoteHost>${host}</remoteHost>
-        <port>${port}</port>
-        <reconnectionDelay>10000</reconnectionDelay>
-        <includeCallerData>false</includeCallerData>
-    </appender>
-
-    <logger name="org.apache.http" level="info" additivity="false"/>
-
-    <logger name="org.springframework" level="info" additivity="false"/>
+    <!--<logger name="com.yd.ecabinet.server.PollingOpenSignalListener" level="error"/>-->
 
     <root level="debug">
         <appender-ref ref="console"/>
         <appender-ref ref="local"/>
-        <!--<appender-ref ref="remote"/>-->
     </root>
 </configuration>

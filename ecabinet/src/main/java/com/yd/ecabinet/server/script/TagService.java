@@ -1,4 +1,4 @@
-package com.yd.ecabinet.service;
+package com.yd.ecabinet.server.script;
 
 public interface TagService {
     String read();

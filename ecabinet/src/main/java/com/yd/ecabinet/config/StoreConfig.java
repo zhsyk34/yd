@@ -16,9 +16,16 @@ public class StoreConfig {
     @Value("${store.number}")
     private String number;
     @Value("${store.sync}")
-    private int sync;
-    @Value("${store.script}")
-    private String script;
-    @Value("${store.interval}")
-    private int interval;
+    private int sync;//同步rfid与服务器状态频率
+
+    @Value("${store.orderUrl}")
+    private String orderUrl;
+
+    @Value("${store.signalUrl}")
+    private String signalUrl;
+    @Value("${store.signalInterval}")
+    private int signalInterval;
+
+    @Value("${store.scriptUrl}")
+    private String scriptUrl;
 }

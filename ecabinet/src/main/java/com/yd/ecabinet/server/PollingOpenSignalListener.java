@@ -1,4 +1,4 @@
-package com.yd.ecabinet.service;
+package com.yd.ecabinet.server;
 
 import com.yd.ecabinet.config.RfidConfig;
 import com.yd.ecabinet.config.StoreConfig;
@@ -9,15 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OpenSignalListener {
+public class PollingOpenSignalListener implements OpenSignalListener {
     private final StoreConfig storeConfig;
     private final RfidConfig rfidConfig;
 
@@ -27,26 +25,28 @@ public class OpenSignalListener {
 
     private final PhpService phpService;
 
-    private final Lock lock = new ReentrantLock();
-
     @Setter
     private volatile boolean necessary = true;
 
-    public void listen() {
-        service.scheduleWithFixedDelay(this::handle, storeConfig.getInterval(), storeConfig.getInterval(), SECONDS);
+    @Override
+    public void start() {
+        service.scheduleWithFixedDelay(this::handle, storeConfig.getSignalInterval(), storeConfig.getSignalInterval(), MILLISECONDS);
     }
 
-    public void lock() {
-        this.lock.lock();
+    @Override
+    public void suspend() {
+        this.necessary = false;
+        logger.debug("暂停轮询----------------");
     }
 
-    public void unlock() {
-        this.lock.unlock();
+    @Override
+    public void resume() {
+        this.necessary = true;
+        logger.debug("继续轮询----------------");
     }
 
     private void handle() {
         try {
-            this.lock();
             if (this.necessary) {
                 logger.debug("开始轮询----------------");
                 boolean allowed = this.allowOpen();
@@ -61,12 +61,20 @@ public class OpenSignalListener {
             }
         } finally {
             logger.debug("结束轮询----------------");
-            this.unlock();
         }
     }
 
     private boolean allowOpen() {
-        return "1".equals(phpService.querySignal());
+        //TODO
+//        try {
+//            Path path = Paths.get("C:\\Users\\Archimedes\\Desktop/state.txt");
+//            String s = Files.readAllLines(path).get(0);
+//            return "1".equals(s);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+        return "1".equals(phpService.queryOpenSignal());
     }
 
 }

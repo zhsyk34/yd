@@ -8,15 +8,17 @@ import com.yd.rfid.RfidOperator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.util.ResourceUtils;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 @Configuration
-@ComponentScan(basePackageClasses = Entry.class)
+@ComponentScan(basePackageClasses = Entry.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.REGEX, pattern = "com.yd.ecabinet.server.script.*")})
 public class SpringConfig {
     static final String URL_PREFIX = ResourceUtils.FILE_URL_PREFIX;
+//    static final String URL_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX;
 
     @Bean
     public RfidOperator rfidOperator(RfidConfig rfidConfig) {

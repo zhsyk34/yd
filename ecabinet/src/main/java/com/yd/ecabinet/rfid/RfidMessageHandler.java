@@ -1,39 +1,31 @@
 package com.yd.ecabinet.rfid;
 
-import com.yd.ecabinet.service.OpenSignalListener;
-import com.yd.ecabinet.service.PhpService;
-import com.yd.ecabinet.service.StockService;
+import com.clou.uhf.G3Lib.Protocol.Tag_Model;
 import com.yd.rfid.RfidMessageAdapter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-@Component
+@Service
 @RequiredArgsConstructor
-@Slf4j
 public class RfidMessageHandler extends RfidMessageAdapter {
-    private final StockService stockService;
-    private final PhpService phpService;
-    private final OpenSignalListener openSignalListener;
+    private final DoorStateHandler doorStateHandler;
+    private final TagHandler tagHandler;
 
     @Override
-    public void GPIControlMsg(int gpiIndex, int gpiState, int startOrStop) {
-        logger.debug("电平状态:{}", gpiState);
-        if (gpiState == 1) {
-            logger.debug("检测到开门事件");
-        } else {
-            logger.debug("检测到关门事件,开始请求Python接口以提交订单...");
-            this.submit();
+    public void OutPutTags(Tag_Model tag_model) {
+        String tid = tag_model._TID;
+        if (StringUtils.hasText(tid)) {
+            tagHandler.handle(tid);
         }
     }
 
-    private void submit() {
-        try {
-            openSignalListener.lock();
-            phpService.submitOrder(stockService.getDeltaStocks());
-            openSignalListener.setNecessary(true);
-        } finally {
-            openSignalListener.unlock();
+    @Override
+    public void GPIControlMsg(int gpiIndex, int gpiState, int startOrStop) {
+        if (gpiState == 0) {
+            doorStateHandler.onOpen();
+        } else {
+            doorStateHandler.onClose();
         }
     }
 }
